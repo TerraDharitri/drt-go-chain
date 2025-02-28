@@ -40,7 +40,7 @@ func TestCreationOfTheGenesisState(t *testing.T) {
 	args := genesis.AccountsParserArgs{
 		GenesisFilePath: genesisFile,
 		EntireSupply:    big.NewInt(6000000000),
-		MinterAddress:   "erd17rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rcqqkhty3",
+		MinterAddress:   "drt17rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rcqa2qg80",
 		PubkeyConverter: integrationTests.TestAddressPubkeyConverter,
 		KeyGenerator:    &mock.KeyGenMock{},
 		Hasher:          &hashingMocks.HasherMock{},

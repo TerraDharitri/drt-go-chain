@@ -32,7 +32,7 @@ func makeVMConfig() config.VirtualMachineConfig {
 			{StartEpoch: 12, Version: "v1.3"},
 			{StartEpoch: 14, Version: "v1.4"},
 		},
-		TransferAndExecuteByUserAddresses: []string{"erd1qqqqqqqqqqqqqpgqr46jrxr6r2unaqh75ugd308dwx5vgnhwh47qtvepe3"},
+		TransferAndExecuteByUserAddresses: []string{"drt1qqqqqqqqqqqqqpgqr46jrxr6r2unaqh75ugd308dwx5vgnhwh47qkswz60"},
 	}
 }
 

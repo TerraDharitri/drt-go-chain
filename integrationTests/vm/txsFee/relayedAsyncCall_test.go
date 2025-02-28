@@ -45,12 +45,12 @@ func testRelayedAsyncCallShouldWork(t *testing.T, enableEpochs config.EnableEpoc
 	testContext, err := vm.CreatePreparedTxProcessorWithVMs(enableEpochs, 1)
 	require.Nil(t, err)
 
-	localEgldBalance := big.NewInt(100000000)
+	localRewaBalance := big.NewInt(100000000)
 	ownerAddr := []byte("12345678901234567890123456789010")
 	relayerAddr := []byte("12345678901234567890123456789017")
 
-	_, _ = vm.CreateAccount(testContext.Accounts, ownerAddr, 0, localEgldBalance)
-	_, _ = vm.CreateAccount(testContext.Accounts, relayerAddr, 0, localEgldBalance)
+	_, _ = vm.CreateAccount(testContext.Accounts, ownerAddr, 0, localRewaBalance)
+	_, _ = vm.CreateAccount(testContext.Accounts, relayerAddr, 0, localRewaBalance)
 
 	ownerAccount, _ := testContext.Accounts.LoadAccount(ownerAddr)
 	deployGasLimit := uint64(50000)

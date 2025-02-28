@@ -49,7 +49,7 @@ func createArgsWithEEI(eei vm.SystemEI) ArgsNewGovernanceContract {
 				MinVetoThreshold: 0.5,
 				LostProposalFee:  "1",
 			},
-			OwnerAddress: "erd1vxy22x0fj4zv6hktmydg8vpfh6euv02cz4yg0aaws6rrad5a5awqgqky80",
+			OwnerAddress: "drt1vxy22x0fj4zv6hktmydg8vpfh6euv02cz4yg0aaws6rrad5a5awq4up8y3",
 		},
 		Marshalizer:            &mock.MarshalizerMock{},
 		Hasher:                 &hashingMocks.HasherMock{},

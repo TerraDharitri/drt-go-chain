@@ -25,9 +25,9 @@ func TestRelayedAsyncDCDTCallShouldWork(t *testing.T) {
 	require.Nil(t, err)
 	defer testContext.Close()
 
-	localEgldBalance := big.NewInt(100000000)
+	localRewaBalance := big.NewInt(100000000)
 	ownerAddr := []byte("12345678901234567890123456789010")
-	_, _ = vm.CreateAccount(testContext.Accounts, ownerAddr, 0, localEgldBalance)
+	_, _ = vm.CreateAccount(testContext.Accounts, ownerAddr, 0, localRewaBalance)
 
 	// create an address with DCDT token
 	relayerAddr := []byte("12345678901234567890123456789033")
@@ -36,7 +36,7 @@ func TestRelayedAsyncDCDTCallShouldWork(t *testing.T) {
 	localDcdtBalance := big.NewInt(100000000)
 	token := []byte("miiutoken")
 	utils.CreateAccountWithDCDTBalance(t, testContext.Accounts, sndAddr, big.NewInt(0), token, 0, localDcdtBalance, uint32(core.Fungible))
-	_, _ = vm.CreateAccount(testContext.Accounts, relayerAddr, 0, localEgldBalance)
+	_, _ = vm.CreateAccount(testContext.Accounts, relayerAddr, 0, localRewaBalance)
 
 	// deploy 2 contracts
 	ownerAccount, _ := testContext.Accounts.LoadAccount(ownerAddr)
@@ -87,9 +87,9 @@ func TestRelayedAsyncDCDTCall_InvalidCallFirstContract(t *testing.T) {
 	require.Nil(t, err)
 	defer testContext.Close()
 
-	localEgldBalance := big.NewInt(100000000)
+	localRewaBalance := big.NewInt(100000000)
 	ownerAddr := []byte("12345678901234567890123456789010")
-	_, _ = vm.CreateAccount(testContext.Accounts, ownerAddr, 0, localEgldBalance)
+	_, _ = vm.CreateAccount(testContext.Accounts, ownerAddr, 0, localRewaBalance)
 
 	// create an address with DCDT token
 	relayerAddr := []byte("12345678901234567890123456789033")
@@ -98,7 +98,7 @@ func TestRelayedAsyncDCDTCall_InvalidCallFirstContract(t *testing.T) {
 	localDcdtBalance := big.NewInt(100000000)
 	token := []byte("miiutoken")
 	utils.CreateAccountWithDCDTBalance(t, testContext.Accounts, sndAddr, big.NewInt(0), token, 0, localDcdtBalance, uint32(core.Fungible))
-	_, _ = vm.CreateAccount(testContext.Accounts, relayerAddr, 0, localEgldBalance)
+	_, _ = vm.CreateAccount(testContext.Accounts, relayerAddr, 0, localRewaBalance)
 
 	// deploy 2 contracts
 	ownerAccount, _ := testContext.Accounts.LoadAccount(ownerAddr)
@@ -149,9 +149,9 @@ func TestRelayedAsyncDCDTCall_InvalidOutOfGas(t *testing.T) {
 	require.Nil(t, err)
 	defer testContext.Close()
 
-	localEgldBalance := big.NewInt(100000000)
+	localRewaBalance := big.NewInt(100000000)
 	ownerAddr := []byte("12345678901234567890123456789010")
-	_, _ = vm.CreateAccount(testContext.Accounts, ownerAddr, 0, localEgldBalance)
+	_, _ = vm.CreateAccount(testContext.Accounts, ownerAddr, 0, localRewaBalance)
 
 	// create an address with DCDT token
 	relayerAddr := []byte("12345678901234567890123456789033")
@@ -160,7 +160,7 @@ func TestRelayedAsyncDCDTCall_InvalidOutOfGas(t *testing.T) {
 	localDcdtBalance := big.NewInt(100000000)
 	token := []byte("miiutoken")
 	utils.CreateAccountWithDCDTBalance(t, testContext.Accounts, sndAddr, big.NewInt(0), token, 0, localDcdtBalance, uint32(core.Fungible))
-	_, _ = vm.CreateAccount(testContext.Accounts, relayerAddr, 0, localEgldBalance)
+	_, _ = vm.CreateAccount(testContext.Accounts, relayerAddr, 0, localRewaBalance)
 
 	// deploy 2 contracts
 	ownerAccount, _ := testContext.Accounts.LoadAccount(ownerAddr)

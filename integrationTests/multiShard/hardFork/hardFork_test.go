@@ -423,7 +423,7 @@ func hardForkImport(
 				WasmVMVersions: []config.WasmVMVersionByEpoch{
 					{StartEpoch: 0, Version: "*"},
 				},
-				TransferAndExecuteByUserAddresses: []string{"erd1qqqqqqqqqqqqqpgqr46jrxr6r2unaqh75ugd308dwx5vgnhwh47qtvepe3"},
+				TransferAndExecuteByUserAddresses: []string{"drt1qqqqqqqqqqqqqpgqr46jrxr6r2unaqh75ugd308dwx5vgnhwh47qkswz60"},
 			},
 			HardForkConfig: config.HardforkConfig{
 				ImportFolder:             node.ExportFolder,

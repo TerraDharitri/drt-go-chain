@@ -1908,15 +1908,15 @@ func TestSortTransactionsBySenderAndNonceWithFrontRunningProtection_TestnetBids(
 	}
 
 	addresses := []string{
-		"erd1lr7k9z8l6lgud6709pr3lnm84mfnqqrj40rq66n4rtassfyvcl8starqtf",
-		"erd1pvr8n50q9tqvng03c450d3ac4pz5dt0gxedvvf80rj9r77s3ds0swj33ea",
-		"erd1xls5cejdna07m3jptt43trhhcw39hz5xe673d6lmfnapmcxz9a3s88ycvk",
-		"erd18ljvzsj74ehku7ej80lm35jsxdcxxrwc9t5swkgkyzayep52qe2sujv9xj",
-		"erd1qrzudpvn7xmqvx8w0sc726arp4rpuxxw5zk87rjh9yy3v09knjas9w9077",
-		"erd18dp32dj2gm626uhtd3mezkd24phzev2gmef06y9fs4f94uyy4swsllu24j",
-		"erd19rywmefgq6m0ddmwv9uc23ns7q8s236hag2qp9h8aps0cnxf9qnsnyavkx",
-		"erd1hshz86ke95z58920xl59jnakv5ppmsfarwtump6scjjcyfr9zxwsd0cy8y",
-		"erd13l5pgsz32u2t7mpanr9hyalahn2newj6ew85s8pgaln5kglm5s3s7w657h",
+		"drt1lr7k9z8l6lgud6709pr3lnm84mfnqqrj40rq66n4rtassfyvcl8skp5rgh",
+		"drt1pvr8n50q9tqvng03c450d3ac4pz5dt0gxedvvf80rj9r77s3ds0snwxj6r",
+		"drt1xls5cejdna07m3jptt43trhhcw39hz5xe673d6lmfnapmcxz9a3s6mnm0g",
+		"drt18ljvzsj74ehku7ej80lm35jsxdcxxrwc9t5swkgkyzayep52qe2spwmx9v",
+		"drt1qrzudpvn7xmqvx8w0sc726arp4rpuxxw5zk87rjh9yy3v09knjascjjvaq",
+		"drt18dp32dj2gm626uhtd3mezkd24phzev2gmef06y9fs4f94uyy4swszrtfkv",
+		"drt19rywmefgq6m0ddmwv9uc23ns7q8s236hag2qp9h8aps0cnxf9qnswc204c",
+		"drt1hshz86ke95z58920xl59jnakv5ppmsfarwtump6scjjcyfr9zxwssn08y6",
+		"drt13l5pgsz32u2t7mpanr9hyalahn2newj6ew85s8pgaln5kglm5s3srjdhaf",
 	}
 	bech32 := testscommon.RealWorldBech32PubkeyConverter
 

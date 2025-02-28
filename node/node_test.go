@@ -366,7 +366,7 @@ func TestNode_GetCodeHashAccNotFoundShouldReturnEmpty(t *testing.T) {
 		node.WithStateComponents(stateComponents),
 	)
 
-	codeHash, bInfo, err := n.GetCodeHash("erd1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssycr6th", api.AccountQueryOptions{})
+	codeHash, bInfo, err := n.GetCodeHash("drt1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssey5egf", api.AccountQueryOptions{})
 	require.Nil(t, err)
 	require.Equal(t, dummyBlockInfo.apiResult(), bInfo)
 	require.Empty(t, codeHash)
@@ -3047,7 +3047,7 @@ func TestValidateTransaction_ShouldAdaptAccountNotFoundError(t *testing.T) {
 		ChainID:   []byte("chainID"),
 	}
 	err := n.ValidateTransaction(tx)
-	require.Equal(t, "insufficient funds for address erd1xycnzvf3xycnzvf3xycnzvf3xycnzvf3xycnzvf3xycnzvf3xycspcqad6", err.Error())
+	require.Equal(t, "insufficient funds for address drt1xycnzvf3xycnzvf3xycnzvf3xycnzvf3xycnzvf3xycnzvf3xycsuyh7wy", err.Error())
 }
 
 func TestCreateShardedStores_NilShardCoordinatorShouldError(t *testing.T) {
@@ -4443,7 +4443,7 @@ func TestNode_IsDataTrieMigrated(t *testing.T) {
 			node.WithCoreComponents(getDefaultCoreComponents()),
 		)
 
-		isMigrated, err := n.IsDataTrieMigrated("erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqplllst77y4l", api.AccountQueryOptions{})
+		isMigrated, err := n.IsDataTrieMigrated("drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqplllskzf8kp", api.AccountQueryOptions{})
 		assert.False(t, isMigrated)
 		assert.Equal(t, expectedErr, err)
 	})
@@ -4463,7 +4463,7 @@ func TestNode_IsDataTrieMigrated(t *testing.T) {
 			node.WithCoreComponents(getDefaultCoreComponents()),
 		)
 
-		isMigrated, err := n.IsDataTrieMigrated("erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqplllst77y4l", api.AccountQueryOptions{})
+		isMigrated, err := n.IsDataTrieMigrated("drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqplllskzf8kp", api.AccountQueryOptions{})
 		assert.False(t, isMigrated)
 		assert.True(t, strings.Contains(err.Error(), "wrong type assertion"))
 	})
@@ -4490,7 +4490,7 @@ func TestNode_IsDataTrieMigrated(t *testing.T) {
 			node.WithCoreComponents(getDefaultCoreComponents()),
 		)
 
-		isMigrated, err := n.IsDataTrieMigrated("erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqplllst77y4l", api.AccountQueryOptions{})
+		isMigrated, err := n.IsDataTrieMigrated("drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqplllskzf8kp", api.AccountQueryOptions{})
 		assert.False(t, isMigrated)
 		assert.Nil(t, err)
 	})
@@ -4517,7 +4517,7 @@ func TestNode_IsDataTrieMigrated(t *testing.T) {
 			node.WithCoreComponents(getDefaultCoreComponents()),
 		)
 
-		isMigrated, err := n.IsDataTrieMigrated("erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqplllst77y4l", api.AccountQueryOptions{})
+		isMigrated, err := n.IsDataTrieMigrated("drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqplllskzf8kp", api.AccountQueryOptions{})
 		assert.True(t, isMigrated)
 		assert.Nil(t, err)
 	})

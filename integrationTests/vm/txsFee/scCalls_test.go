@@ -598,7 +598,7 @@ func TestScCallDistributeStakingRewards_ShouldWork(t *testing.T) {
 
 	pkConv, err := pubkeyConverter.NewBech32PubkeyConverter(32, integrationTests.AddressHrp)
 	require.NoError(t, err)
-	sndAddr1, err := pkConv.Decode("erd1rkhyj0ne054upekymjafwas44v2trdykd22vcg27ap8x2hpg5u7q0296ne")
+	sndAddr1, err := pkConv.Decode("drt1rkhyj0ne054upekymjafwas44v2trdykd22vcg27ap8x2hpg5u7qjkjes8")
 	require.Nil(t, err)
 
 	senderBalance := big.NewInt(1000000000000000000)

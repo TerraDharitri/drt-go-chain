@@ -59,7 +59,7 @@ import (
 )
 
 const (
-	testingProtocolSustainabilityAddress = "erd1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797su0dlxp"
+	testingProtocolSustainabilityAddress = "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l"
 )
 
 var (
@@ -120,7 +120,7 @@ func createMockProcessComponentsFactoryArgs() processComp.ProcessComponentsFacto
 		SystemSCConfig: &config.SystemSmartContractsConfig{
 			DCDTSystemSCConfig: config.DCDTSystemSCConfig{
 				BaseIssuingCost: "1000",
-				OwnerAddress:    "erd1fpkcgel4gcmh8zqqdt043yfcn5tyx8373kg6q2qmkxzu4dqamc0swts65c",
+				OwnerAddress:    "drt1fpkcgel4gcmh8zqqdt043yfcn5tyx8373kg6q2qmkxzu4dqamc0snh8ehx",
 			},
 			GovernanceSystemSCConfig: config.GovernanceSystemSCConfig{
 				V1: config.GovernanceSystemSCConfigV1{
@@ -136,7 +136,7 @@ func createMockProcessComponentsFactoryArgs() processComp.ProcessComponentsFacto
 					MinPassThreshold: 0.5,
 					MinVetoThreshold: 0.5,
 				},
-				OwnerAddress: "erd1vxy22x0fj4zv6hktmydg8vpfh6euv02cz4yg0aaws6rrad5a5awqgqky80",
+				OwnerAddress: "drt1vxy22x0fj4zv6hktmydg8vpfh6euv02cz4yg0aaws6rrad5a5awq4up8y3",
 			},
 			StakingSystemSCConfig: config.StakingSystemSCConfig{
 				GenesisNodePrice:                     "2500",
@@ -156,7 +156,7 @@ func createMockProcessComponentsFactoryArgs() processComp.ProcessComponentsFacto
 			DelegationManagerSystemSCConfig: config.DelegationManagerSystemSCConfig{
 				MinCreationDeposit:  "100",
 				MinStakeAmount:      "100",
-				ConfigChangeAddress: "erd1vxy22x0fj4zv6hktmydg8vpfh6euv02cz4yg0aaws6rrad5a5awqgqky80",
+				ConfigChangeAddress: "drt1vxy22x0fj4zv6hktmydg8vpfh6euv02cz4yg0aaws6rrad5a5awq4up8y3",
 			},
 			DelegationSystemSCConfig: config.DelegationSystemSCConfig{
 				MinServiceFee: 0,
@@ -854,8 +854,8 @@ func TestProcessComponentsFactory_Create(t *testing.T) {
 		realAccounts := stateCompMock.AccountsAdapter()
 		stateCompMock.Accounts = &testState.AccountsStub{
 			GetAllLeavesCalled: func(leavesChannels *common.TrieIteratorChannels, ctx context.Context, rootHash []byte, trieLeavesParser common.TrieLeafParser) error {
-				addrOk, _ := addrPubKeyConv.Decode("erd17c4fs6mz2aa2hcvva2jfxdsrdknu4220496jmswer9njznt22eds0rxlr4")
-				addrNOK, _ := addrPubKeyConv.Decode("erd1ulhw20j7jvgfgak5p05kv667k5k9f320sgef5ayxkt9784ql0zssrzyhjp")
+				addrOk, _ := addrPubKeyConv.Decode("drt17c4fs6mz2aa2hcvva2jfxdsrdknu4220496jmswer9njznt22edsjl3uqt")
+				addrNOK, _ := addrPubKeyConv.Decode("drt1ulhw20j7jvgfgak5p05kv667k5k9f320sgef5ayxkt9784ql0zss77n53l")
 				leavesChannels.LeavesChan <- keyValStorage.NewKeyValStorage(addrOk, []byte("value")) // coverage
 				leavesChannels.LeavesChan <- keyValStorage.NewKeyValStorage(addrNOK, []byte("value"))
 				close(leavesChannels.LeavesChan)

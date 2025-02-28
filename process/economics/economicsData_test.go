@@ -42,7 +42,7 @@ func createDummyEconomicsConfig(feeSettings config.FeeSettings) *config.Economic
 					LeaderPercentage:                 0.1,
 					DeveloperPercentage:              0.1,
 					ProtocolSustainabilityPercentage: 0.1,
-					ProtocolSustainabilityAddress:    "erd1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797su0dlxp",
+					ProtocolSustainabilityAddress:    "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l",
 					TopUpGradientPoint:               "300000000000000000000",
 					TopUpFactor:                      0.25,
 					EpochEnable:                      0,
@@ -177,7 +177,7 @@ func TestNewEconomicsData_InvalidMaxGasLimitPerBlockShouldErr(t *testing.T) {
 		"#########",
 		"11112S",
 		"1111O0000",
-		"10ERD",
+		"10DRT",
 		"10000000000000000000000000000000000000000000000000000000000000",
 	}
 
@@ -200,7 +200,7 @@ func TestNewEconomicsData_InvalidMaxGasLimitPerMiniBlockShouldErr(t *testing.T) 
 		"#########",
 		"11112S",
 		"1111O0000",
-		"10ERD",
+		"10DRT",
 		"10000000000000000000000000000000000000000000000000000000000000",
 	}
 
@@ -223,7 +223,7 @@ func TestNewEconomicsData_InvalidMaxGasLimitPerMetaBlockShouldErr(t *testing.T) 
 		"#########",
 		"11112S",
 		"1111O0000",
-		"10ERD",
+		"10DRT",
 		"10000000000000000000000000000000000000000000000000000000000000",
 	}
 
@@ -246,7 +246,7 @@ func TestNewEconomicsData_InvalidMaxGasLimitPerMetaMiniBlockShouldErr(t *testing
 		"#########",
 		"11112S",
 		"1111O0000",
-		"10ERD",
+		"10DRT",
 		"10000000000000000000000000000000000000000000000000000000000000",
 	}
 
@@ -269,7 +269,7 @@ func TestNewEconomicsData_InvalidMaxGasLimitPerTxShouldErr(t *testing.T) {
 		"#########",
 		"11112S",
 		"1111O0000",
-		"10ERD",
+		"10DRT",
 		"10000000000000000000000000000000000000000000000000000000000000",
 	}
 
@@ -292,7 +292,7 @@ func TestNewEconomicsData_InvalidMinGasPriceShouldErr(t *testing.T) {
 		"#########",
 		"11112S",
 		"1111O0000",
-		"10ERD",
+		"10DRT",
 		"10000000000000000000000000000000000000000000000000000000000000",
 	}
 
@@ -315,7 +315,7 @@ func TestNewEconomicsData_InvalidMinGasLimitShouldErr(t *testing.T) {
 		"#########",
 		"11112S",
 		"1111O0000",
-		"10ERD",
+		"10DRT",
 		"10000000000000000000000000000000000000000000000000000000000000",
 	}
 
@@ -378,7 +378,7 @@ func TestNewEconomicsData_InvalidExtraGasLimitGuardedTxShouldErr(t *testing.T) {
 		"#########",
 		"11112S",
 		"1111O0000",
-		"10ERD",
+		"10DRT",
 		"10000000000000000000000000000000000000000000000000000000000000",
 	}
 
@@ -456,7 +456,7 @@ func TestNewEconomicsData_InvalidGasPerDataByteShouldErr(t *testing.T) {
 		"#########",
 		"11112S",
 		"1111O0000",
-		"10ERD",
+		"10DRT",
 		"10000000000000000000000000000000000000000000000000000000000000",
 	}
 
@@ -479,7 +479,7 @@ func TestNewEconomicsData_InvalidMaxGasPriceSetGuardianShouldErr(t *testing.T) {
 		"#########",
 		"11112S",
 		"1111O0000",
-		"10ERD",
+		"10DRT",
 		"10000000000000000000000000000000000000000000000000000000000000",
 	}
 
@@ -670,7 +670,7 @@ func TestEconomicsData_ConfirmedEpochRewardsSettingsChangeOrderedConfigs(t *test
 			LeaderPercentage:                 0.1,
 			DeveloperPercentage:              0.1,
 			ProtocolSustainabilityPercentage: 0.1,
-			ProtocolSustainabilityAddress:    "erd1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797su0dlxp",
+			ProtocolSustainabilityAddress:    "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l",
 			TopUpGradientPoint:               "300000000000000000000",
 			TopUpFactor:                      0.25,
 			EpochEnable:                      0,
@@ -679,7 +679,7 @@ func TestEconomicsData_ConfirmedEpochRewardsSettingsChangeOrderedConfigs(t *test
 			LeaderPercentage:                 0.2,
 			DeveloperPercentage:              0.2,
 			ProtocolSustainabilityPercentage: 0.2,
-			ProtocolSustainabilityAddress:    "erd14uqxan5rgucsf6537ll4vpwyc96z7us5586xhc5euv8w96rsw95sfl6a49",
+			ProtocolSustainabilityAddress:    "drt14uqxan5rgucsf6537ll4vpwyc96z7us5586xhc5euv8w96rsw95s5rd7km",
 			TopUpGradientPoint:               "200000000000000000000",
 			TopUpFactor:                      0.5,
 			EpochEnable:                      2,
@@ -754,7 +754,7 @@ func TestEconomicsData_ConfirmedEpochRewardsSettingsChangeUnOrderedConfigs(t *te
 			LeaderPercentage:                 0.2,
 			DeveloperPercentage:              0.2,
 			ProtocolSustainabilityPercentage: 0.2,
-			ProtocolSustainabilityAddress:    "erd14uqxan5rgucsf6537ll4vpwyc96z7us5586xhc5euv8w96rsw95sfl6a49",
+			ProtocolSustainabilityAddress:    "drt14uqxan5rgucsf6537ll4vpwyc96z7us5586xhc5euv8w96rsw95s5rd7km",
 			TopUpGradientPoint:               "200000000000000000000",
 			TopUpFactor:                      0.5,
 			EpochEnable:                      2,
@@ -763,7 +763,7 @@ func TestEconomicsData_ConfirmedEpochRewardsSettingsChangeUnOrderedConfigs(t *te
 			LeaderPercentage:                 0.1,
 			DeveloperPercentage:              0.1,
 			ProtocolSustainabilityPercentage: 0.1,
-			ProtocolSustainabilityAddress:    "erd1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797su0dlxp",
+			ProtocolSustainabilityAddress:    "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l",
 			TopUpGradientPoint:               "300000000000000000000",
 			TopUpFactor:                      0.25,
 			EpochEnable:                      0,
@@ -1590,7 +1590,7 @@ func TestEconomicsData_ProtocolSustainabilityAddress(t *testing.T) {
 	t.Parallel()
 
 	args := createArgsForEconomicsData(1)
-	protocolSustainabilityAddress := "erd12345"
+	protocolSustainabilityAddress := "drt12345"
 	args.Economics.RewardsSettings.RewardsConfigByEpoch[0].ProtocolSustainabilityAddress = protocolSustainabilityAddress
 	economicsData, _ := economics.NewEconomicsData(args)
 

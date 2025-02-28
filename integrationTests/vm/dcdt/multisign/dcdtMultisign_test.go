@@ -97,7 +97,7 @@ func TestDCDTTransferWithMultisig(t *testing.T) {
 	checkCallBackWasSaved(t, nodes, multisignContractAddress)
 
 	// ----- transfer DCDT token
-	destinationAddress, _ := integrationTests.TestAddressPubkeyConverter.Decode("erd1j25xk97yf820rgdp3mj5scavhjkn6tjyn0t63pmv5qyjj7wxlcfqqe2rw5")
+	destinationAddress, _ := integrationTests.TestAddressPubkeyConverter.Decode("drt1j25xk97yf820rgdp3mj5scavhjkn6tjyn0t63pmv5qyjj7wxlcfqa9aqd2")
 	transferValue := big.NewInt(10)
 	proposeTransferToken(nodes, multisignContractAddress, transferValue, 0, destinationAddress, tokenIdentifier)
 

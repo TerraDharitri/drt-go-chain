@@ -517,11 +517,11 @@ func TestAccountsParser_getShardIDs(t *testing.T) {
 
 func TestAccountsParser_createMintTransaction(t *testing.T) {
 	pkConv, _ := pubkeyConverter.NewBech32PubkeyConverter(32, "drt")
-	expectedAddr, _ := pkConv.Decode("erd17rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rcqqkhty3")
+	expectedAddr, _ := pkConv.Decode("drt17rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rcqa2qg80")
 	ap := parsing.NewTestAccountsParser(pkConv)
 	balance := int64(1)
 	ibs := []*data.InitialAccount{
-		createSimpleInitialAccount("erd1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqzu66jx", balance),
+		createSimpleInitialAccount("drt1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqlqde3c", balance),
 	}
 
 	ap.SetEntireSupply(big.NewInt(int64(len(ibs)) * balance))
@@ -756,5 +756,5 @@ func TestAccountsParser_GenesisMintingAddress(t *testing.T) {
 	pkConv, _ := pubkeyConverter.NewBech32PubkeyConverter(32, "drt")
 	ap := parsing.NewTestAccountsParser(pkConv)
 	addr := ap.GenesisMintingAddress()
-	assert.Equal(t, "erd17rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rcqqkhty3", addr)
+	assert.Equal(t, "drt17rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rcqa2qg80", addr)
 }

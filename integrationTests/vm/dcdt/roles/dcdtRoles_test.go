@@ -295,14 +295,14 @@ func TestDCDTMintTransferAndExecute(t *testing.T) {
 	round = integrationTests.IncrementAndPrintRound(round)
 	nonce++
 
-	scAddress := dcdt.DeployNonPayableSmartContract(t, nodes, idxProposers, &nonce, &round, "../testdata/egld-dcdt-swap.wasm")
+	scAddress := dcdt.DeployNonPayableSmartContract(t, nodes, idxProposers, &nonce, &round, "../testdata/rewa-dcdt-swap.wasm")
 
 	// issue DCDT by calling exec on dest context on child contract
 	ticker := "DSN"
 	name := "DisplayName"
 	issueCost := big.NewInt(1000)
 	txIssueData := txDataBuilder.NewBuilder()
-	txIssueData.Func("issueWrappedEgld").
+	txIssueData.Func("issueWrappedRewa").
 		Str(name).
 		Str(ticker)
 	integrationTests.CreateAndSendTransaction(
@@ -334,7 +334,7 @@ func TestDCDTMintTransferAndExecute(t *testing.T) {
 
 	valueToWrap := big.NewInt(1000)
 	for _, n := range nodes {
-		txData := []byte("wrapEgld")
+		txData := []byte("wrapRewa")
 		integrationTests.CreateAndSendTransaction(
 			n,
 			nodes,
@@ -358,7 +358,7 @@ func TestDCDTMintTransferAndExecute(t *testing.T) {
 
 	for _, n := range nodes {
 		txUnWrap := txDataBuilder.NewBuilder()
-		txUnWrap.Func(core.BuiltInFunctionDCDTTransfer).Str(string(tokenIdentifier)).BigInt(valueToWrap).Str("unwrapEgld")
+		txUnWrap.Func(core.BuiltInFunctionDCDTTransfer).Str(string(tokenIdentifier)).BigInt(valueToWrap).Str("unwrapRewa")
 		integrationTests.CreateAndSendTransaction(
 			n,
 			nodes,

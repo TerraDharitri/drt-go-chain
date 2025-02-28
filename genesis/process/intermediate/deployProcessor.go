@@ -72,9 +72,9 @@ func (dp *deployProcessor) Deploy(sc genesis.InitialSmartContractHandler) ([][]b
 	}
 
 	scResultingAddressBytes, err := dp.deployForOneAddress(sc, sc.OwnerBytes(), code, applyCommonPlaceholders(sc.GetInitParameters()))
-	if err != nil {
-		return nil, err
-	}
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	return [][]byte{scResultingAddressBytes}, dp.checkVersion(sc, scResultingAddressBytes)
 }

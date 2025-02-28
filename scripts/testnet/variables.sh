@@ -20,7 +20,7 @@ export USE_TXGEN=0
 export TESTNETDIR="$HOME/Dharitri/testnet"
 
 # Path to drt-chain-deploy-go, branch: master. Default: near drt-go-chain.
-export CONFIGGENERATORDIR="$(dirname $DHARITRIDIR)/mx-chain-deploy-go/cmd/filegen"
+export CONFIGGENERATORDIR="$(dirname $DHARITRIDIR)/drt-chain-deploy-go/cmd/filegen"
 export CONFIGGENERATOR="$CONFIGGENERATORDIR/filegen"    # Leave unchanged.
 export CONFIGGENERATOROUTPUTDIR="output"
 

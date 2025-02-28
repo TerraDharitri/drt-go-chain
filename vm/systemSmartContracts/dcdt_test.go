@@ -53,7 +53,7 @@ func TestNewDCDTSmartContract(t *testing.T) {
 
 	args := createMockArgumentsForDCDT()
 	e, err := NewDCDTSmartContract(args)
-	ky := hex.EncodeToString([]byte("ELRONDdcdttxgenDCDTtkn"))
+	ky := hex.EncodeToString([]byte("NUMBATdcdttxgenDCDTtkn"))
 	fmt.Println(ky)
 
 	assert.Nil(t, err)
@@ -1144,7 +1144,7 @@ func TestDcdt_ExecuteToggleFreezeShouldWorkWithRealBech32Address(t *testing.T) {
 	eei.storageUpdate[string(eei.scAddress)] = tokensMap
 	args.Eei = eei
 
-	addressToFreezeBech32 := "erd158tgst07d6rt93td6nh5cd2mmpfhtp7hr24l4wfgtlggqpnp6kjsnpvdqj"
+	addressToFreezeBech32 := "drt158tgst07d6rt93td6nh5cd2mmpfhtp7hr24l4wfgtlggqpnp6kjswamwrv"
 	addressToFreeze, err := args.AddressPubKeyConverter.Decode(addressToFreezeBech32)
 	assert.NoError(t, err)
 
@@ -2499,10 +2499,10 @@ func TestDcdt_GetSpecialRolesShouldWork(t *testing.T) {
 	eei := createDefaultEei()
 	args.Eei = eei
 
-	addr1 := "erd1kzzv2uw97q5k9mt458qk3q9u3cwhwqykvyk598q2f6wwx7gvrd9s8kszxk"
+	addr1 := "drt1kzzv2uw97q5k9mt458qk3q9u3cwhwqykvyk598q2f6wwx7gvrd9s628p9g"
 	addr1Bytes, _ := testscommon.RealWorldBech32PubkeyConverter.Decode(addr1)
 
-	addr2 := "erd1e7n8rzxdtl2n2fl6mrsg4l7stp2elxhfy6l9p7eeafspjhhrjq7qk05usw"
+	addr2 := "drt1e7n8rzxdtl2n2fl6mrsg4l7stp2elxhfy6l9p7eeafspjhhrjq7qtnrlns"
 	addr2Bytes, _ := testscommon.RealWorldBech32PubkeyConverter.Decode(addr2)
 
 	specialRoles := []*DCDTRoles{
@@ -2540,8 +2540,8 @@ func TestDcdt_GetSpecialRolesShouldWork(t *testing.T) {
 	assert.Equal(t, vmcommon.Ok, output)
 
 	assert.Equal(t, 2, len(eei.output))
-	assert.Equal(t, []byte("erd1kzzv2uw97q5k9mt458qk3q9u3cwhwqykvyk598q2f6wwx7gvrd9s8kszxk:DCDTRoleLocalMint,DCDTRoleLocalBurn"), eei.output[0])
-	assert.Equal(t, []byte("erd1e7n8rzxdtl2n2fl6mrsg4l7stp2elxhfy6l9p7eeafspjhhrjq7qk05usw:DCDTRoleNFTAddQuantity,DCDTRoleNFTCreate,DCDTRoleNFTBurn"), eei.output[1])
+	assert.Equal(t, []byte("drt1kzzv2uw97q5k9mt458qk3q9u3cwhwqykvyk598q2f6wwx7gvrd9s628p9g:DCDTRoleLocalMint,DCDTRoleLocalBurn"), eei.output[0])
+	assert.Equal(t, []byte("drt1e7n8rzxdtl2n2fl6mrsg4l7stp2elxhfy6l9p7eeafspjhhrjq7qtnrlns:DCDTRoleNFTAddQuantity,DCDTRoleNFTCreate,DCDTRoleNFTBurn"), eei.output[1])
 }
 
 func TestDcdt_GetSpecialRolesWithEmptyAddressShouldWork(t *testing.T) {
@@ -2609,13 +2609,13 @@ func TestDcdt_UnsetSpecialRoleWithRemoveEntryFromSpecialRoles(t *testing.T) {
 	eei := createDefaultEei()
 	args.Eei = eei
 
-	owner := "erd1e7n8rzxdtl2n2fl6mrsg4l7stp2elxhfy6l9p7eeafspjhhrjq7qk05usw"
+	owner := "drt1e7n8rzxdtl2n2fl6mrsg4l7stp2elxhfy6l9p7eeafspjhhrjq7qtnrlns"
 	ownerBytes, _ := testscommon.RealWorldBech32PubkeyConverter.Decode(owner)
 
-	addr1 := "erd1kzzv2uw97q5k9mt458qk3q9u3cwhwqykvyk598q2f6wwx7gvrd9s8kszxk"
+	addr1 := "drt1kzzv2uw97q5k9mt458qk3q9u3cwhwqykvyk598q2f6wwx7gvrd9s628p9g"
 	addr1Bytes, _ := testscommon.RealWorldBech32PubkeyConverter.Decode(addr1)
 
-	addr2 := "erd1rsq30t33aqeg8cuc3q4kfnx0jukzsx52yfua92r233zhhmndl3uszcs5qj"
+	addr2 := "drt1rsq30t33aqeg8cuc3q4kfnx0jukzsx52yfua92r233zhhmndl3usly8hrv"
 	addr2Bytes, _ := testscommon.RealWorldBech32PubkeyConverter.Decode(addr2)
 
 	specialRoles := []*DCDTRoles{
@@ -2653,8 +2653,8 @@ func TestDcdt_UnsetSpecialRoleWithRemoveEntryFromSpecialRoles(t *testing.T) {
 	output := e.Execute(vmInput)
 	assert.Equal(t, vmcommon.Ok, output)
 	assert.Equal(t, 2, len(eei.output))
-	assert.Equal(t, []byte("erd1kzzv2uw97q5k9mt458qk3q9u3cwhwqykvyk598q2f6wwx7gvrd9s8kszxk:DCDTRoleLocalMint"), eei.output[0])
-	assert.Equal(t, []byte("erd1rsq30t33aqeg8cuc3q4kfnx0jukzsx52yfua92r233zhhmndl3uszcs5qj:DCDTRoleNFTAddQuantity,DCDTRoleNFTCreate,DCDTRoleNFTBurn"), eei.output[1])
+	assert.Equal(t, []byte("drt1kzzv2uw97q5k9mt458qk3q9u3cwhwqykvyk598q2f6wwx7gvrd9s628p9g:DCDTRoleLocalMint"), eei.output[0])
+	assert.Equal(t, []byte("drt1rsq30t33aqeg8cuc3q4kfnx0jukzsx52yfua92r233zhhmndl3usly8hrv:DCDTRoleNFTAddQuantity,DCDTRoleNFTCreate,DCDTRoleNFTBurn"), eei.output[1])
 
 	// unset the role for the address
 	eei.output = make([][]byte, 0)
@@ -2685,7 +2685,7 @@ func TestDcdt_UnsetSpecialRoleWithRemoveEntryFromSpecialRoles(t *testing.T) {
 	output = e.Execute(vmInput)
 	assert.Equal(t, vmcommon.Ok, output)
 	assert.Equal(t, 2, len(eei.output))
-	assert.Equal(t, []byte("erd1kzzv2uw97q5k9mt458qk3q9u3cwhwqykvyk598q2f6wwx7gvrd9s8kszxk:DCDTRoleLocalMint"), eei.output[1])
+	assert.Equal(t, []byte("drt1kzzv2uw97q5k9mt458qk3q9u3cwhwqykvyk598q2f6wwx7gvrd9s628p9g:DCDTRoleLocalMint"), eei.output[1])
 }
 
 func TestDcdt_ExecuteConfigChangeGetContractConfig(t *testing.T) {

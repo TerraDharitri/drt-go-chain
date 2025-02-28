@@ -126,7 +126,7 @@ func createMockArgument(
 		SystemSCConfig: config.SystemSmartContractsConfig{
 			DCDTSystemSCConfig: config.DCDTSystemSCConfig{
 				BaseIssuingCost: "5000000000000000000000",
-				OwnerAddress:    "erd1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797su0dlxp",
+				OwnerAddress:    "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l",
 			},
 			GovernanceSystemSCConfig: config.GovernanceSystemSCConfig{
 				V1: config.GovernanceSystemSCConfigV1{

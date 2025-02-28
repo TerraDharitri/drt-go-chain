@@ -175,7 +175,7 @@ func TestTokensSuppliesProcessor_HandleTrieAccountIteration(t *testing.T) {
 					Value: big.NewInt(37),
 				}
 				esBytes, _ := args.Marshaller.Marshal(esToken)
-				tknKey := []byte("ELRONDdcdtTKN-00aacc")
+				tknKey := []byte("NUMBATdcdtTKN-00aacc")
 				value := append(esBytes, tknKey...)
 				value = append(value, []byte("addr")...)
 				leavesChannels.LeavesChan <- keyValStorage.NewKeyValStorage(tknKey, value)
@@ -206,7 +206,7 @@ func TestTokensSuppliesProcessor_HandleTrieAccountIteration(t *testing.T) {
 					Value: big.NewInt(37),
 				}
 				esBytes, _ := args.Marshaller.Marshal(esToken)
-				tknKey := []byte("ELRONDdcdtTKN-00aacc")
+				tknKey := []byte("NUMBATdcdtTKN-00aacc")
 				value := append(esBytes, tknKey...)
 				value = append(value, []byte("addr")...)
 				leaf, err := leafParser.ParseLeaf(tknKey, value, 0)
@@ -217,7 +217,7 @@ func TestTokensSuppliesProcessor_HandleTrieAccountIteration(t *testing.T) {
 					Value: big.NewInt(1),
 				}
 				sftBytes, _ := args.Marshaller.Marshal(sft)
-				sftKey := []byte("ELRONDdcdtSFT-00aabb")
+				sftKey := []byte("NUMBATdcdtSFT-00aabb")
 				sftKey = append(sftKey, big.NewInt(37).Bytes()...)
 				value = append(sftBytes, sftKey...)
 				value = append(value, []byte("addr")...)

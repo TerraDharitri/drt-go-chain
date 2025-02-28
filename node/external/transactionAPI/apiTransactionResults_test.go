@@ -146,16 +146,16 @@ func TestPutEventsInTransactionSmartContractResults(t *testing.T) {
 	}
 
 	logs := &transaction.ApiLogs{
-		Address: "erd1contract",
+		Address: "drt1contract",
 		Events: []*transaction.Events{
 			{
-				Address:    "erd1alice",
+				Address:    "drt1alice",
 				Identifier: "first",
 				Topics:     [][]byte{[]byte("hello")},
 				Data:       []byte("data1"),
 			},
 			{
-				Address:    "erd1bob",
+				Address:    "drt1bob",
 				Identifier: "second",
 				Topics:     [][]byte{[]byte("world")},
 				Data:       []byte("data2"),
@@ -272,16 +272,16 @@ func TestPutLogsInTransaction(t *testing.T) {
 	testTxHash := []byte("txHash")
 
 	logs := &transaction.ApiLogs{
-		Address: "erd1contract",
+		Address: "drt1contract",
 		Events: []*transaction.Events{
 			{
-				Address:    "erd1alice",
+				Address:    "drt1alice",
 				Identifier: "first",
 				Topics:     [][]byte{[]byte("hello")},
 				Data:       []byte("data1"),
 			},
 			{
-				Address:    "erd1bob",
+				Address:    "drt1bob",
 				Identifier: "second",
 				Topics:     [][]byte{[]byte("world")},
 				Data:       []byte("data2"),

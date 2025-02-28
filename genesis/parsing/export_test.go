@@ -53,7 +53,7 @@ func (ap *accountsParser) CreateMintTransaction(ia genesis.InitialAccountHandler
 }
 
 func NewTestAccountsParser(pubkeyConverter core.PubkeyConverter) *accountsParser {
-	addrBytes, _ := pubkeyConverter.Decode("erd17rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rcqqkhty3")
+	addrBytes, _ := pubkeyConverter.Decode("drt17rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rcqa2qg80")
 	return &accountsParser{
 		pubkeyConverter:    pubkeyConverter,
 		initialAccounts:    make([]*data.InitialAccount, 0),

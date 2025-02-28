@@ -197,8 +197,8 @@ sudo docker compose -f docker-compose.base.yml -f docker-compose-linux.yml up --
 - [ ] Optimizations
   - [ ] Smart Contract 
 - [ ] Governance
-  - [ ] SC for ERD IP
-  - [ ] Enforced Upgrade mechanism for voted ERD IP
+  - [ ] SC for DRT IP
+  - [ ] Enforced Upgrade mechanism for voted DRT IP
 - [ ] Bugfixing
 
 

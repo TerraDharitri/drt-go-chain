@@ -84,8 +84,8 @@ func TestPutFeeAndGasUsedTx1(t *testing.T) {
 	initialTx := &outportcore.TxInfo{
 		Transaction: &transaction.Transaction{
 			Nonce:    1196667,
-			SndAddr:  []byte("erd1k7j6ewjsla4zsgv8v6f6fe3dvrkgv3d0d9jerczw45hzedhyed8sh2u34u"),
-			RcvAddr:  []byte("erd14eyayfrvlrhzfrwg5zwleua25mkzgncggn35nvc6xhv5yxwml2es0f3dht"),
+			SndAddr:  []byte("drt1k7j6ewjsla4zsgv8v6f6fe3dvrkgv3d0d9jerczw45hzedhyed8s2ktjkz"),
+			RcvAddr:  []byte("drt14eyayfrvlrhzfrwg5zwleua25mkzgncggn35nvc6xhv5yxwml2esj4xw54"),
 			GasLimit: 16610000,
 			GasPrice: 1000000000,
 			Data:     []byte("relayedTx@7b226e6f6e6365223a322c2276616c7565223a302c227265636569766572223a22414141414141414141414146414974673738352f736c73554148686b57334569624c6e47524b76496f4e4d3d222c2273656e646572223a22726b6e534a477a343769534e794b43642f504f717075776b5477684534306d7a476a585a51686e622b724d3d222c226761735072696365223a313030303030303030302c226761734c696d6974223a31353030303030302c2264617461223a22633246325a5546306447567a644746306157397551444668597a49314d6a5935596d51335a44497759324a6959544d31596d566c4f4459314d4464684f574e6a4e7a677a5a4755774f445a694e4445334e546b345a54517a59544e6b5a6a566a593245795a5468684d6a6c414d6a51344e54677a4d574e6d4d5445304d54566d596a41354d6a63774e4451324e5755324e7a597a59574d314f4445345a5467314e4751345957526d4e54417a596a63354d6a6c6b4f54526c4e6d49794e6a49775a673d3d222c22636861696e4944223a224d513d3d222c2276657273696f6e223a312c227369676e6174757265223a225239462b34546352415a386d7771324559303163596c337662716c46657176387a76474a775a6833594d4f556b4234643451574e66376744626c484832576b71614a76614845744356617049713365356562384e41773d3d227d"),
@@ -98,8 +98,8 @@ func TestPutFeeAndGasUsedTx1(t *testing.T) {
 		Nonce:          2,
 		GasPrice:       1000000000,
 		GasLimit:       14732500,
-		SndAddr:        []byte("erd14eyayfrvlrhzfrwg5zwleua25mkzgncggn35nvc6xhv5yxwml2es0f3dht"),
-		RcvAddr:        []byte("erd1qqqqqqqqqqqqqpgq3dswlnnlkfd3gqrcv3dhzgnvh8ryf27g5rfsecnn2s"),
+		SndAddr:        []byte("drt14eyayfrvlrhzfrwg5zwleua25mkzgncggn35nvc6xhv5yxwml2esj4xw54"),
+		RcvAddr:        []byte("drt1qqqqqqqqqqqqqpgq3dswlnnlkfd3gqrcv3dhzgnvh8ryf27g5rfsyyysfw"),
 		Data:           []byte("saveAttestation@1ac25269bd7d20cbba35bee86507a9cc783de086b417598e43a3df5cca2e8a29@2485831cf11415fb092704465e6763ac5818e854d8adf503b7929d94e6b2620f"),
 		PrevTxHash:     txHash,
 		OriginalTxHash: txHash,
@@ -119,8 +119,8 @@ func TestPutFeeAndGasUsedTx1(t *testing.T) {
 			hex.EncodeToString(scrWithRefund): {
 				SmartContractResult: &smartContractResult.SmartContractResult{
 					Nonce:          3,
-					SndAddr:        []byte("erd1qqqqqqqqqqqqqpgq3dswlnnlkfd3gqrcv3dhzgnvh8ryf27g5rfsecnn2s"),
-					RcvAddr:        []byte("erd1k7j6ewjsla4zsgv8v6f6fe3dvrkgv3d0d9jerczw45hzedhyed8sh2u34u"),
+					SndAddr:        []byte("drt1qqqqqqqqqqqqqpgq3dswlnnlkfd3gqrcv3dhzgnvh8ryf27g5rfsyyysfw"),
+					RcvAddr:        []byte("drt1k7j6ewjsla4zsgv8v6f6fe3dvrkgv3d0d9jerczw45hzedhyed8s2ktjkz"),
 					PrevTxHash:     []byte("f639cb7a0231191e04ec19dcb1359bd93a03fe8dc4a28a80d00835c5d1c988f8"),
 					OriginalTxHash: txHash,
 					Value:          refundValueBig,
@@ -157,8 +157,8 @@ func TestPutFeeAndGasUsedScrNoTx(t *testing.T) {
 	scr := &outportcore.SCRInfo{
 		SmartContractResult: &smartContractResult.SmartContractResult{
 			Nonce:          3,
-			SndAddr:        []byte("erd1qqqqqqqqqqqqqpgq3dswlnnlkfd3gqrcv3dhzgnvh8ryf27g5rfsecnn2s"),
-			RcvAddr:        []byte("erd1k7j6ewjsla4zsgv8v6f6fe3dvrkgv3d0d9jerczw45hzedhyed8sh2u34u"),
+			SndAddr:        []byte("drt1qqqqqqqqqqqqqpgq3dswlnnlkfd3gqrcv3dhzgnvh8ryf27g5rfsyyysfw"),
+			RcvAddr:        []byte("drt1k7j6ewjsla4zsgv8v6f6fe3dvrkgv3d0d9jerczw45hzedhyed8s2ktjkz"),
 			PrevTxHash:     []byte("f639cb7a0231191e04ec19dcb1359bd93a03fe8dc4a28a80d00835c5d1c988f8"),
 			OriginalTxHash: txHash,
 			Value:          refundValueBig,
@@ -179,7 +179,7 @@ func TestPutFeeAndGasUsedScrNoTx(t *testing.T) {
 	initialTx := &transaction.Transaction{
 		GasLimit: 30000000,
 		GasPrice: 1000000000,
-		SndAddr:  []byte("erd1k7j6ewjsla4zsgv8v6f6fe3dvrkgv3d0d9jerczw45hzedhyed8sh2u34u"),
+		SndAddr:  []byte("drt1k7j6ewjsla4zsgv8v6f6fe3dvrkgv3d0d9jerczw45hzedhyed8s2ktjkz"),
 	}
 	txBytes, _ := arg.Marshaller.Marshal(initialTx)
 
@@ -232,7 +232,7 @@ func TestPutFeeAndGasUsedLogWithErrorAndInformative(t *testing.T) {
 		Transaction: &transaction.Transaction{
 			GasLimit: 30000000,
 			GasPrice: 1000000000,
-			SndAddr:  []byte("erd1dglncxk6sl9a3xumj78n6z2xux4ghp5c92cstv5zsn56tjgtdwpsk46qrs"),
+			SndAddr:  []byte("drt1dglncxk6sl9a3xumj78n6z2xux4ghp5c92cstv5zsn56tjgtdwpstfdrqw"),
 			RcvAddr:  receiver,
 			Data:     []byte("here"),
 		},
@@ -244,7 +244,7 @@ func TestPutFeeAndGasUsedLogWithErrorAndInformative(t *testing.T) {
 		Transaction: &transaction.Transaction{
 			GasLimit: 50000000,
 			GasPrice: 1000000000,
-			SndAddr:  []byte("erd1dglncxk6sl9a3xumj78n6z2xux4ghp5c92cstv5zsn56tjgtdwpsk46qrs"),
+			SndAddr:  []byte("drt1dglncxk6sl9a3xumj78n6z2xux4ghp5c92cstv5zsn56tjgtdwpstfdrqw"),
 			RcvAddr:  receiver,
 			Data:     []byte("here"),
 		},
@@ -313,8 +313,8 @@ func TestPutFeeAndGasUsedWrongRelayedTx(t *testing.T) {
 	initialTx := &outportcore.TxInfo{
 		Transaction: &transaction.Transaction{
 			Nonce:    1011,
-			SndAddr:  []byte("erd1dglncxk6sl9a3xumj78n6z2xux4ghp5c92cstv5zsn56tjgtdwpsk46qrs"),
-			RcvAddr:  []byte("erd1xlrw5j482m3fwl72fsu9saj984rxqdrjd860e02tcz0qakvqrp6q2pjqgg"),
+			SndAddr:  []byte("drt1dglncxk6sl9a3xumj78n6z2xux4ghp5c92cstv5zsn56tjgtdwpstfdrqw"),
+			RcvAddr:  []byte("drt1xlrw5j482m3fwl72fsu9saj984rxqdrjd860e02tcz0qakvqrp6qha9rtk"),
 			GasLimit: 550000000,
 			GasPrice: 1000000000,
 			Data:     []byte("relayedTxV2@000000000000000005005eaf5311cedc6fa17f08f33e156926f8f3816d8ed8dc@06e2@7472616e73666572546f6b656e4064633132346163313733323937623836623936316362636663363339326231643130303533326533336530663933313838373634396336613935636236633931403031@ba26daf1353b8fa62d183b7d7df8db48846ea982a0cb26450b703e16720c77b9d7d4e47b652d270b160ae6866ca7b04aae38ca83a58ce508bf660db07d5b6401"),
@@ -326,8 +326,8 @@ func TestPutFeeAndGasUsedWrongRelayedTx(t *testing.T) {
 	scr1 := &outportcore.SCRInfo{
 		SmartContractResult: &smartContractResult.SmartContractResult{
 			Nonce:          1011,
-			SndAddr:        []byte("erd1xlrw5j482m3fwl72fsu9saj984rxqdrjd860e02tcz0qakvqrp6q2pjqgg"),
-			RcvAddr:        []byte("erd1dglncxk6sl9a3xumj78n6z2xux4ghp5c92cstv5zsn56tjgtdwpsk46qrs"),
+			SndAddr:        []byte("drt1xlrw5j482m3fwl72fsu9saj984rxqdrjd860e02tcz0qakvqrp6qha9rtk"),
+			RcvAddr:        []byte("drt1dglncxk6sl9a3xumj78n6z2xux4ghp5c92cstv5zsn56tjgtdwpstfdrqw"),
 			PrevTxHash:     txHash,
 			OriginalTxHash: txHash,
 			ReturnMessage:  []byte("higher nonce in transaction"),
@@ -363,8 +363,8 @@ func TestPutFeeAndGasUsedDCDTWithScCall(t *testing.T) {
 	tx := &outportcore.TxInfo{
 		Transaction: &transaction.Transaction{
 			Nonce:    1011,
-			SndAddr:  silentDecodeAddress("erd1dglncxk6sl9a3xumj78n6z2xux4ghp5c92cstv5zsn56tjgtdwpsk46qrs"),
-			RcvAddr:  silentDecodeAddress("erd1dglncxk6sl9a3xumj78n6z2xux4ghp5c92cstv5zsn56tjgtdwpsk46qrs"),
+			SndAddr:  silentDecodeAddress("drt1dglncxk6sl9a3xumj78n6z2xux4ghp5c92cstv5zsn56tjgtdwpstfdrqw"),
+			RcvAddr:  silentDecodeAddress("drt1dglncxk6sl9a3xumj78n6z2xux4ghp5c92cstv5zsn56tjgtdwpstfdrqw"),
 			GasLimit: 55_000_000,
 			GasPrice: 1000000000,
 			Data:     []byte("DCDTNFTTransfer@434f572d636434363364@080c@01@00000000000000000500d3b28828d62052124f07dcd50ed31b0825f60eee1526@616363657074476c6f62616c4f66666572@c3e5"),
@@ -409,8 +409,8 @@ func TestPutFeeAndGasUsedScrWithRefundNoTx(t *testing.T) {
 	scr := &outportcore.SCRInfo{
 		SmartContractResult: &smartContractResult.SmartContractResult{
 			Nonce:          3,
-			SndAddr:        []byte("erd1qqqqqqqqqqqqqpgq3dswlnnlkfd3gqrcv3dhzgnvh8ryf27g5rfsecnn2s"),
-			RcvAddr:        []byte("erd1k7j6ewjsla4zsgv8v6f6fe3dvrkgv3d0d9jerczw45hzedhyed8sh2u34u"),
+			SndAddr:        []byte("drt1qqqqqqqqqqqqqpgq3dswlnnlkfd3gqrcv3dhzgnvh8ryf27g5rfsyyysfw"),
+			RcvAddr:        []byte("drt1k7j6ewjsla4zsgv8v6f6fe3dvrkgv3d0d9jerczw45hzedhyed8s2ktjkz"),
 			PrevTxHash:     []byte("f639cb7a0231191e04ec19dcb1359bd93a03fe8dc4a28a80d00835c5d1c988f8"),
 			OriginalTxHash: txHash,
 			Value:          refundValueBig,
@@ -457,8 +457,8 @@ func TestPutFeeAndGasUsedScrWithRefundNotForInitialSender(t *testing.T) {
 	scr := &outportcore.SCRInfo{
 		SmartContractResult: &smartContractResult.SmartContractResult{
 			Nonce:          3,
-			SndAddr:        []byte("erd1qqqqqqqqqqqqqpgq3dswlnnlkfd3gqrcv3dhzgnvh8ryf27g5rfsecnn2s"),
-			RcvAddr:        []byte("erd1k7j6ewjsla4zsgv8v6f6fe3dvrkgv3d0d9jerczw45hzedhyed8sh2u34u"),
+			SndAddr:        []byte("drt1qqqqqqqqqqqqqpgq3dswlnnlkfd3gqrcv3dhzgnvh8ryf27g5rfsyyysfw"),
+			RcvAddr:        []byte("drt1k7j6ewjsla4zsgv8v6f6fe3dvrkgv3d0d9jerczw45hzedhyed8s2ktjkz"),
 			PrevTxHash:     []byte("f639cb7a0231191e04ec19dcb1359bd93a03fe8dc4a28a80d00835c5d1c988f8"),
 			OriginalTxHash: txHash,
 			Value:          refundValueBig,
@@ -478,7 +478,7 @@ func TestPutFeeAndGasUsedScrWithRefundNotForInitialSender(t *testing.T) {
 	initialTx := &transaction.Transaction{
 		GasLimit: 30_000_000,
 		GasPrice: 1000000000,
-		SndAddr:  []byte("erd1dglncxk6sl9a3xumj78n6z2xux4ghp5c92cstv5zsn56tjgtdwpsk46qrs"),
+		SndAddr:  []byte("drt1dglncxk6sl9a3xumj78n6z2xux4ghp5c92cstv5zsn56tjgtdwpstfdrqw"),
 	}
 	txBytes, _ := arg.Marshaller.Marshal(initialTx)
 
@@ -504,7 +504,7 @@ func TestPutFeeAndGasUsedScrWithRefund(t *testing.T) {
 		Nonce:    1004,
 		GasLimit: 60_000_000,
 		GasPrice: 1000000000,
-		SndAddr:  []byte("erd1s8jr8e8hsvv7c9ehmshcjlpzf9ua5l50qeswa8feshrp6xlz9c7quacmtx"),
+		SndAddr:  []byte("drt1s8jr8e8hsvv7c9ehmshcjlpzf9ua5l50qeswa8feshrp6xlz9c7qpp0cgc"),
 	}, FeeInfo: &outportcore.FeeInfo{Fee: big.NewInt(0)}}
 
 	refundValueBig, _ := big.NewInt(0).SetString("96635000000000", 10)
@@ -512,8 +512,8 @@ func TestPutFeeAndGasUsedScrWithRefund(t *testing.T) {
 	scr := &outportcore.SCRInfo{
 		SmartContractResult: &smartContractResult.SmartContractResult{
 			Nonce:          1005,
-			SndAddr:        []byte("erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u"),
-			RcvAddr:        []byte("erd1s8jr8e8hsvv7c9ehmshcjlpzf9ua5l50qeswa8feshrp6xlz9c7quacmtx"),
+			SndAddr:        []byte("drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls6prdez"),
+			RcvAddr:        []byte("drt1s8jr8e8hsvv7c9ehmshcjlpzf9ua5l50qeswa8feshrp6xlz9c7qpp0cgc"),
 			PrevTxHash:     txHash,
 			OriginalTxHash: txHash,
 			Value:          refundValueBig,
@@ -548,8 +548,8 @@ func TestMoveBalanceWithSignalError(t *testing.T) {
 		Nonce:    1004,
 		GasLimit: 12_175_500,
 		GasPrice: 1000000000,
-		SndAddr:  []byte("erd1s8jr8e8hsvv7c9ehmshcjlpzf9ua5l50qeswa8feshrp6xlz9c7quacmtx"),
-		RcvAddr:  []byte("erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u"),
+		SndAddr:  []byte("drt1s8jr8e8hsvv7c9ehmshcjlpzf9ua5l50qeswa8feshrp6xlz9c7qpp0cgc"),
+		RcvAddr:  []byte("drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls6prdez"),
 		Data:     []byte("start@5465737420526166666c65203120f09f9a80@10000000000000000@0100000002@01000000006082a400@0100000001@01000000023232@"),
 	}, FeeInfo: &outportcore.FeeInfo{Fee: big.NewInt(0)}}
 
@@ -557,8 +557,8 @@ func TestMoveBalanceWithSignalError(t *testing.T) {
 	scr := &outportcore.SCRInfo{
 		SmartContractResult: &smartContractResult.SmartContractResult{
 			Nonce:          1005,
-			SndAddr:        []byte("erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u"),
-			RcvAddr:        []byte("erd1s8jr8e8hsvv7c9ehmshcjlpzf9ua5l50qeswa8feshrp6xlz9c7quacmtx"),
+			SndAddr:        []byte("drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls6prdez"),
+			RcvAddr:        []byte("drt1s8jr8e8hsvv7c9ehmshcjlpzf9ua5l50qeswa8feshrp6xlz9c7qpp0cgc"),
 			PrevTxHash:     txHash,
 			OriginalTxHash: txHash,
 			Value:          big.NewInt(0),

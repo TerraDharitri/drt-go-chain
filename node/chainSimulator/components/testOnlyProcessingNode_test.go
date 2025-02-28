@@ -154,7 +154,7 @@ func TestTestOnlyProcessingNode_SetKeyValueForAddress(t *testing.T) {
 	node, err := NewTestOnlyProcessingNode(createMockArgsTestOnlyProcessingNode(t))
 	require.NoError(t, err)
 
-	address := "erd1qtc600lryvytxuy4h7vn7xmsy5tw6vuw3tskr75cwnmv4mnyjgsq6e5zgj"
+	address := "drt1qtc600lryvytxuy4h7vn7xmsy5tw6vuw3tskr75cwnmv4mnyjgsq89rptv"
 	addressBytes, _ := node.CoreComponentsHolder.AddressPubKeyConverter().Decode(address)
 
 	t.Run("should work", func(t *testing.T) {
@@ -263,12 +263,12 @@ func TestTestOnlyProcessingNode_SetStateForAddress(t *testing.T) {
 	require.NoError(t, err)
 	nonce := uint64(100)
 
-	address := "erd1qtc600lryvytxuy4h7vn7xmsy5tw6vuw3tskr75cwnmv4mnyjgsq6e5zgj"
-	scAddress := "erd1qqqqqqqqqqqqqpgqrchxzx5uu8sv3ceg8nx8cxc0gesezure5awqn46gtd"
+	address := "drt1qtc600lryvytxuy4h7vn7xmsy5tw6vuw3tskr75cwnmv4mnyjgsq89rptv"
+	scAddress := "drt1qqqqqqqqqqqqqpgqrchxzx5uu8sv3ceg8nx8cxc0gesezure5awqwfdtgn"
 	addressBytes, _ := node.CoreComponentsHolder.AddressPubKeyConverter().Decode(address)
 	scAddressBytes, _ := node.CoreComponentsHolder.AddressPubKeyConverter().Decode(scAddress)
 	addressState := &dtos.AddressState{
-		Address: "erd1qtc600lryvytxuy4h7vn7xmsy5tw6vuw3tskr75cwnmv4mnyjgsq6e5zgj",
+		Address: "drt1qtc600lryvytxuy4h7vn7xmsy5tw6vuw3tskr75cwnmv4mnyjgsq89rptv",
 		Nonce:   &nonce,
 		Balance: "1000000000000000000",
 		Pairs: map[string]string{

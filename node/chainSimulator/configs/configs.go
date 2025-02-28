@@ -29,9 +29,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-crypto/signing/mcl"
 )
 
-var oneEgld = big.NewInt(1000000000000000000)
-var initialStakedEgldPerNode = big.NewInt(0).Mul(oneEgld, big.NewInt(2500))
-var initialSupply = big.NewInt(0).Mul(oneEgld, big.NewInt(20000000)) // 20 million REWA
+var oneRewa = big.NewInt(1000000000000000000)
+var initialStakedRewaPerNode = big.NewInt(0).Mul(oneRewa, big.NewInt(2500))
+var initialSupply = big.NewInt(0).Mul(oneRewa, big.NewInt(20000000)) // 20 million REWA
 const (
 	// ChainID contains the chain id
 	ChainID = "chain"
@@ -209,7 +209,7 @@ func generateGenesisFile(args ArgsChainSimulatorConfigs, configs *config.Configs
 			return nil, errGenerate
 		}
 
-		stakedValue := big.NewInt(0).Set(initialStakedEgldPerNode)
+		stakedValue := big.NewInt(0).Set(initialStakedRewaPerNode)
 		addresses = append(addresses, data.InitialAccount{
 			Address:      wallet.Address.Bech32,
 			StakingValue: stakedValue,
@@ -222,7 +222,7 @@ func generateGenesisFile(args ArgsChainSimulatorConfigs, configs *config.Configs
 	// generate an address for every shard
 	initialBalance := big.NewInt(0).Set(initialSupply)
 	totalStakedValue := big.NewInt(int64(numOfNodes))
-	totalStakedValue = totalStakedValue.Mul(totalStakedValue, big.NewInt(0).Set(initialStakedEgldPerNode))
+	totalStakedValue = totalStakedValue.Mul(totalStakedValue, big.NewInt(0).Set(initialStakedRewaPerNode))
 	initialBalance = initialBalance.Sub(initialBalance, totalStakedValue)
 
 	walletBalance := big.NewInt(0).Set(initialBalance)

@@ -264,7 +264,7 @@ func TestManagedPeersHolder_AddManagedPeer(t *testing.T) {
 		assert.Equal(t, defaultName+"-00", pInfo.NodeName())
 	})
 	t.Run("should work for a new pk with identity from config", func(t *testing.T) {
-		providedAddress := []byte("erd1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssycr6th")
+		providedAddress := []byte("drt1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssey5egf")
 		providedHex := hex.EncodeToString(providedAddress)
 		providedName := "provided name"
 		providedIdentity := "provided identity"

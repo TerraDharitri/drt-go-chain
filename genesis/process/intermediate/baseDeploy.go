@@ -27,7 +27,6 @@ func (dp *baseDeploy) deployForOneAddress(
 	code string,
 	initParams string,
 ) ([]byte, error) {
-	fmt.Printf("Address: %s \n", string(ownerAddressBytes))
 	nonce, err := dp.GetNonce(ownerAddressBytes)
 	if err != nil {
 		return nil, err
@@ -48,13 +47,9 @@ func (dp *baseDeploy) deployForOneAddress(
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("Resulting Address: %s \n", scResultingAddress)
-
 	sc.AddAddress(scResultingAddress)
 
 	vmType := sc.GetVmType()
-	fmt.Printf("VM Type : %s \n", vmType)
-
 	arguments := []string{code, vmType, codeMetadataHexForInitialSC}
 	if len(initParams) > 0 {
 		arguments = append(arguments, initParams)
@@ -96,7 +91,7 @@ func (dp *baseDeploy) deployForOneAddress(
 	}
 
 	_, accountExists = dp.GetAccount(scResultingAddressBytes)
-	if false {
+	if !accountExists {
 		return nil, fmt.Errorf("%w for SC ownerAddress %s, owner %s with nonce %d",
 			genesis.ErrAccountNotCreated,
 			scResultingAddress,

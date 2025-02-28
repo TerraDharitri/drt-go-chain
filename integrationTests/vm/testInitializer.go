@@ -83,10 +83,10 @@ const minTransactionVersion = 1
 var dnsAddr = []byte{0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 137, 17, 46, 56, 127, 47, 62, 172, 4, 126, 190, 242, 221, 230, 209, 243, 105, 104, 242, 66, 49, 49}
 
 // DNSV2Address defines the address for the new DNS contract
-const DNSV2Address = "erd1qqqqqqqqqqqqqpgqcy67yanvwpepqmerkq6m8pgav0tlvgwxjmdq4hukxw"
+const DNSV2Address = "drt1qqqqqqqqqqqqqpgqcy67yanvwpepqmerkq6m8pgav0tlvgwxjmdqgtt49s"
 
 // DNSV2DeployerAddress defines the address of the deployer for the DNS v2 contracts
-const DNSV2DeployerAddress = "erd1uzk2g5rhvg8prk9y50d0q7qsxg7tm7f320q0q4qlpmfu395wjmdqqy0n9q"
+const DNSV2DeployerAddress = "drt1uzk2g5rhvg8prk9y50d0q7qsxg7tm7f320q0q4qlpmfu395wjmdqaccsx7"
 
 // TestAddressPubkeyConverter represents an address public key converter
 var TestAddressPubkeyConverter, _ = pubkeyConverter.NewBech32PubkeyConverter(32, "drt")
@@ -321,7 +321,7 @@ func createEconomicsData(enableEpochsConfig config.EnableEpochs, gasPriceModifie
 	maxGasLimitPerBlock := strconv.FormatUint(math.MaxUint64, 10)
 	minGasPrice := strconv.FormatUint(1, 10)
 	minGasLimit := strconv.FormatUint(1, 10)
-	testProtocolSustainabilityAddress := "erd1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797su0dlxp"
+	testProtocolSustainabilityAddress := "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l"
 
 	realEpochNotifier := forking.NewGenericEpochNotifier()
 	enableEpochsHandler, _ := enablers.NewEnableEpochsHandler(enableEpochsConfig, realEpochNotifier)

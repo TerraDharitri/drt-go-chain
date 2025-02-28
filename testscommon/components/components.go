@@ -410,6 +410,7 @@ func GetBootStrapFactoryArgs() bootstrapComp.BootstrapComponentsFactoryArgs {
 // GetProcessArgs -
 func GetProcessArgs(
 	shardCoordinator sharding.Coordinator,
+	
 	coreComponents factory.CoreComponentsHolder,
 	dataComponents factory.DataComponentsHolder,
 	cryptoComponents factory.CryptoComponentsHolder,
@@ -471,7 +472,7 @@ func GetProcessArgs(
 				})
 				balance := big.NewInt(0)
 				acc1 := data.InitialAccount{
-					Address:      "erd1ulhw20j7jvgfgak5p05kv667k5k9f320sgef5ayxkt9784ql0zssrzyhjp",
+					Address:      "drt1ulhw20j7jvgfgak5p05kv667k5k9f320sgef5ayxkt9784ql0zss77n53l",
 					Supply:       big.NewInt(0).Mul(big.NewInt(2500000000), big.NewInt(1000000000000)),
 					Balance:      balance,
 					StakingValue: big.NewInt(0).Mul(big.NewInt(2500000000), big.NewInt(1000000000000)),
@@ -481,7 +482,7 @@ func GetProcessArgs(
 					},
 				}
 				acc2 := data.InitialAccount{
-					Address:      "erd17c4fs6mz2aa2hcvva2jfxdsrdknu4220496jmswer9njznt22eds0rxlr4",
+					Address:      "drt17c4fs6mz2aa2hcvva2jfxdsrdknu4220496jmswer9njznt22edsjl3uqt",
 					Supply:       big.NewInt(0).Mul(big.NewInt(2500000000), big.NewInt(1000000000000)),
 					Balance:      balance,
 					StakingValue: big.NewInt(0).Mul(big.NewInt(2500000000), big.NewInt(1000000000000)),
@@ -491,7 +492,7 @@ func GetProcessArgs(
 					},
 				}
 				acc3 := data.InitialAccount{
-					Address:      "erd10d2gufxesrp8g409tzxljlaefhs0rsgjle3l7nq38de59txxt8csj54cd3",
+					Address:      "drt10d2gufxesrp8g409tzxljlaefhs0rsgjle3l7nq38de59txxt8cs0gzmw0",
 					Supply:       big.NewInt(0).Mul(big.NewInt(2500000000), big.NewInt(1000000000000)),
 					Balance:      balance,
 					StakingValue: big.NewInt(0).Mul(big.NewInt(2500000000), big.NewInt(1000000000000)),
@@ -539,7 +540,7 @@ func GetProcessArgs(
 		SystemSCConfig: &config.SystemSmartContractsConfig{
 			DCDTSystemSCConfig: config.DCDTSystemSCConfig{
 				BaseIssuingCost: "1000",
-				OwnerAddress:    "erd1fpkcgel4gcmh8zqqdt043yfcn5tyx8373kg6q2qmkxzu4dqamc0swts65c",
+				OwnerAddress:    "drt1fpkcgel4gcmh8zqqdt043yfcn5tyx8373kg6q2qmkxzu4dqamc0snh8ehx",
 			},
 			GovernanceSystemSCConfig: config.GovernanceSystemSCConfig{
 				V1: config.GovernanceSystemSCConfigV1{
@@ -556,7 +557,7 @@ func GetProcessArgs(
 					MinVetoThreshold: 0.5,
 					LostProposalFee:  "1",
 				},
-				OwnerAddress: "erd1vxy22x0fj4zv6hktmydg8vpfh6euv02cz4yg0aaws6rrad5a5awqgqky80",
+				OwnerAddress: "drt1vxy22x0fj4zv6hktmydg8vpfh6euv02cz4yg0aaws6rrad5a5awq4up8y3",
 			},
 			StakingSystemSCConfig: config.StakingSystemSCConfig{
 				GenesisNodePrice:                     "2500000000000000000000",
@@ -576,7 +577,7 @@ func GetProcessArgs(
 			DelegationManagerSystemSCConfig: config.DelegationManagerSystemSCConfig{
 				MinCreationDeposit:  "100",
 				MinStakeAmount:      "100",
-				ConfigChangeAddress: "erd1vxy22x0fj4zv6hktmydg8vpfh6euv02cz4yg0aaws6rrad5a5awqgqky80",
+				ConfigChangeAddress: "drt1vxy22x0fj4zv6hktmydg8vpfh6euv02cz4yg0aaws6rrad5a5awq4up8y3",
 			},
 			DelegationSystemSCConfig: config.DelegationSystemSCConfig{
 				MinServiceFee: 0,

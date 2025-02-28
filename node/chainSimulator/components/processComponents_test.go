@@ -40,7 +40,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const testingProtocolSustainabilityAddress = "erd1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797su0dlxp"
+const testingProtocolSustainabilityAddress = "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l"
 
 var (
 	addrPubKeyConv, _ = commonFactory.NewPubkeyConverter(config.PubkeyConfig{
@@ -81,7 +81,7 @@ func createArgsProcessComponentsHolder() ArgsProcessComponentsHolder {
 		SystemSCConfig: config.SystemSmartContractsConfig{
 			DCDTSystemSCConfig: config.DCDTSystemSCConfig{
 				BaseIssuingCost: "1000",
-				OwnerAddress:    "erd1fpkcgel4gcmh8zqqdt043yfcn5tyx8373kg6q2qmkxzu4dqamc0swts65c",
+				OwnerAddress:    "drt1fpkcgel4gcmh8zqqdt043yfcn5tyx8373kg6q2qmkxzu4dqamc0snh8ehx",
 			},
 			GovernanceSystemSCConfig: config.GovernanceSystemSCConfig{
 				V1: config.GovernanceSystemSCConfigV1{
@@ -97,7 +97,7 @@ func createArgsProcessComponentsHolder() ArgsProcessComponentsHolder {
 					MinPassThreshold: 0.5,
 					MinVetoThreshold: 0.5,
 				},
-				OwnerAddress: "erd1vxy22x0fj4zv6hktmydg8vpfh6euv02cz4yg0aaws6rrad5a5awqgqky80",
+				OwnerAddress: "drt1vxy22x0fj4zv6hktmydg8vpfh6euv02cz4yg0aaws6rrad5a5awq4up8y3",
 			},
 			StakingSystemSCConfig: config.StakingSystemSCConfig{
 				GenesisNodePrice:                     "2500000000000000000000",
@@ -118,7 +118,7 @@ func createArgsProcessComponentsHolder() ArgsProcessComponentsHolder {
 			DelegationManagerSystemSCConfig: config.DelegationManagerSystemSCConfig{
 				MinCreationDeposit:  "100",
 				MinStakeAmount:      "100",
-				ConfigChangeAddress: "erd1vxy22x0fj4zv6hktmydg8vpfh6euv02cz4yg0aaws6rrad5a5awqgqky80",
+				ConfigChangeAddress: "drt1vxy22x0fj4zv6hktmydg8vpfh6euv02cz4yg0aaws6rrad5a5awq4up8y3",
 			},
 			DelegationSystemSCConfig: config.DelegationSystemSCConfig{
 				MinServiceFee: 0,
@@ -215,7 +215,7 @@ func createArgsProcessComponentsHolder() ArgsProcessComponentsHolder {
 			GlobalSettings: config.GlobalSettings{
 				GenesisTotalSupply:          "20000000000000000000000000",
 				MinimumInflation:            0,
-				GenesisMintingSenderAddress: "erd17rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rcqqkhty3",
+				GenesisMintingSenderAddress: "drt17rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rc0pu8s7rcqa2qg80",
 				YearSettings: []*config.YearSetting{
 					{
 						Year:             0,

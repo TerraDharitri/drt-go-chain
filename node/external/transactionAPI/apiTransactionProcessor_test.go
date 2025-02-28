@@ -1215,8 +1215,8 @@ func TestPrepareUnsignedTx(t *testing.T) {
 		Nonce:          1,
 		Type:           string(transaction.TxTypeUnsigned),
 		Value:          "2",
-		Receiver:       "erd1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsl6e0p7",
-		Sender:         "erd1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq6gq4hu",
+		Receiver:       "drt1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszxwvzq",
+		Sender:         "drt1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq85hk5z",
 		OriginalSender: "",
 		CallType:       vm.DirectCallStr,
 	}
@@ -1236,9 +1236,9 @@ func TestPrepareUnsignedTx(t *testing.T) {
 		Nonce:          3,
 		Type:           string(transaction.TxTypeUnsigned),
 		Value:          "4",
-		Receiver:       "erd1qcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqwkh39e",
-		Sender:         "erd1q5zs2pg9q5zs2pg9q5zs2pg9q5zs2pg9q5zs2pg9q5zs2pg9q5zsrqsks3",
-		OriginalSender: "erd1qurswpc8qurswpc8qurswpc8qurswpc8qurswpc8qurswpc8qurstywtnm",
+		Receiver:       "drt1qcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqn2qjx8",
+		Sender:         "drt1q5zs2pg9q5zs2pg9q5zs2pg9q5zs2pg9q5zs2pg9q5zs2pg9q5zs7u84n0",
+		OriginalSender: "drt1qurswpc8qurswpc8qurswpc8qurswpc8qurswpc8qurswpc8qurskcegs9",
 		CallType:       vm.DirectCallStr,
 	}
 	assert.Equal(t, scrResult2, expectedScr2)

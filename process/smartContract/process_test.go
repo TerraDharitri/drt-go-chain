@@ -4216,7 +4216,7 @@ func createRealEconomicsDataArgs() *economics.ArgsNewEconomicsData {
 						LeaderPercentage:                 0.1,
 						DeveloperPercentage:              0.3,
 						ProtocolSustainabilityPercentage: 0.1,
-						ProtocolSustainabilityAddress:    "erd1j25xk97yf820rgdp3mj5scavhjkn6tjyn0t63pmv5qyjj7wxlcfqqe2rw5",
+						ProtocolSustainabilityAddress:    "drt1j25xk97yf820rgdp3mj5scavhjkn6tjyn0t63pmv5qyjj7wxlcfqa9aqd2",
 						TopUpGradientPoint:               "300000000000000000000",
 						TopUpFactor:                      0.25,
 					},

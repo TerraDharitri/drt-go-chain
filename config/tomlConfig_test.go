@@ -104,9 +104,9 @@ func TestTomlParser(t *testing.T) {
 				TimeOutForSCExecutionInMilliseconds: 10000,
 				WasmerSIGSEGVPassthrough:            true,
 				TransferAndExecuteByUserAddresses: []string{
-					"erd1qqqqqqqqqqqqqpgqr46jrxr6r2unaqh75ugd308dwx5vgnhwh47qtvepe0",
-					"erd1qqqqqqqqqqqqqpgqr46jrxr6r2unaqh75ugd308dwx5vgnhwh47qtvepe1",
-					"erd1qqqqqqqqqqqqqpgqr46jrxr6r2unaqh75ugd308dwx5vgnhwh47qtvepe2"},
+					"drt1qqqqqqqqqqqqqpgqr46jrxr6r2unaqh75ugd308dwx5vgnhwh47qtvepe0",
+					"drt1qqqqqqqqqqqqqpgqr46jrxr6r2unaqh75ugd308dwx5vgnhwh47qtvepe1",
+					"drt1qqqqqqqqqqqqqpgqr46jrxr6r2unaqh75ugd308dwx5vgnhwh47qtvepe2"},
 			},
 			Querying: QueryVirtualMachineConfig{
 				NumConcurrentVMs:     16,
@@ -205,9 +205,9 @@ func TestTomlParser(t *testing.T) {
             { StartEpoch = 88, Version = "v1.2" },
         ]
 		TransferAndExecuteByUserAddresses = [
-			"erd1qqqqqqqqqqqqqpgqr46jrxr6r2unaqh75ugd308dwx5vgnhwh47qtvepe0", #shard 0
-			"erd1qqqqqqqqqqqqqpgqr46jrxr6r2unaqh75ugd308dwx5vgnhwh47qtvepe1", #shard 1
-			"erd1qqqqqqqqqqqqqpgqr46jrxr6r2unaqh75ugd308dwx5vgnhwh47qtvepe2", #shard 2
+			"drt1qqqqqqqqqqqqqpgqr46jrxr6r2unaqh75ugd308dwx5vgnhwh47qtvepe0", #shard 0
+			"drt1qqqqqqqqqqqqqpgqr46jrxr6r2unaqh75ugd308dwx5vgnhwh47qtvepe1", #shard 1
+			"drt1qqqqqqqqqqqqqpgqr46jrxr6r2unaqh75ugd308dwx5vgnhwh47qtvepe2", #shard 2
 		]
 
     [VirtualMachine.Querying]
@@ -271,7 +271,7 @@ func TestTomlEconomicsParser(t *testing.T) {
 	minGasLimit := "18446744073709551615"
 	extraGasLimitGuardedTx := "50000"
 	maxGasPriceSetGuardian := "1234567"
-	protocolSustainabilityAddress := "erd1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797su0dlxp"
+	protocolSustainabilityAddress := "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l"
 	denomination := 18
 
 	cfgEconomicsExpected := EconomicsConfig{

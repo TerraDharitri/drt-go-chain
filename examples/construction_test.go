@@ -36,8 +36,8 @@ func TestConstructTransaction_NoDataNoValue(t *testing.T) {
 	tx := &transaction.Transaction{
 		Nonce:    89,
 		Value:    big.NewInt(0),
-		RcvAddr:  getPubkeyOfAddress(t, "erd1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqzu66jx"),
-		SndAddr:  getPubkeyOfAddress(t, "erd1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssycr6th"),
+		RcvAddr:  getPubkeyOfAddress(t, "drt1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqlqde3c"),
+		SndAddr:  getPubkeyOfAddress(t, "drt1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssey5egf"),
 		GasPrice: 1000000000,
 		GasLimit: 50000,
 		ChainID:  []byte("local-testnet"),
@@ -58,8 +58,8 @@ func TestConstructTransaction_Usernames(t *testing.T) {
 	tx := &transaction.Transaction{
 		Nonce:       89,
 		Value:       big.NewInt(0),
-		RcvAddr:     getPubkeyOfAddress(t, "erd1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqzu66jx"),
-		SndAddr:     getPubkeyOfAddress(t, "erd1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssycr6th"),
+		RcvAddr:     getPubkeyOfAddress(t, "drt1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqlqde3c"),
+		SndAddr:     getPubkeyOfAddress(t, "drt1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssey5egf"),
 		GasPrice:    1000000000,
 		GasLimit:    50000,
 		ChainID:     []byte("local-testnet"),
@@ -82,8 +82,8 @@ func TestConstructTransaction_WithDataNoValue(t *testing.T) {
 	tx := &transaction.Transaction{
 		Nonce:    90,
 		Value:    big.NewInt(0),
-		RcvAddr:  getPubkeyOfAddress(t, "erd1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqzu66jx"),
-		SndAddr:  getPubkeyOfAddress(t, "erd1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssycr6th"),
+		RcvAddr:  getPubkeyOfAddress(t, "drt1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqlqde3c"),
+		SndAddr:  getPubkeyOfAddress(t, "drt1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssey5egf"),
 		GasPrice: 1000000000,
 		GasLimit: 80000,
 		Data:     []byte("hello"),
@@ -105,8 +105,8 @@ func TestConstructTransaction_WithDataWithValue(t *testing.T) {
 	tx := &transaction.Transaction{
 		Nonce:    91,
 		Value:    stringToBigInt("10000000000000000000"),
-		RcvAddr:  getPubkeyOfAddress(t, "erd1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqzu66jx"),
-		SndAddr:  getPubkeyOfAddress(t, "erd1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssycr6th"),
+		RcvAddr:  getPubkeyOfAddress(t, "drt1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqlqde3c"),
+		SndAddr:  getPubkeyOfAddress(t, "drt1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssey5egf"),
 		GasPrice: 1000000000,
 		GasLimit: 100000,
 		Data:     []byte("for the book"),
@@ -128,8 +128,8 @@ func TestConstructTransaction_WithDataWithLargeValue(t *testing.T) {
 	tx := &transaction.Transaction{
 		Nonce:    92,
 		Value:    stringToBigInt("123456789000000000000000000000"),
-		RcvAddr:  getPubkeyOfAddress(t, "erd1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqzu66jx"),
-		SndAddr:  getPubkeyOfAddress(t, "erd1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssycr6th"),
+		RcvAddr:  getPubkeyOfAddress(t, "drt1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqlqde3c"),
+		SndAddr:  getPubkeyOfAddress(t, "drt1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssey5egf"),
 		GasPrice: 1000000000,
 		GasLimit: 100000,
 		Data:     []byte("for the spaceship"),
@@ -151,8 +151,8 @@ func TestConstructTransaction_WithGuardianFields(t *testing.T) {
 	tx := &transaction.Transaction{
 		Nonce:    92,
 		Value:    stringToBigInt("123456789000000000000000000000"),
-		RcvAddr:  getPubkeyOfAddress(t, "erd1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqzu66jx"),
-		SndAddr:  getPubkeyOfAddress(t, "erd1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssycr6th"),
+		RcvAddr:  getPubkeyOfAddress(t, "drt1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqlqde3c"),
+		SndAddr:  getPubkeyOfAddress(t, "drt1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssey5egf"),
 		GasPrice: 1000000000,
 		GasLimit: 150000,
 		Data:     []byte("test data field"),
@@ -161,7 +161,7 @@ func TestConstructTransaction_WithGuardianFields(t *testing.T) {
 		Options:  2,
 	}
 
-	tx.GuardianAddr = getPubkeyOfAddress(t, "erd1x23lzn8483xs2su4fak0r0dqx6w38enpmmqf2yrkylwq7mfnvyhsxqw57y")
+	tx.GuardianAddr = getPubkeyOfAddress(t, "drt1x23lzn8483xs2su4fak0r0dqx6w38enpmmqf2yrkylwq7mfnvyhsmueha6")
 	tx.GuardianSignature = bytes.Repeat([]byte{0}, 64)
 
 	tx.Signature = computeTransactionSignature(t, alicePrivateKeyHex, tx)
@@ -178,8 +178,8 @@ func TestConstructTransaction_WithNonceZero(t *testing.T) {
 	tx := &transaction.Transaction{
 		Nonce:    0,
 		Value:    big.NewInt(0),
-		RcvAddr:  getPubkeyOfAddress(t, "erd1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqzu66jx"),
-		SndAddr:  getPubkeyOfAddress(t, "erd1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssycr6th"),
+		RcvAddr:  getPubkeyOfAddress(t, "drt1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqlqde3c"),
+		SndAddr:  getPubkeyOfAddress(t, "drt1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssey5egf"),
 		GasPrice: 1000000000,
 		GasLimit: 80000,
 		Data:     []byte("hello"),

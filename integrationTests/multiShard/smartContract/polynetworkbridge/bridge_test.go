@@ -35,7 +35,7 @@ func TestBridgeSetupAndBurn(t *testing.T) {
 	andesVersion := config.WasmVMVersionByEpoch{Version: "v1.4"}
 	vmConfig := &config.VirtualMachineConfig{
 		WasmVMVersions:                    []config.WasmVMVersionByEpoch{andesVersion},
-		TransferAndExecuteByUserAddresses: []string{"erd1qqqqqqqqqqqqqpgqr46jrxr6r2unaqh75ugd308dwx5vgnhwh47qtvepe3"},
+		TransferAndExecuteByUserAddresses: []string{"drt1qqqqqqqqqqqqqpgqr46jrxr6r2unaqh75ugd308dwx5vgnhwh47qkswz60"},
 	}
 	nodes := integrationTests.CreateNodesWithEnableEpochsAndVmConfig(
 		numOfShards,
@@ -103,7 +103,7 @@ func TestBridgeSetupAndBurn(t *testing.T) {
 	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, 1, nonce, round, idxProposers)
 
 	txValue := big.NewInt(1000)
-	txData := "performWrappedEgldIssue@05"
+	txData := "performWrappedRewaIssue@05"
 	integrationTests.CreateAndSendTransaction(
 		ownerNode,
 		shard,
@@ -117,7 +117,7 @@ func TestBridgeSetupAndBurn(t *testing.T) {
 	scQuery := &process.SCQuery{
 		CallerAddr: ownerNode.OwnAccount.Address,
 		ScAddress:  scAddressBytes,
-		FuncName:   "getWrappedEgldTokenIdentifier",
+		FuncName:   "getWrappedRewaTokenIdentifier",
 		Arguments:  [][]byte{},
 	}
 	vmOutput, _, err := ownerNode.SCQueryService.ExecuteQuery(scQuery)

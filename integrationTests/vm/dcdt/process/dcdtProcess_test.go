@@ -759,7 +759,7 @@ func TestScCallsScWithDcdtIntraShard(t *testing.T) {
 	dcdtCommon.CheckAddressHasTokens(t, vault, nodes, []byte(tokenIdentifier), 0, valueToSendToSc/2+valueToTransferWithExecSc)
 }
 
-func TestCallbackPaymentEgld(t *testing.T) {
+func TestCallbackPaymentRewa(t *testing.T) {
 	if testing.Short() {
 		t.Skip("this is not a short test")
 	}
@@ -1259,7 +1259,7 @@ func TestScACallsScBWithExecOnDestScAPerformsAsyncCall_NoCallbackInScB(t *testin
 
 	tokenIdQuery := &process.SCQuery{
 		ScAddress:  receiverScAddress,
-		FuncName:   "getWrappedEgldTokenIdentifier",
+		FuncName:   "getWrappedRewaTokenIdentifier",
 		CallerAddr: nil,
 		CallValue:  big.NewInt(0),
 		Arguments:  [][]byte{},
@@ -1289,7 +1289,7 @@ func TestExecOnDestWithTokenTransferFromScAtoScBWithIntermediaryExecOnDest_NotEn
 	andesVersion := config.WasmVMVersionByEpoch{Version: "v1.4"}
 	vmConfig := &config.VirtualMachineConfig{
 		WasmVMVersions:                    []config.WasmVMVersionByEpoch{andesVersion},
-		TransferAndExecuteByUserAddresses: []string{"erd1qqqqqqqqqqqqqpgqr46jrxr6r2unaqh75ugd308dwx5vgnhwh47qtvepe3"},
+		TransferAndExecuteByUserAddresses: []string{"drt1qqqqqqqqqqqqqpgqr46jrxr6r2unaqh75ugd308dwx5vgnhwh47qkswz60"},
 	}
 	nodes := integrationTests.CreateNodesWithEnableEpochsAndVmConfig(
 		numOfShards,

@@ -14,7 +14,7 @@ import (
 func TestComputeTokenStorageKey(t *testing.T) {
 	t.Parallel()
 
-	prefix := "ELROND"
+	prefix := "NUMBAT"
 	require.Equal(t, hex.EncodeToString([]byte(prefix+"dcdtWREWA-bd4d79")), computeStorageKey("WREWA-bd4d79", 0))
 	require.Equal(t, hex.EncodeToString([]byte(prefix+"dcdtMYNFT-aaabbbF")), computeStorageKey("MYNFT-aaabbb", 70))
 }

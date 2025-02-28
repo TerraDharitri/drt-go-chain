@@ -1157,14 +1157,14 @@ func TestComputeEndOfEpochEconomicsV2(t *testing.T) {
 	roundsPerEpoch := uint64(epochDuration / roundDuration)
 
 	testInputs := []testInput{
-		{blockPerEpochOneShard: roundsPerEpoch, accumulatedFeesInEpoch: intToEgld(1000), devFeesInEpoch: intToEgld(300)},
-		{blockPerEpochOneShard: roundsPerEpoch / 2, accumulatedFeesInEpoch: intToEgld(1000), devFeesInEpoch: intToEgld(300)},
-		{blockPerEpochOneShard: roundsPerEpoch / 4, accumulatedFeesInEpoch: intToEgld(1000), devFeesInEpoch: intToEgld(300)},
-		{blockPerEpochOneShard: roundsPerEpoch / 8, accumulatedFeesInEpoch: intToEgld(1000), devFeesInEpoch: intToEgld(300)},
-		{blockPerEpochOneShard: roundsPerEpoch / 16, accumulatedFeesInEpoch: intToEgld(1000), devFeesInEpoch: intToEgld(300)},
-		{blockPerEpochOneShard: roundsPerEpoch / 32, accumulatedFeesInEpoch: intToEgld(1000), devFeesInEpoch: intToEgld(300)},
-		{blockPerEpochOneShard: roundsPerEpoch / 64, accumulatedFeesInEpoch: intToEgld(10000000), devFeesInEpoch: intToEgld(100000)},
-		{blockPerEpochOneShard: roundsPerEpoch, accumulatedFeesInEpoch: intToEgld(10000000), devFeesInEpoch: intToEgld(300000)},
+		{blockPerEpochOneShard: roundsPerEpoch, accumulatedFeesInEpoch: intToRewa(1000), devFeesInEpoch: intToRewa(300)},
+		{blockPerEpochOneShard: roundsPerEpoch / 2, accumulatedFeesInEpoch: intToRewa(1000), devFeesInEpoch: intToRewa(300)},
+		{blockPerEpochOneShard: roundsPerEpoch / 4, accumulatedFeesInEpoch: intToRewa(1000), devFeesInEpoch: intToRewa(300)},
+		{blockPerEpochOneShard: roundsPerEpoch / 8, accumulatedFeesInEpoch: intToRewa(1000), devFeesInEpoch: intToRewa(300)},
+		{blockPerEpochOneShard: roundsPerEpoch / 16, accumulatedFeesInEpoch: intToRewa(1000), devFeesInEpoch: intToRewa(300)},
+		{blockPerEpochOneShard: roundsPerEpoch / 32, accumulatedFeesInEpoch: intToRewa(1000), devFeesInEpoch: intToRewa(300)},
+		{blockPerEpochOneShard: roundsPerEpoch / 64, accumulatedFeesInEpoch: intToRewa(10000000), devFeesInEpoch: intToRewa(100000)},
+		{blockPerEpochOneShard: roundsPerEpoch, accumulatedFeesInEpoch: intToRewa(10000000), devFeesInEpoch: intToRewa(300000)},
 	}
 
 	var rewardsPerBlock *big.Int
@@ -1699,7 +1699,7 @@ func printEconomicsData(eb *block.Economics, hitRate float64, numBlocksTotal int
 		denomination(eb.RewardsPerBlock), denomination(eb.RewardsForProtocolSustainability), denomination(eb.NodePrice))
 }
 
-func intToEgld(value int) *big.Int {
+func intToRewa(value int) *big.Int {
 	denom, _ := big.NewInt(0).SetString("1000000000000000000", 10)
 
 	return big.NewInt(0).Mul(denom, big.NewInt(int64(value)))

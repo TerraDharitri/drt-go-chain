@@ -64,9 +64,9 @@ func TestSmartContractResultsToString(t *testing.T) {
 	SmartContractResult %p{
 		Nonce: 1
 		Value: 2
-		RcvAddr: erd1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq6gq4hu
-		SndAddr: erd1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsl6e0p7
-		OriginalSender: erd1qcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqwkh39e
+		RcvAddr: drt1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq85hk5z
+		SndAddr: drt1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszxwvzq
+		OriginalSender: drt1qcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqn2qjx8
 		ReturnMessage: return message
 		Data: data
 		CallType: asynchronousCall
@@ -75,7 +75,7 @@ func TestSmartContractResultsToString(t *testing.T) {
 		GasPrice: 5
 		OriginalTxHash: 0404040404040404040404040404040404040404040404040404040404040404
 		PrevTxHash: 0303030303030303030303030303030303030303030303030303030303030303
-		RelayerAddr: erd1qgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqjv7g5k
+		RelayerAddr: drt1qgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpq0sfthg
 		RelayedValue: 3
 	}
 	SmartContractResult !NIL{}

@@ -375,6 +375,7 @@ func (gbc *genesisBlockCreator) createHeaders(
 			)
 			fmt.Println(genesisBlock, scResults, gbc.initialIndexingData[shardID])
 		}
+		
 		if err != nil {
 			return fmt.Errorf("'%w' while generating genesis block for shard %d", err, shardID)
 
@@ -553,6 +554,8 @@ func (gbc *genesisBlockCreator) createVersionedHeaderFactory() (genesis.Versione
 }
 
 func (gbc *genesisBlockCreator) saveGenesisBlock(header data.HeaderHandler) error {
+	fmt.Print("Heeadddddder ")
+	fmt.Print(header)
 	blockBuff, err := gbc.arg.Core.InternalMarshalizer().Marshal(header)
 	if err != nil {
 		return err

@@ -53,9 +53,9 @@ func TestMockContract_AsyncLegacy_InShard(t *testing.T) {
 	net.Steps(2)
 
 	parentHandler := net.GetAccountHandler(parentAddress)
-	expectedEgld := big.NewInt(0)
-	expectedEgld.Add(MockInitialBalance, transferREWA)
-	require.Equal(t, expectedEgld, parentHandler.GetBalance())
+	expectedRewa := big.NewInt(0)
+	expectedRewa.Add(MockInitialBalance, transferREWA)
+	require.Equal(t, expectedRewa, parentHandler.GetBalance())
 }
 
 func TestMockContract_AsyncLegacy_CrossShard(t *testing.T) {
@@ -248,9 +248,9 @@ func TestMockContract_NewAsync_BackTransfer_CrossShard(t *testing.T) {
 	parentHandler, err := net.NodesSharded[0][0].BlockchainHook.GetUserAccount(parentAddress)
 	require.Nil(t, err)
 
-	expectedEgld := big.NewInt(0)
-	expectedEgld.Add(MockInitialBalance, big.NewInt(testConfig.TransferFromChildToParent))
-	require.True(t, parentHandler.GetBalance().Cmp(expectedEgld) > 0)
+	expectedRewa := big.NewInt(0)
+	expectedRewa.Add(MockInitialBalance, big.NewInt(testConfig.TransferFromChildToParent))
+	require.True(t, parentHandler.GetBalance().Cmp(expectedRewa) > 0)
 
 	dcdtData, err := net.NodesSharded[0][0].BlockchainHook.GetDCDTToken(parentAddress, DcdtTokenIdentifier, 0)
 	require.Nil(t, err)
