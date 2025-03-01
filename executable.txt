@@ -1,0 +1,8 @@
+go mod init github.com/TerraDharitri/drt-go-chain
+go mod edit -replace github.com/TerraDharitri/drt-go-chain-communication=/home/dugong/workplace/drt-chain-communication-go
+#go mod edit -replace github.com/TerraDharitri/drt-go-chain-core=/home/dugong/workspace_v2/drt-go-chain-core
+go mod edit -replace github.com/TerraDharitri/drt-go-chain-crypto=/home/dugong/workplace_v1/drt-go-chain-crypto
+go mod tidy
+
+
+
