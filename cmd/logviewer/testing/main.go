@@ -13,9 +13,9 @@ import (
 	"time"
 
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
+	logger "github.com/TerraDharitri/drt-go-chain-logger"
 	"github.com/TerraDharitri/drt-go-chain-logger/proto"
 	"github.com/TerraDharitri/drt-go-chain/common"
-	logger "github.com/TerraDharitri/drt-go-logger"
 	"github.com/gorilla/websocket"
 	"github.com/urfave/cli"
 )

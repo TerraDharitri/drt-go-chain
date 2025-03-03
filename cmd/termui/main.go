@@ -7,10 +7,10 @@ import (
 	"runtime"
 	"syscall"
 
-	logger "github.com/TerraDharitri/drt-go-chain-logger"
 	"github.com/TerraDharitri/drt-go-chain/cmd/termui/presenter"
 	"github.com/TerraDharitri/drt-go-chain/cmd/termui/provider"
 	"github.com/TerraDharitri/drt-go-chain/cmd/termui/view/termuic"
+	logger "github.com/TerraDharitri/drt-go-logger"
 	"github.com/urfave/cli"
 )
 

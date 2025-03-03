@@ -31,9 +31,9 @@ var messageSigningHasher = keccak.NewKeccak()
 
 func TestVerifyMessageSignatureFromLedger(t *testing.T) {
 	// these field values were obtained by using Dharitri App for Ledger
-	address := "drt19pht2w242wcj0x9gq3us86dtjrrfe3wk8ffh5nhdemf0mce6hsmspa3pu7"
+	address := "drt13y4pje6ex20jyfd8d3nxxdmh939l5ddpsv6k4u0v24tr8m2h9nmswdp5kj"
 	message := "test message"
-	signature := "ec7a27cb4b23641ae62e3ea96d5858c8142e20d79a6e1710037d1c27b0d138d7452a98da93c036b2b47ee587d4cb4af6ae24c358f3f5f74f85580f45e072280b"
+	signature := "730d96d963e5f34d7a04efcf471384e5b55c63ed3965d2155b9ecd42f1fa87d23eb57009fe0bde0c0079c5a666c8d5a56e763b8ee4f3b303e5a0dd9330b1a109"
 
 	err := checkSignature(address, message, signature)
 	require.NoError(t, err)

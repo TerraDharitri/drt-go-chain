@@ -1,6 +1,6 @@
 module github.com/TerraDharitri/drt-go-chain
 
-go 1.23
+go 1.23.0
 
 require (
 	github.com/TerraDharitri/drt-go-chain-communication v0.0.2
