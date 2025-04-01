@@ -8,10 +8,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests/singleShard/block"
 	"github.com/TerraDharitri/drt-go-chain/process/factory"
+	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	"github.com/stretchr/testify/assert"
 )
 

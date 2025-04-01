@@ -11,10 +11,10 @@ import (
 
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	logger "github.com/TerraDharitri/drt-go-chain-logger"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests"
 	"github.com/TerraDharitri/drt-go-chain/process/factory"
 	"github.com/TerraDharitri/drt-go-chain/state"
+	logger "github.com/TerraDharitri/drt-go-chain-logger"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

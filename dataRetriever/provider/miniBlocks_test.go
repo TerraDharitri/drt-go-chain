@@ -6,14 +6,14 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	dataBlock "github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/mock"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/provider"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
 	storageStubs "github.com/TerraDharitri/drt-go-chain/testscommon/storage"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	dataBlock "github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

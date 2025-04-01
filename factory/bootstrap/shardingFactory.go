@@ -15,7 +15,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/epochStart"
-	errErd "github.com/TerraDharitri/drt-go-chain/errors"
+	errDrt "github.com/TerraDharitri/drt-go-chain/errors"
 	"github.com/TerraDharitri/drt-go-chain/factory"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
@@ -31,13 +31,13 @@ func CreateShardCoordinator(
 	log logger.Logger,
 ) (sharding.Coordinator, core.NodeType, error) {
 	if check.IfNil(nodesConfig) {
-		return nil, "", errErd.ErrNilGenesisNodesSetupHandler
+		return nil, "", errDrt.ErrNilGenesisNodesSetupHandler
 	}
 	if check.IfNil(pubKey) {
-		return nil, "", errErd.ErrNilPublicKey
+		return nil, "", errDrt.ErrNilPublicKey
 	}
 	if check.IfNil(log) {
-		return nil, "", errErd.ErrNilLogger
+		return nil, "", errDrt.ErrNilLogger
 	}
 
 	selfShardId, err := getShardIdFromNodePubKey(pubKey, nodesConfig)
@@ -116,19 +116,19 @@ func CreateNodesCoordinator(
 	nodesCoordinatorRegistryFactory nodesCoordinator.NodesCoordinatorRegistryFactory,
 ) (nodesCoordinator.NodesCoordinator, error) {
 	if check.IfNil(nodeShufflerOut) {
-		return nil, errErd.ErrNilShuffleOutCloser
+		return nil, errDrt.ErrNilShuffleOutCloser
 	}
 	if check.IfNil(nodesConfig) {
-		return nil, errErd.ErrNilGenesisNodesSetupHandler
+		return nil, errDrt.ErrNilGenesisNodesSetupHandler
 	}
 	if check.IfNil(epochStartNotifier) {
-		return nil, errErd.ErrNilEpochStartNotifier
+		return nil, errDrt.ErrNilEpochStartNotifier
 	}
 	if check.IfNil(pubKey) {
-		return nil, errErd.ErrNilPublicKey
+		return nil, errDrt.ErrNilPublicKey
 	}
 	if check.IfNil(bootstrapParameters) {
-		return nil, errErd.ErrNilBootstrapParamsHandler
+		return nil, errDrt.ErrNilBootstrapParamsHandler
 	}
 	if chanNodeStop == nil {
 		return nil, nodesCoordinator.ErrNilNodeStopChannel
@@ -244,7 +244,7 @@ func CreateNodesShuffleOut(
 ) (factory.ShuffleOutCloser, error) {
 
 	if check.IfNil(nodesConfig) {
-		return nil, errErd.ErrNilGenesisNodesSetupHandler
+		return nil, errDrt.ErrNilGenesisNodesSetupHandler
 	}
 
 	maxThresholdEpochDuration := epochConfig.MaxShuffledOutRestartThreshold

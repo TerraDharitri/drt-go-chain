@@ -11,13 +11,13 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
-	logger "github.com/TerraDharitri/drt-go-chain-logger"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/consensus"
 	"github.com/TerraDharitri/drt-go-chain/consensus/spos"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/factory"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
+	logger "github.com/TerraDharitri/drt-go-chain-logger"
 )
 
 var log = logger.GetOrCreate("consensus/broadcast")

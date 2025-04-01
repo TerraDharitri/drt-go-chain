@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/TerraDharitri/drt-go-chain-communication/p2p"
-	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/p2pmocks"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/stretchr/testify/assert"
 )
 

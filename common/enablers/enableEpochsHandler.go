@@ -780,6 +780,18 @@ func (handler *enableEpochsHandler) createAllFlagsMap() {
 			},
 			activationEpoch: handler.enableEpochsConfig.FixRelayedMoveBalanceToNonPayableSCEnableEpoch,
 		},
+		common.RelayedTransactionsV3Flag: {
+			isActiveInEpoch: func(epoch uint32) bool {
+				return epoch >= handler.enableEpochsConfig.RelayedTransactionsV3EnableEpoch
+			},
+			activationEpoch: handler.enableEpochsConfig.RelayedTransactionsV3EnableEpoch,
+		},
+		common.RelayedTransactionsV3FixDCDTTransferFlag: {
+			isActiveInEpoch: func(epoch uint32) bool {
+				return epoch >= handler.enableEpochsConfig.RelayedTransactionsV3FixDCDTTransferEnableEpoch
+			},
+			activationEpoch: handler.enableEpochsConfig.RelayedTransactionsV3FixDCDTTransferEnableEpoch,
+		},
 	}
 }
 
@@ -790,7 +802,7 @@ func (handler *enableEpochsHandler) EpochConfirmed(epoch uint32, _ uint64) {
 	handler.epochMut.Unlock()
 }
 
-// IsFlagDefined checks if a specific flag is supported by the current version of drt-chain-core-go
+// IsFlagDefined checks if a specific flag is supported by the current version of drt-go-chain-core
 func (handler *enableEpochsHandler) IsFlagDefined(flag core.EnableEpochFlag) bool {
 	_, found := handler.allFlagsDefined[flag]
 	if found {

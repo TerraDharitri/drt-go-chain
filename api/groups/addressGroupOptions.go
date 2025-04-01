@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/TerraDharitri/drt-go-chain-core/data/api"
 	customErrors "github.com/TerraDharitri/drt-go-chain/api/errors"
 	"github.com/gin-gonic/gin"
+	"github.com/TerraDharitri/drt-go-chain-core/data/api"
 )
 
 func extractAccountQueryOptions(c *gin.Context) (api.AccountQueryOptions, error) {

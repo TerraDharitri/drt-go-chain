@@ -1,21 +1,21 @@
 
-# Dharitri TermUI CLI
+# DharitrI TermUI CLI
 
-The **Dharitri Term UI** exposes the following Command Line Interface:
+The **DharitrI Term UI** exposes the following Command Line Interface:
 
 ```
 $ termui --help
 
 NAME:
-   Dharitri Terminal UI App - Terminal UI application used to display metrics from the node
+   DharitrI Terminal UI App - Terminal UI application used to display metrics from the node
 USAGE:
    termui [global options]
    
 AUTHOR:
-   The Dharitri Team <contact@dharitri.com>
+   The DharitrI Team <contact@dharitri.org>
    
 GLOBAL OPTIONS:
-   --address value       Address and port number on which the application will try to connect to the drt-chain-go node (default: "127.0.0.1:8080")
+   --address value       Address and port number on which the application will try to connect to the drt-go-chain node (default: "127.0.0.1:8080")
    --log-level level(s)  This flag specifies the logger level(s). It can contain multiple comma-separated value. For example, if set to *:INFO the logs for all packages will have the INFO level. However, if set to *:INFO,api:DEBUG the logs for all packages will have the INFO level, excepting the api package which will receive a DEBUG log level. (default: "*:INFO ")
    --log-correlation     Boolean option for enabling log correlation elements.
    --log-logger-name     Boolean option for logger name in the logs.

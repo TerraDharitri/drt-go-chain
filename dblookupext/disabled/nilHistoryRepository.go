@@ -3,10 +3,10 @@ package disabled
 import (
 	"errors"
 
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain/dblookupext"
 	"github.com/TerraDharitri/drt-go-chain/dblookupext/dcdtSupply"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 )
 
 var errorDisabledHistoryRepository = errors.New("history repository is disabled")

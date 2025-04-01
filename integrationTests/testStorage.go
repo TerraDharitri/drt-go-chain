@@ -10,12 +10,12 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	"github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/storage/cache"
 	"github.com/TerraDharitri/drt-go-chain/storage/database"
 	"github.com/TerraDharitri/drt-go-chain/storage/storageunit"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 )
 
 const batchDelaySeconds = 10

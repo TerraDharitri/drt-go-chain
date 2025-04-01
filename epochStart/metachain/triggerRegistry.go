@@ -3,10 +3,10 @@ package metachain
 import (
 	"encoding/json"
 
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/epochStart"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 )
 
 // LoadState loads into trigger the saved state

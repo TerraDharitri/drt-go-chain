@@ -11,6 +11,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/process"
 	economicsHandler "github.com/TerraDharitri/drt-go-chain/process/economics"
 	"github.com/TerraDharitri/drt-go-chain/state"
+	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/epochNotifier"
 	"github.com/TerraDharitri/drt-go-chain/vm"
@@ -277,6 +278,8 @@ func CreateEconomicsData() process.EconomicsDataHandler {
 		EpochNotifier:       &epochNotifier.EpochNotifierStub{},
 		EnableEpochsHandler: &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
 		TxVersionChecker:    &disabled.TxVersionChecker{},
+		PubkeyConverter:     &testscommon.PubkeyConverterStub{},
+		ShardCoordinator:    &testscommon.ShardsCoordinatorMock{},
 	}
 	economicsData, _ := economicsHandler.NewEconomicsData(argsNewEconomicsData)
 	return economicsData

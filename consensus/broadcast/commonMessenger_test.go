@@ -6,9 +6,10 @@ import (
 	"testing"
 	"time"
 
+	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
+
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	cryptos "github.com/TerraDharitri/drt-go-chain-crypto"
 	"github.com/TerraDharitri/drt-go-chain/consensus"
 	"github.com/TerraDharitri/drt-go-chain/consensus/broadcast"
 	"github.com/TerraDharitri/drt-go-chain/consensus/mock"
@@ -43,7 +44,7 @@ func TestCommonMessenger_BroadcastConsensusMessageShouldErrWhenSignMessageFail(t
 	messengerMock := &p2pmocks.MessengerStub{}
 	shardCoordinatorMock := &mock.ShardCoordinatorMock{}
 	singleSignerMock := &mock.SingleSignerMock{
-		SignStub: func(private cryptos.PrivateKey, msg []byte) ([]byte, error) {
+		SignStub: func(private crypto.PrivateKey, msg []byte) ([]byte, error) {
 			return nil, err
 		},
 	}
@@ -70,7 +71,7 @@ func TestCommonMessenger_BroadcastConsensusMessageShouldWork(t *testing.T) {
 	}
 	shardCoordinatorMock := &mock.ShardCoordinatorMock{}
 	singleSignerMock := &mock.SingleSignerMock{
-		SignStub: func(private cryptos.PrivateKey, msg []byte) ([]byte, error) {
+		SignStub: func(private crypto.PrivateKey, msg []byte) ([]byte, error) {
 			return []byte(""), nil
 		},
 	}
@@ -124,7 +125,7 @@ func TestSubroundEndRound_ExtractMiniBlocksAndTransactionsShouldWork(t *testing.
 	}
 	shardCoordinatorMock := &mock.ShardCoordinatorMock{}
 	singleSignerMock := &mock.SingleSignerMock{
-		SignStub: func(private cryptos.PrivateKey, msg []byte) ([]byte, error) {
+		SignStub: func(private crypto.PrivateKey, msg []byte) ([]byte, error) {
 			return []byte(""), nil
 		},
 	}
@@ -170,7 +171,7 @@ func TestCommonMessenger_BroadcastBlockData(t *testing.T) {
 	}
 	shardCoordinatorMock := &mock.ShardCoordinatorMock{}
 	singleSignerMock := &mock.SingleSignerMock{
-		SignStub: func(private cryptos.PrivateKey, msg []byte) ([]byte, error) {
+		SignStub: func(private crypto.PrivateKey, msg []byte) ([]byte, error) {
 			return []byte(""), nil
 		},
 	}
@@ -255,7 +256,7 @@ func TestCommonMessenger_broadcast(t *testing.T) {
 	}
 	shardCoordinatorMock := &mock.ShardCoordinatorMock{}
 	singleSignerMock := &mock.SingleSignerMock{
-		SignStub: func(private cryptos.PrivateKey, msg []byte) ([]byte, error) {
+		SignStub: func(private crypto.PrivateKey, msg []byte) ([]byte, error) {
 			return []byte(""), nil
 		},
 	}

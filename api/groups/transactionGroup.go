@@ -8,9 +8,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	"github.com/TerraDharitri/drt-go-chain/api/errors"
 	"github.com/TerraDharitri/drt-go-chain/api/middleware"
 	"github.com/TerraDharitri/drt-go-chain/api/shared"
@@ -19,6 +16,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/node/external"
 	txSimData "github.com/TerraDharitri/drt-go-chain/process/transactionEvaluator/data"
 	"github.com/gin-gonic/gin"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 )
 
 const (
@@ -720,21 +720,23 @@ func (tg *transactionGroup) getTransactionsPoolNonceGapsForSender(sender string,
 
 func (tg *transactionGroup) createTransaction(receivedTx *transaction.FrontendTransaction) (*transaction.Transaction, []byte, error) {
 	txArgs := &external.ArgsCreateTransaction{
-		Nonce:            receivedTx.Nonce,
-		Value:            receivedTx.Value,
-		Receiver:         receivedTx.Receiver,
-		ReceiverUsername: receivedTx.ReceiverUsername,
-		Sender:           receivedTx.Sender,
-		SenderUsername:   receivedTx.SenderUsername,
-		GasPrice:         receivedTx.GasPrice,
-		GasLimit:         receivedTx.GasLimit,
-		DataField:        receivedTx.Data,
-		SignatureHex:     receivedTx.Signature,
-		ChainID:          receivedTx.ChainID,
-		Version:          receivedTx.Version,
-		Options:          receivedTx.Options,
-		Guardian:         receivedTx.GuardianAddr,
-		GuardianSigHex:   receivedTx.GuardianSignature,
+		Nonce:               receivedTx.Nonce,
+		Value:               receivedTx.Value,
+		Receiver:            receivedTx.Receiver,
+		ReceiverUsername:    receivedTx.ReceiverUsername,
+		Sender:              receivedTx.Sender,
+		SenderUsername:      receivedTx.SenderUsername,
+		GasPrice:            receivedTx.GasPrice,
+		GasLimit:            receivedTx.GasLimit,
+		DataField:           receivedTx.Data,
+		SignatureHex:        receivedTx.Signature,
+		ChainID:             receivedTx.ChainID,
+		Version:             receivedTx.Version,
+		Options:             receivedTx.Options,
+		Guardian:            receivedTx.GuardianAddr,
+		GuardianSigHex:      receivedTx.GuardianSignature,
+		Relayer:             receivedTx.RelayerAddr,
+		RelayerSignatureHex: receivedTx.RelayerSignature,
 	}
 	start := time.Now()
 	tx, txHash, err := tg.getFacade().CreateTransaction(txArgs)

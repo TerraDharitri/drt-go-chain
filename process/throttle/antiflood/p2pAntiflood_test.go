@@ -6,14 +6,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/p2p"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
 	"github.com/TerraDharitri/drt-go-chain/process/throttle/antiflood"
 	"github.com/TerraDharitri/drt-go-chain/process/throttle/antiflood/disabled"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/p2pmocks"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/stretchr/testify/assert"
 )
 

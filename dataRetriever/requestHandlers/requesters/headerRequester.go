@@ -1,9 +1,9 @@
 package requesters
 
 import (
+	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data/typeConverters"
-	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 )
 
 var _ dataRetriever.HeaderRequester = (*headerRequester)(nil)

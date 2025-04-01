@@ -6,10 +6,10 @@ import (
 	"strconv"
 	"sync/atomic"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/storage"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 )
 
 // ErrNilMarshalizer signals that an operation has been attempted to or with a nil Marshalizer implementation

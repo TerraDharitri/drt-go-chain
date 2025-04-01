@@ -23,21 +23,21 @@ export METASHARD_ID=4294967295
 # Path to drt-go-chain. Determined automatically. Do not change.
 export DHARITRIDIR=$(dirname $(dirname $DHARITRITESTNETSCRIPTSDIR))
 
-# Enable the Dharitri Proxy. Note that this is a private repository
-# (drt-chain-proxy-go).
+# Enable the DharitrI Proxy. Note that this is a private repository
+# (drt-go-chain-proxy).
 export USE_PROXY=1
 
-# Enable the Dharitri Transaction Generator. Note that this is a private
-# repository (drt-chain-txgen-go).
+# Enable the DharitrI Transaction Generator. Note that this is a private
+# repository (drt-go-chain-txgen).
 export USE_TXGEN=0
 
 # Path where the testnet will be instantiated. This folder is assumed to not
 # exist, but it doesn't matter if it already does. It will be created if not,
 # anyway.
-export TESTNETDIR="$HOME/Dharitri/testnet"
+export TESTNETDIR="$HOME/DharitrI/testnet"
 
-# Path to drt-chain-deploy-go, branch: master. Default: near drt-go-chain.
-export CONFIGGENERATORDIR="$(dirname $DHARITRIDIR)/drt-chain-deploy-go/cmd/filegen"
+# Path to drt-go-chain-deploy, branch: master. Default: near drt-go-chain.
+export CONFIGGENERATORDIR="$(dirname $DHARITRIDIR)/drt-go-chain-deploy/cmd/filegen"
 
 export CONFIGGENERATOR="$CONFIGGENERATORDIR/filegen"    # Leave unchanged.
 export CONFIGGENERATOROUTPUTDIR="output"
@@ -117,8 +117,8 @@ export PORT_ORIGIN_VALIDATOR_REST="9500"
 ########################################################################
 # Proxy configuration
 
-# Path to drt-chain-proxy-go, branch: master. Default: near drt-go-chain.
-export PROXYDIR="$(dirname $DHARITRIDIR)/drt-chain-proxy-go/cmd/proxy"
+# Path to drt-go-chain-proxy, branch: master. Default: near drt-go-chain.
+export PROXYDIR="$(dirname $DHARITRIDIR)/drt-go-chain-proxy/cmd/proxy"
 export PROXY=$PROXYDIR/proxy    # Leave unchanged.
 
 export PORT_PROXY="7950"
@@ -127,8 +127,8 @@ export PROXY_DELAY=10
 ########################################################################
 # TxGen configuration
 
-# Path to drt-chain-txgen-go. Default: near drt-go-chain.
-export TXGENDIR="$(dirname $DHARITRIDIR)/drt-chain-txgen-go/cmd/txgen"
+# Path to drt-go-chain-txgen. Default: near drt-go-chain.
+export TXGENDIR="$(dirname $DHARITRIDIR)/drt-go-chain-txgen/cmd/txgen"
 export TXGEN=$TXGENDIR/txgen    # Leave unchanged.
 
 export PORT_TXGEN="7951"

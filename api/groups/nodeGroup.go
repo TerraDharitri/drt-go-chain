@@ -5,8 +5,6 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/api/errors"
 	"github.com/TerraDharitri/drt-go-chain/api/shared"
 	"github.com/TerraDharitri/drt-go-chain/common"
@@ -14,6 +12,8 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/heartbeat/data"
 	"github.com/TerraDharitri/drt-go-chain/node/external"
 	"github.com/gin-gonic/gin"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 )
 
 const (

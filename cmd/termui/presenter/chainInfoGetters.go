@@ -1,9 +1,9 @@
 package presenter
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain/cmd/termui/provider"
 	"github.com/TerraDharitri/drt-go-chain/common"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 )
 
 var maxSpeedHistorySaved = 2000

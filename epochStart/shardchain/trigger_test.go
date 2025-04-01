@@ -7,11 +7,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/epochStart"
 	"github.com/TerraDharitri/drt-go-chain/epochStart/mock"
@@ -24,6 +19,11 @@ import (
 	statusHandlerMock "github.com/TerraDharitri/drt-go-chain/testscommon/statusHandler"
 	storageStubs "github.com/TerraDharitri/drt-go-chain/testscommon/storage"
 	vic "github.com/TerraDharitri/drt-go-chain/testscommon/validatorInfoCacher"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

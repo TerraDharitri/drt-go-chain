@@ -1,10 +1,10 @@
 package peer
 
 import (
+	"github.com/TerraDharitri/drt-go-chain/state"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain-core/data/validator"
-	"github.com/TerraDharitri/drt-go-chain/state"
 )
 
 // CheckForMissedBlocks -

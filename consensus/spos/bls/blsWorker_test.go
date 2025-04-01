@@ -3,11 +3,11 @@ package bls_test
 import (
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/consensus"
 	"github.com/TerraDharitri/drt-go-chain/consensus/spos"
 	"github.com/TerraDharitri/drt-go-chain/consensus/spos/bls"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/stretchr/testify/assert"
 )
 

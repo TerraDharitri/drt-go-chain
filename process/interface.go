@@ -69,7 +69,7 @@ type SmartContractProcessorFacade interface {
 
 // TxTypeHandler is an interface to calculate the transaction type
 type TxTypeHandler interface {
-	ComputeTransactionType(tx data.TransactionHandler) (TransactionType, TransactionType)
+	ComputeTransactionType(tx data.TransactionHandler) (TransactionType, TransactionType, bool)
 	IsInterfaceNil() bool
 }
 
@@ -655,6 +655,12 @@ type rewardsHandler interface {
 	MaxInflationRate(year uint32) float64
 	RewardsTopUpGradientPoint() *big.Int
 	RewardsTopUpFactor() float64
+	LeaderPercentageInEpoch(epoch uint32) float64
+	DeveloperPercentageInEpoch(epoch uint32) float64
+	ProtocolSustainabilityPercentageInEpoch(epoch uint32) float64
+	ProtocolSustainabilityAddressInEpoch(epoch uint32) string
+	RewardsTopUpGradientPointInEpoch(epoch uint32) *big.Int
+	RewardsTopUpFactorInEpoch(epoch uint32) float64
 }
 
 // RewardsHandler will return information about rewards
@@ -696,6 +702,7 @@ type feeHandler interface {
 	ComputeGasUsedAndFeeBasedOnRefundValue(tx data.TransactionWithFeeHandler, refundValue *big.Int) (uint64, *big.Int)
 	ComputeTxFeeBasedOnGasUsed(tx data.TransactionWithFeeHandler, gasUsed uint64) *big.Int
 	ComputeGasLimitBasedOnBalance(tx data.TransactionWithFeeHandler, balance *big.Int) (uint64, error)
+	ComputeGasUnitsFromRefundValue(tx data.TransactionWithFeeHandler, refundValue *big.Int, epoch uint32) uint64
 	ComputeTxFeeInEpoch(tx data.TransactionWithFeeHandler, epoch uint32) *big.Int
 	ComputeGasLimitInEpoch(tx data.TransactionWithFeeHandler, epoch uint32) uint64
 	ComputeGasUsedAndFeeBasedOnRefundValueInEpoch(tx data.TransactionWithFeeHandler, refundValue *big.Int, epoch uint32) (uint64, *big.Int)

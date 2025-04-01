@@ -796,7 +796,7 @@ func TestDelegationSystemDelegateSameUsersAFewTimes(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, vmcommon.Ok, returnedCode)
 
-	// self delegate 1250 REWA
+	// self delegate 1250 rEWA
 	txData = "delegate"
 	returnedCode, err = processTransaction(tpn, tpn.OwnAccount.Address, delegationScAddress, txData, big.NewInt(1250))
 	assert.Nil(t, err)

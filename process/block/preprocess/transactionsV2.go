@@ -5,12 +5,12 @@ import (
 	"errors"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/storage/txcache"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 )
 
 func (txs *transactions) createAndProcessMiniBlocksFromMeV2(
@@ -549,7 +549,7 @@ func (txs *transactions) getTxAndMbInfo(
 	}
 	numNewTxs := 1
 
-	_, txTypeDstShard := txs.txTypeHandler.ComputeTransactionType(tx)
+	_, txTypeDstShard, _ := txs.txTypeHandler.ComputeTransactionType(tx)
 	isReceiverSmartContractAddress := txTypeDstShard == process.SCDeployment || txTypeDstShard == process.SCInvoking
 	isCrossShardScCallOrSpecialTx := receiverShardID != txs.shardCoordinator.SelfId() &&
 		(isReceiverSmartContractAddress || len(tx.RcvUserName) > 0)
@@ -683,7 +683,7 @@ func (txs *transactions) shouldContinueProcessingScheduledTx(
 
 	mbInfo.senderAddressToSkip = tx.GetSndAddr()
 
-	_, txTypeDstShard := txs.txTypeHandler.ComputeTransactionType(tx)
+	_, txTypeDstShard, _ := txs.txTypeHandler.ComputeTransactionType(tx)
 	isReceiverSmartContractAddress := txTypeDstShard == process.SCDeployment || txTypeDstShard == process.SCInvoking
 	if !isReceiverSmartContractAddress {
 		return nil, nil, false

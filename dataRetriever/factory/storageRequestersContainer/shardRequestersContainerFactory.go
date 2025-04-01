@@ -1,11 +1,11 @@
 package storagerequesterscontainer
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/factory/containers"
 	storagerequesters "github.com/TerraDharitri/drt-go-chain/dataRetriever/storageRequesters"
 	"github.com/TerraDharitri/drt-go-chain/process/factory"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 )
 
 var _ dataRetriever.RequestersContainerFactory = (*shardRequestersContainerFactory)(nil)

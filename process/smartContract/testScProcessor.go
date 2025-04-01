@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/smartContractResult"
-	"github.com/TerraDharitri/drt-go-chain/common"
 )
 
 // TestScProcessor extends scProcessor and is used in tests as it exposes some functions

@@ -12,9 +12,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/epochStart"
@@ -26,6 +23,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
 	vics "github.com/TerraDharitri/drt-go-chain/testscommon/validatorInfoCacher"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

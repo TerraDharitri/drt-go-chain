@@ -1,9 +1,9 @@
 package initial
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/facade"
 	"github.com/TerraDharitri/drt-go-chain/node/external"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 )
 
 type initialStatusMetricsProvider struct {

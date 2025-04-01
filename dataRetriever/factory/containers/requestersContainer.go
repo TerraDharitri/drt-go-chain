@@ -5,9 +5,9 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/core/container"
-	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 )
 
 var _ dataRetriever.RequestersContainer = (*requestersContainer)(nil)

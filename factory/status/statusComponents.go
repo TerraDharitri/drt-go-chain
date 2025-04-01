@@ -9,7 +9,6 @@ import (
 	outportCore "github.com/TerraDharitri/drt-go-chain-core/data/outport"
 	factoryMarshalizer "github.com/TerraDharitri/drt-go-chain-core/marshal/factory"
 	indexerFactory "github.com/TerraDharitri/drt-go-chain-es-indexer/process/factory"
-	logger "github.com/TerraDharitri/drt-go-chain-logger"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/common/statistics"
 	swVersionFactory "github.com/TerraDharitri/drt-go-chain/common/statistics/softwareVersion/factory"
@@ -24,6 +23,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
+	logger "github.com/TerraDharitri/drt-go-chain-logger"
 )
 
 type statusComponents struct {

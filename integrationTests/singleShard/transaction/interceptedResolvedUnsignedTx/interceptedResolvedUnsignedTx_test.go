@@ -7,10 +7,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/data/smartContractResult"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/factory"
+	"github.com/TerraDharitri/drt-go-chain-core/data/smartContractResult"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

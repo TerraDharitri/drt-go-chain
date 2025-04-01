@@ -1,8 +1,8 @@
 package mock
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain/consensus"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
 )
 
 // BroadcastMessengerMock -

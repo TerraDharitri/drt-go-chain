@@ -3,8 +3,8 @@ package mock
 import (
 	"math/big"
 
-	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain/state"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
 )
 
 // TxExecutionProcessorStub -
@@ -48,6 +48,7 @@ func (teps *TxExecutionProcessorStub) AddBalance(senderBytes []byte, value *big.
 	if teps.AddBalanceCalled != nil {
 		return teps.AddBalanceCalled(senderBytes, value)
 	}
+
 	return nil
 }
 

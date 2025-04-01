@@ -1,8 +1,8 @@
 package metachain
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/display"
 	"github.com/TerraDharitri/drt-go-chain/state"
+	"github.com/TerraDharitri/drt-go-chain-core/display"
 )
 
 // AuctionListDisplayHandler should be able to display auction list data during selection process

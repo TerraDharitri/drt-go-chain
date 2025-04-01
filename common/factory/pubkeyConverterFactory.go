@@ -3,10 +3,10 @@ package factory
 import (
 	"fmt"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/pubkeyConverter"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/state"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/pubkeyConverter"
 )
 
 // HexFormat defines the hex format for the pubkey converter

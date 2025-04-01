@@ -10,7 +10,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/common/errChan"
-	storagedrt "github.com/TerraDharitri/drt-go-chain/storage"
+	storageDrt "github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/storageManager"
@@ -457,13 +457,13 @@ func TestTrieStorageManager_Get(t *testing.T) {
 		args := trie.GetDefaultTrieStorageManagerParameters()
 		args.MainStorer = &storage.StorerStub{
 			GetCalled: func(key []byte) ([]byte, error) {
-				return nil, storagedrt.ErrDBIsClosed
+				return nil, storageDrt.ErrDBIsClosed
 			},
 		}
 		ts, _ := trie.NewTrieStorageManager(args)
 
 		val, err := ts.Get(providedKey)
-		assert.Equal(t, storagedrt.ErrDBIsClosed, err)
+		assert.Equal(t, storageDrt.ErrDBIsClosed, err)
 		assert.Nil(t, val)
 	})
 	t.Run("should return from main storer", func(t *testing.T) {

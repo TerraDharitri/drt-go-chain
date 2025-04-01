@@ -3,12 +3,12 @@ package p2pQuota_test
 import (
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/statusHandler"
 	"github.com/TerraDharitri/drt-go-chain/statusHandler/p2pQuota"
 	statusHandlerMock "github.com/TerraDharitri/drt-go-chain/testscommon/statusHandler"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/stretchr/testify/assert"
 )
 

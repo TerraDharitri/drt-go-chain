@@ -1,9 +1,9 @@
 package resolvers
 
 import (
+	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
-	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 )
 
 // ArgBaseResolver is the argument structure used as base to create a new a resolver instance

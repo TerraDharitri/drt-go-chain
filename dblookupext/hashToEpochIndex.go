@@ -3,8 +3,8 @@
 package dblookupext
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/TerraDharitri/drt-go-chain/storage"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 )
 
 type epochByHashIndex struct {

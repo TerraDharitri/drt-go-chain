@@ -9,10 +9,10 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
-	logger "github.com/TerraDharitri/drt-go-chain-logger"
 	cryptoCommon "github.com/TerraDharitri/drt-go-chain/common/crypto"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
+	logger "github.com/TerraDharitri/drt-go-chain-logger"
 )
 
 var _ process.InterceptedHeaderSigVerifier = (*HeaderSigVerifier)(nil)

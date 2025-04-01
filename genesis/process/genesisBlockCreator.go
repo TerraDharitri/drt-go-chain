@@ -341,14 +341,12 @@ func (gbc *genesisBlockCreator) createHeaders(
 	}
 
 	allScAddresses := make([][]byte, 0)
-	fmt.Println(shardIDs)
 	for _, shardID := range shardIDs {
 		log.Debug("genesisBlockCreator.createHeaders", "shard", shardID)
 		var genesisBlock data.HeaderHandler
 		var scResults [][]byte
 		var chain data.ChainHandler
-		fmt.Println(core.MetachainShardId)
-		fmt.Println(shardID)
+
 		if shardID == core.MetachainShardId {
 			metaArgsGenesisBlockCreator := mapArgsGenesisBlockCreator[core.MetachainShardId]
 			chain, err = blockchain.NewMetaChain(&statusHandler.NilStatusHandler{})
@@ -373,12 +371,9 @@ func (gbc *genesisBlockCreator) createHeaders(
 				nodesListSplitter,
 				mapHardForkBlockProcessor[shardID],
 			)
-			fmt.Println(genesisBlock, scResults, gbc.initialIndexingData[shardID])
 		}
-		
 		if err != nil {
 			return fmt.Errorf("'%w' while generating genesis block for shard %d", err, shardID)
-
 		}
 
 		allScAddresses = append(allScAddresses, scResults...)
@@ -554,8 +549,6 @@ func (gbc *genesisBlockCreator) createVersionedHeaderFactory() (genesis.Versione
 }
 
 func (gbc *genesisBlockCreator) saveGenesisBlock(header data.HeaderHandler) error {
-	fmt.Print("Heeadddddder ")
-	fmt.Print(header)
 	blockBuff, err := gbc.arg.Core.InternalMarshalizer().Marshal(header)
 	if err != nil {
 		return err

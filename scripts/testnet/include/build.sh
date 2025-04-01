@@ -46,7 +46,7 @@ buildNode() {
   if [ $ALWAYS_NEW_APP_VERSION -eq 1 ]; then
     APP_VERSION="$(date +"v%Y.%m.%d.%H.%M.%S")"
   fi
-  echo "PRem"
+
   go build -gcflags="all=-N -l" -ldflags="-X main.appVersion=$APP_VERSION" .
   popd
 

@@ -3,8 +3,8 @@ package syncer
 import (
 	"sync"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/common"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 )
 
 type missingTrieNodesNotifier struct {

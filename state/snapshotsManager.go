@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/TerraDharitri/drt-go-chain/common"
+	"github.com/TerraDharitri/drt-go-chain/storage/storageEpochChange"
+	"github.com/TerraDharitri/drt-go-chain/trie/storageMarker"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/atomic"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
-	"github.com/TerraDharitri/drt-go-chain/common"
-	"github.com/TerraDharitri/drt-go-chain/storage/storageEpochChange"
-	"github.com/TerraDharitri/drt-go-chain/trie/storageMarker"
 )
 
 // ArgsNewSnapshotsManager are the args needed for creating a new snapshots manager

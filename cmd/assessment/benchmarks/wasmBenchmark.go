@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"github.com/TerraDharitri/drt-go-chain-core/core"
+	wasmConfig "github.com/TerraDharitri/drt-go-chain-vm/config"
 	wasmvm "github.com/TerraDharitri/drt-go-chain/integrationTests/vm/wasm/wasmvm"
 	"github.com/TerraDharitri/drt-go-chain/vm/systemSmartContracts/defaults"
-	wasmConfig "github.com/TerraDharitri/drt-go-chain-vm/config"
 )
 
 // ArgWasmBenchmark is the wasm type benchmark argument used in constructor

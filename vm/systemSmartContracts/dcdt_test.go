@@ -2812,7 +2812,7 @@ func TestDcdt_SetSpecialRoleNewSendRoleChangeDataErr(t *testing.T) {
 			return tokenBytes
 		},
 		TransferCalled: func(destination []byte, sender []byte, value *big.Int, input []byte, _ uint64) {
-			require.Equal(t, []byte("DCDTSetRole@6d79546f6b656e@45534454526f6c654c6f63616c4275726e"), input)
+			require.Equal(t, []byte("DCDTSetRole@6d79546f6b656e@44434454526f6c654c6f63616c4275726e"), input)
 		},
 	}
 	args.Eei = eei
@@ -2848,7 +2848,7 @@ func TestDcdt_SetSpecialRoleAlreadyExists(t *testing.T) {
 			return tokenBytes
 		},
 		TransferCalled: func(destination []byte, sender []byte, value *big.Int, input []byte, _ uint64) {
-			require.Equal(t, []byte("DCDTSetRole@6d79546f6b656e@45534454526f6c654c6f63616c4275726e"), input)
+			require.Equal(t, []byte("DCDTSetRole@6d79546f6b656e@44434454526f6c654c6f63616c4275726e"), input)
 		},
 	}
 	args.Eei = eei
@@ -2886,7 +2886,7 @@ func TestDcdt_SetSpecialRoleCannotSaveToken(t *testing.T) {
 			return tokenBytes
 		},
 		TransferCalled: func(destination []byte, sender []byte, value *big.Int, input []byte, _ uint64) {
-			require.Equal(t, []byte("DCDTSetRole@6d79546f6b656e@45534454526f6c654c6f63616c4275726e"), input)
+			require.Equal(t, []byte("DCDTSetRole@6d79546f6b656e@44434454526f6c654c6f63616c4275726e"), input)
 			castedMarshalizer := args.Marshalizer.(*mock.MarshalizerMock)
 			castedMarshalizer.Fail = true
 		},
@@ -2926,7 +2926,7 @@ func TestDcdt_SetSpecialRoleShouldWork(t *testing.T) {
 			return tokenBytes
 		},
 		TransferCalled: func(destination []byte, sender []byte, value *big.Int, input []byte, _ uint64) {
-			require.Equal(t, []byte("DCDTSetRole@6d79546f6b656e@45534454526f6c654c6f63616c4275726e"), input)
+			require.Equal(t, []byte("DCDTSetRole@6d79546f6b656e@44434454526f6c654c6f63616c4275726e"), input)
 		},
 		SetStorageCalled: func(key []byte, value []byte) {
 			token := &DCDTDataV2{}
@@ -2969,7 +2969,7 @@ func TestDcdt_SetSpecialRoleNFTShouldErr(t *testing.T) {
 			return tokenBytes
 		},
 		TransferCalled: func(destination []byte, sender []byte, value *big.Int, input []byte, _ uint64) {
-			require.Equal(t, []byte("DCDTSetRole@6d79546f6b656e@45534454526f6c654e4654437265617465"), input)
+			require.Equal(t, []byte("DCDTSetRole@6d79546f6b656e@44434454526f6c654e4654437265617465"), input)
 		},
 		SetStorageCalled: func(key []byte, value []byte) {
 			token := &DCDTDataV2{}
@@ -3275,7 +3275,7 @@ func TestDcdt_SetSpecialRoleSFTShouldErr(t *testing.T) {
 			return tokenBytes
 		},
 		TransferCalled: func(destination []byte, sender []byte, value *big.Int, input []byte, _ uint64) {
-			require.Equal(t, []byte("DCDTSetRole@6d79546f6b656e@45534454526f6c654e46544164645175616e74697479"), input)
+			require.Equal(t, []byte("DCDTSetRole@6d79546f6b656e@44434454526f6c654e46544164645175616e74697479"), input)
 		},
 		SetStorageCalled: func(key []byte, value []byte) {
 			token := &DCDTDataV2{}
@@ -3563,7 +3563,7 @@ func TestDcdt_UnsetSpecialRoleRemoveRoleTransfer(t *testing.T) {
 			return tokenBytes
 		},
 		TransferCalled: func(destination []byte, sender []byte, value *big.Int, input []byte, _ uint64) {
-			require.Equal(t, []byte("DCDTUnSetRole@6d79546f6b656e@45534454526f6c654c6f63616c4d696e74"), input)
+			require.Equal(t, []byte("DCDTUnSetRole@6d79546f6b656e@44434454526f6c654c6f63616c4d696e74"), input)
 		},
 	}
 	args.Eei = eei
@@ -3599,7 +3599,7 @@ func TestDcdt_UnsetSpecialRoleRemoveRoleSaveTokenErr(t *testing.T) {
 			return tokenBytes
 		},
 		TransferCalled: func(destination []byte, sender []byte, value *big.Int, input []byte, _ uint64) {
-			require.Equal(t, []byte("DCDTUnSetRole@6d79546f6b656e@45534454526f6c654c6f63616c4d696e74"), input)
+			require.Equal(t, []byte("DCDTUnSetRole@6d79546f6b656e@44434454526f6c654c6f63616c4d696e74"), input)
 			castedMarshalizer := args.Marshalizer.(*mock.MarshalizerMock)
 			castedMarshalizer.Fail = true
 		},
@@ -3637,7 +3637,7 @@ func TestDcdt_UnsetSpecialRoleRemoveRoleShouldWork(t *testing.T) {
 			return tokenBytes
 		},
 		TransferCalled: func(destination []byte, sender []byte, value *big.Int, input []byte, _ uint64) {
-			require.Equal(t, []byte("DCDTUnSetRole@6d79546f6b656e@45534454526f6c654c6f63616c4d696e74"), input)
+			require.Equal(t, []byte("DCDTUnSetRole@6d79546f6b656e@44434454526f6c654c6f63616c4d696e74"), input)
 		},
 		SetStorageCalled: func(key []byte, value []byte) {
 			token := &DCDTDataV2{}
@@ -3745,7 +3745,7 @@ func TestDcdt_StopNFTCreateForeverCallShouldWork(t *testing.T) {
 			return tokenBytes
 		},
 		TransferCalled: func(destination []byte, sender []byte, value *big.Int, input []byte, _ uint64) {
-			require.Equal(t, []byte("DCDTUnSetRole@746f6b656e4944@45534454526f6c654e4654437265617465"), input)
+			require.Equal(t, []byte("DCDTUnSetRole@746f6b656e4944@44434454526f6c654e4654437265617465"), input)
 		},
 	}
 	args.Eei = eei

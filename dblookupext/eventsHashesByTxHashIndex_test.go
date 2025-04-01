@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain/common/mock"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/genericMocks"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/receipt"
 	"github.com/TerraDharitri/drt-go-chain-core/data/smartContractResult"
 	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
-	"github.com/TerraDharitri/drt-go-chain/common/mock"
-	"github.com/TerraDharitri/drt-go-chain/testscommon/genericMocks"
 	"github.com/stretchr/testify/require"
 )
 

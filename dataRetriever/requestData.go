@@ -2,9 +2,9 @@
 package dataRetriever
 
 import (
+	"github.com/TerraDharitri/drt-go-chain/p2p"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
-	"github.com/TerraDharitri/drt-go-chain/p2p"
 )
 
 // UnmarshalWith sets the fields according to p2p.MessageP2P.Data() contents

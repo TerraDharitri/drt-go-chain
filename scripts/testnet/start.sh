@@ -6,8 +6,6 @@ export TESTNETMODE=$1
 export EXTRA=$2
 
 source "$DHARITRITESTNETSCRIPTSDIR/variables.sh"
-
-echo "$DHARITRITESTNETSCRIPTSDIR/variables.sh"
 source "$DHARITRITESTNETSCRIPTSDIR/include/config.sh"
 source "$DHARITRITESTNETSCRIPTSDIR/include/build.sh"
 source "$DHARITRITESTNETSCRIPTSDIR/include/validators.sh"
@@ -34,13 +32,13 @@ if [ $ALWAYS_UPDATE_CONFIGS -eq 1 ]; then
 fi
 
 
-Phase 3: start the Seednode
+# Phase 3: start the Seednode
 startSeednode
 showTerminalSession "dharitri-tools"
 echo "Waiting for the Seednode to start ($SEEDNODE_DELAY s)..."
 sleep $SEEDNODE_DELAY
 
-Phase 4: start the Observer Nodes and Validator Nodes
+# Phase 4: start the Observer Nodes and Validator Nodes
 startObservers
 startValidators
 showTerminalSession "dharitri-nodes"
@@ -75,5 +73,3 @@ if [ $USE_TXGEN -eq 1 ]; then
     startTxGen_ExistingAccounts
   fi
 fi
-
-

@@ -3,8 +3,8 @@ package sync
 import (
 	"context"
 
-	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain/storage"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
 )
 
 // blockBootstrapper is the interface needed by base sync to deal with shards and meta nodes while they bootstrap

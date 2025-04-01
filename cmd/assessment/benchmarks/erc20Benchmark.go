@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
 	wasmvm "github.com/TerraDharitri/drt-go-chain/integrationTests/vm/wasm/wasmvm"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 )
 
 // ArgErc20Benchmark is the erc20 type benchmark argument used in constructor

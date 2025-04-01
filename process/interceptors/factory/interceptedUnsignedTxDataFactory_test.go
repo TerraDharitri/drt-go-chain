@@ -3,10 +3,10 @@ package factory
 import (
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/data/smartContractResult"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
 	"github.com/TerraDharitri/drt-go-chain/process/unsigned"
+	"github.com/TerraDharitri/drt-go-chain-core/data/smartContractResult"
 	"github.com/stretchr/testify/assert"
 )
 

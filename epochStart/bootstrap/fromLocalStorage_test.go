@@ -6,11 +6,11 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/process/block/bootstrapStorage"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
 	storageStubs "github.com/TerraDharitri/drt-go-chain/testscommon/storage"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

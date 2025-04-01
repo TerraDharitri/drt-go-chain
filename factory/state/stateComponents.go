@@ -45,7 +45,7 @@ type stateComponentsFactory struct {
 	chainHandler             chainData.ChainHandler
 }
 
-// stateComponents struct holds the state components of the Dharitri protocol
+// stateComponents struct holds the state components of the DharitrI protocol
 type stateComponents struct {
 	peerAccounts             state.AccountsAdapter
 	accountsAdapter          state.AccountsAdapter

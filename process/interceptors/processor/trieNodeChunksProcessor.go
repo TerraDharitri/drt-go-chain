@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data/batch"
-	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/interceptors/processor/chunk"
 	"github.com/TerraDharitri/drt-go-chain/storage"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data/batch"
+	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 )
 
 const minimumRequestTimeInterval = time.Millisecond * 200

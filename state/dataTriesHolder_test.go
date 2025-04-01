@@ -5,9 +5,9 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/state"
 	trieMock "github.com/TerraDharitri/drt-go-chain/testscommon/trie"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/stretchr/testify/assert"
 )
 

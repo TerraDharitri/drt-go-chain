@@ -4,9 +4,9 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain/epochStart/notifier"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/TerraDharitri/drt-go-chain/epochStart/notifier"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -1,11 +1,11 @@
 package factory
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/common/statistics"
 	"github.com/TerraDharitri/drt-go-chain/common/statistics/softwareVersion"
 	"github.com/TerraDharitri/drt-go-chain/config"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 )
 
 type softwareVersionFactory struct {

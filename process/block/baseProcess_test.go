@@ -14,16 +14,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/keyValStorage"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/TerraDharitri/drt-go-chain-core/data/rewardTx"
-	"github.com/TerraDharitri/drt-go-chain-core/data/scheduled"
-	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
-	"github.com/TerraDharitri/drt-go-chain-core/data/typeConverters/uint64ByteSlice"
-	"github.com/TerraDharitri/drt-go-chain-core/hashing"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
@@ -55,6 +45,16 @@ import (
 	stateMock "github.com/TerraDharitri/drt-go-chain/testscommon/state"
 	statusHandlerMock "github.com/TerraDharitri/drt-go-chain/testscommon/statusHandler"
 	storageStubs "github.com/TerraDharitri/drt-go-chain/testscommon/storage"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/keyValStorage"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/TerraDharitri/drt-go-chain-core/data/rewardTx"
+	"github.com/TerraDharitri/drt-go-chain-core/data/scheduled"
+	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
+	"github.com/TerraDharitri/drt-go-chain-core/data/typeConverters/uint64ByteSlice"
+	"github.com/TerraDharitri/drt-go-chain-core/hashing"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -448,7 +448,7 @@ func createMockTransactionCoordinatorArguments(
 		FeeHandler:                   &mock.FeeAccumulatorStub{},
 		BlockSizeComputation:         &testscommon.BlockSizeComputationStub{},
 		BalanceComputation:           &testscommon.BalanceComputationStub{},
-		EconomicsFee:                 &economicsmocks.EconomicsHandlerStub{},
+		EconomicsFee:                 &economicsmocks.EconomicsHandlerMock{},
 		TxTypeHandler:                &testscommon.TxTypeHandlerMock{},
 		TransactionsLogProcessor:     &mock.TxLogsProcessorStub{},
 		EnableEpochsHandler:          enableEpochsHandlerMock.NewEnableEpochsHandlerStub(),

@@ -3,12 +3,12 @@ package preprocess
 import (
 	"sync"
 
+	"github.com/TerraDharitri/drt-go-chain/common"
+	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/TerraDharitri/drt-go-chain/common"
-	"github.com/TerraDharitri/drt-go-chain/process"
 )
 
 const initialAllocation = 1000
@@ -374,7 +374,7 @@ func (gc *gasComputation) ComputeGasProvidedByTx(
 		return txHandler.GetGasLimit(), txHandler.GetGasLimit(), nil
 	}
 
-	txTypeSndShard, txTypeDstShard := gc.txTypeHandler.ComputeTransactionType(txHandler)
+	txTypeSndShard, txTypeDstShard, _ := gc.txTypeHandler.ComputeTransactionType(txHandler)
 	isSCCall := txTypeDstShard == process.SCDeployment ||
 		txTypeDstShard == process.SCInvoking ||
 		txTypeDstShard == process.BuiltInFunctionCall
@@ -403,7 +403,7 @@ func (gc *gasComputation) computeGasProvidedByTxV1(
 ) (uint64, uint64, error) {
 	moveBalanceConsumption := gc.economicsFee.ComputeGasLimit(txHandler)
 
-	txTypeInShard, _ := gc.txTypeHandler.ComputeTransactionType(txHandler)
+	txTypeInShard, _, _ := gc.txTypeHandler.ComputeTransactionType(txHandler)
 	isSCCall := txTypeInShard == process.SCDeployment ||
 		txTypeInShard == process.SCInvoking ||
 		txTypeInShard == process.BuiltInFunctionCall ||

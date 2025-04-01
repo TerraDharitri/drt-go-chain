@@ -3,9 +3,9 @@ package txpool
 import (
 	"math/big"
 
-	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/storage/txcache"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
 )
 
 type txCache interface {

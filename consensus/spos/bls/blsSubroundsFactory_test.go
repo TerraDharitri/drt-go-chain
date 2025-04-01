@@ -6,8 +6,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/consensus"
 	"github.com/TerraDharitri/drt-go-chain/consensus/mock"
 	"github.com/TerraDharitri/drt-go-chain/consensus/spos"
@@ -16,6 +14,8 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	testscommonOutport "github.com/TerraDharitri/drt-go-chain/testscommon/outport"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/statusHandler"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/stretchr/testify/assert"
 )
 

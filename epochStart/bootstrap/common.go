@@ -3,10 +3,10 @@ package bootstrap
 import (
 	"fmt"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/common/statistics"
 	"github.com/TerraDharitri/drt-go-chain/epochStart"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 )
 
 const baseErrorMessage = "error with epoch start bootstrapper arguments"

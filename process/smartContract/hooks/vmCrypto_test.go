@@ -4,9 +4,9 @@ import (
 	"encoding/hex"
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain/process/smartContract/hooks"
 	"github.com/TerraDharitri/drt-go-chain-core/hashing/keccak"
 	"github.com/TerraDharitri/drt-go-chain-core/hashing/sha256"
-	"github.com/TerraDharitri/drt-go-chain/process/smartContract/hooks"
 	"github.com/stretchr/testify/assert"
 )
 

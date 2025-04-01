@@ -3,6 +3,7 @@ package factory
 import (
 	"errors"
 	"fmt"
+	"math/big"
 	"testing"
 
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
@@ -10,6 +11,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/economicsmocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
 	"github.com/TerraDharitri/drt-go-chain/vm"
@@ -24,8 +26,12 @@ func createMockNewSystemScFactoryArgs() ArgsNewSystemSCFactory {
 	gasMap = defaults.FillGasMapInternal(gasMap, 1)
 	gasSchedule := testscommon.NewGasScheduleNotifierMock(gasMap)
 	return ArgsNewSystemSCFactory{
-		SystemEI:            &mock.SystemEIStub{},
-		Economics:           &mock.EconomicsHandlerStub{},
+		SystemEI: &mock.SystemEIStub{},
+		Economics: &economicsmocks.EconomicsHandlerMock{
+			GenesisTotalSupplyCalled: func() *big.Int {
+				return big.NewInt(100000000)
+			},
+		},
 		SigVerifier:         &mock.MessageSignVerifierMock{},
 		GasSchedule:         gasSchedule,
 		NodesConfigProvider: &mock.NodesConfigProviderStub{},

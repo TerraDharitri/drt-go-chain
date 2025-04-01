@@ -8,9 +8,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
-	logger "github.com/TerraDharitri/drt-go-chain-logger"
 	"github.com/TerraDharitri/drt-go-chain/consensus"
 	"github.com/TerraDharitri/drt-go-chain/p2p"
+	logger "github.com/TerraDharitri/drt-go-chain-logger"
 )
 
 type consensusMessageValidator struct {

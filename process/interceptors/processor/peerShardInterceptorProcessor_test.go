@@ -3,15 +3,15 @@ package processor
 import (
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	heartbeatMessages "github.com/TerraDharitri/drt-go-chain/heartbeat"
 	p2pFactory "github.com/TerraDharitri/drt-go-chain/p2p/factory"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/heartbeat"
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
 	processP2P "github.com/TerraDharitri/drt-go-chain/process/p2p"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/stretchr/testify/assert"
 )
 

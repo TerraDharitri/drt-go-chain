@@ -11,16 +11,33 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/data/smartContractResult"
 	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	logger "github.com/TerraDharitri/drt-go-chain-logger"
+	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/outport/mock"
 	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain/process/economics"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/epochNotifier"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/genericMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
 	"github.com/stretchr/testify/require"
 )
 
 var pubKeyConverter, _ = pubkeyConverter.NewBech32PubkeyConverter(32, "drt")
+
+func createEconomicsData(enableEpochsHandler common.EnableEpochsHandler) process.EconomicsDataHandler {
+	economicsConfig := testscommon.GetEconomicsConfig()
+	economicsData, _ := economics.NewEconomicsData(economics.ArgsNewEconomicsData{
+		Economics:           &economicsConfig,
+		EnableEpochsHandler: enableEpochsHandler,
+		TxVersionChecker:    &testscommon.TxVersionCheckerStub{},
+		EpochNotifier:       &epochNotifier.EpochNotifierStub{},
+		PubkeyConverter:     &testscommon.PubkeyConverterStub{},
+		ShardCoordinator:    &testscommon.ShardsCoordinatorMock{},
+	})
+
+	return economicsData
+}
 
 func prepareMockArg() ArgTransactionsFeeProcessor {
 	return ArgTransactionsFeeProcessor{
@@ -596,4 +613,67 @@ func TestMoveBalanceWithSignalError(t *testing.T) {
 	err = txsFeeProc.PutFeeAndGasUsed(pool, 0)
 	require.Nil(t, err)
 	require.Equal(t, uint64(225_500), initialTx.GetFeeInfo().GetGasUsed())
+}
+
+func TestPutFeeAndGasUsedRelayedTxV3(t *testing.T) {
+	t.Parallel()
+
+	txHash := []byte("relayedTxV3")
+	scrWithRefund := []byte("scrWithRefund")
+	refundValueBig, _ := big.NewInt(0).SetString("37105580000000", 10)
+	initialTx := &outportcore.TxInfo{
+		Transaction: &transaction.Transaction{
+			Nonce:       9,
+			SndAddr:     []byte("drt1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqlqde3c"),
+			RcvAddr:     []byte("drt1qqqqqqqqqqqqqpgq2nfn5uxjjkjlrzad3jrak8p3p30v79pseddsxzxpzs"),
+			RelayerAddr: []byte("drt1at9keal0jfhamc67ulq4csmchh33eek87yf5hhzcvlw8e5qlx8zqft9d3p"),
+			GasLimit:    5000000,
+			GasPrice:    1000000000,
+			Data:        []byte("add@01"),
+			Value:       big.NewInt(0),
+		},
+		FeeInfo: &outportcore.FeeInfo{Fee: big.NewInt(0)},
+	}
+
+	pool := &outportcore.TransactionPool{
+		Transactions: map[string]*outportcore.TxInfo{
+			hex.EncodeToString(txHash): initialTx,
+		},
+		SmartContractResults: map[string]*outportcore.SCRInfo{
+			hex.EncodeToString(scrWithRefund): {
+				SmartContractResult: &smartContractResult.SmartContractResult{
+					Nonce:          10,
+					GasPrice:       1000000000,
+					GasLimit:       0,
+					Value:          refundValueBig,
+					SndAddr:        []byte("drt1qqqqqqqqqqqqqpgq2nfn5uxjjkjlrzad3jrak8p3p30v79pseddsxzxpzs"),
+					RcvAddr:        []byte("drt1at9keal0jfhamc67ulq4csmchh33eek87yf5hhzcvlw8e5qlx8zqft9d3p"),
+					Data:           []byte(""),
+					PrevTxHash:     txHash,
+					OriginalTxHash: txHash,
+					ReturnMessage:  []byte("gas refund for relayer"),
+				},
+				FeeInfo: &outportcore.FeeInfo{
+					Fee: big.NewInt(0),
+				},
+			},
+		},
+	}
+
+	arg := prepareMockArg()
+	arg.TxFeeCalculator = createEconomicsData(&enableEpochsHandlerMock.EnableEpochsHandlerStub{
+		IsFlagEnabledInEpochCalled: func(flag core.EnableEpochFlag, epoch uint32) bool {
+			return true
+		},
+	})
+	txsFeeProc, err := NewTransactionsFeeProcessor(arg)
+	require.NotNil(t, txsFeeProc)
+	require.Nil(t, err)
+
+	err = txsFeeProc.PutFeeAndGasUsed(pool, 0)
+	require.Nil(t, err)
+	require.Equal(t, big.NewInt(120804420000000), initialTx.GetFeeInfo().GetFee())
+	require.Equal(t, uint64(1289442), initialTx.GetFeeInfo().GetGasUsed())
+	require.Equal(t, "157910000000000", initialTx.GetFeeInfo().GetInitialPaidFee().String())
+	require.True(t, initialTx.GetFeeInfo().HadRefund)
 }

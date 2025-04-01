@@ -8,9 +8,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
-	logger "github.com/TerraDharitri/drt-go-chain-logger"
 	"github.com/TerraDharitri/drt-go-chain/genesis"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
+	logger "github.com/TerraDharitri/drt-go-chain-logger"
 )
 
 const minimumAcceptedNodePrice = 0

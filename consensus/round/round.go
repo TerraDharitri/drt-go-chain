@@ -5,9 +5,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/consensus"
 	"github.com/TerraDharitri/drt-go-chain/ntp"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 )
 
 var _ consensus.RoundHandler = (*round)(nil)

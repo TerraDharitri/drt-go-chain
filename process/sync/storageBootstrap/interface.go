@@ -1,8 +1,8 @@
 package storageBootstrap
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain/process/block/bootstrapStorage"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
 )
 
 // StorageBootstrapper is the main interface for bootstrap from storage execution engine

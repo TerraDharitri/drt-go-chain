@@ -17,7 +17,6 @@ import (
 	mclSig "github.com/TerraDharitri/drt-go-chain-crypto/signing/mcl/singlesig"
 	"github.com/TerraDharitri/drt-go-chain-crypto/signing/secp256k1"
 	secp256k1SinglerSig "github.com/TerraDharitri/drt-go-chain-crypto/signing/secp256k1/singlesig"
-	logger "github.com/TerraDharitri/drt-go-chain-logger"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	cryptoCommon "github.com/TerraDharitri/drt-go-chain/common/crypto"
 	"github.com/TerraDharitri/drt-go-chain/config"
@@ -32,6 +31,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/storage/storageunit"
 	"github.com/TerraDharitri/drt-go-chain/vm"
 	systemVM "github.com/TerraDharitri/drt-go-chain/vm/process"
+	logger "github.com/TerraDharitri/drt-go-chain-logger"
 )
 
 const (

@@ -6,11 +6,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/epochStart"
@@ -23,6 +18,11 @@ import (
 	dataRetrieverMock "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/economicsmocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/genesisMocks"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -88,7 +88,7 @@ func TestStorageEpochStartBootstrap_BootstrapFromGenesis(t *testing.T) {
 	roundDuration := uint64(60000)
 	coreComp, cryptoComp := createComponentsForEpochStart()
 	args := createMockStorageEpochStartBootstrapArgs(coreComp, cryptoComp)
-	args.EconomicsData = &economicsmocks.EconomicsHandlerStub{
+	args.EconomicsData = &economicsmocks.EconomicsHandlerMock{
 		MinGasPriceCalled: func() uint64 {
 			return 1
 		},
@@ -112,7 +112,7 @@ func TestStorageEpochStartBootstrap_BootstrapMetablockNotFound(t *testing.T) {
 	roundDuration := uint64(6000)
 	coreComp, cryptoComp := createComponentsForEpochStart()
 	args := createMockStorageEpochStartBootstrapArgs(coreComp, cryptoComp)
-	args.EconomicsData = &economicsmocks.EconomicsHandlerStub{
+	args.EconomicsData = &economicsmocks.EconomicsHandlerMock{
 		MinGasPriceCalled: func() uint64 {
 			return 1
 		},

@@ -1,9 +1,9 @@
 package mock
 
 import (
+	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/TerraDharitri/drt-go-chain/common"
 )
 
 // BootstrapperStub mocks the implementation for a Bootstrapper

@@ -1,9 +1,8 @@
 package mock
 
 import (
-	"math/big"
-
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"math/big"
 )
 
 // EpochStartDataCreatorStub -

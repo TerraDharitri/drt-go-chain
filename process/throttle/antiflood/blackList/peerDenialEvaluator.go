@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain/process"
 )
 
 type peerDenialEvaluator struct {

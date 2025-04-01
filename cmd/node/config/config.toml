@@ -16,7 +16,7 @@
     #   "1" for Mainnet
     #   "D" for Devnet
     #   "T" for Testnet
-    ChainID = "T"
+    ChainID = "undefined"
 
     # MinTransactionVersion represents the minimum transaction version accepted
     MinTransactionVersion = 1
@@ -434,7 +434,7 @@
     SizeInBytes = 31457280  #30MB
     Shards = 4
 
-#PublicKeyPeerId represents the main cache used to map Dharitri block signing public keys to their associated peer id's.
+#PublicKeyPeerId represents the main cache used to map DharitrI block signing public keys to their associated peer id's.
 [PublicKeyPeerId]
     Name = "PublicKeyPeerId"
     Capacity = 30000
@@ -813,7 +813,7 @@
     FolderPath = "health-records"
 
 [SoftwareVersionConfig]
-    StableTagLocation = "https://api.github.com/repos/dharitri/drt-chain-go/releases/latest"
+    StableTagLocation = "https://api.github.com/repos/TerraDharitri/drt-go-chain/releases/latest"
     PollingIntervalInMinutes = 65
 
 [GatewayMetricsConfig]

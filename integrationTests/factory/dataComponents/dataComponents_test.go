@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests/factory"
 	"github.com/TerraDharitri/drt-go-chain/node"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/goroutines"
+	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
 	"github.com/stretchr/testify/require"
 )
 

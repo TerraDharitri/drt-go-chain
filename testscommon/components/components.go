@@ -410,7 +410,6 @@ func GetBootStrapFactoryArgs() bootstrapComp.BootstrapComponentsFactoryArgs {
 // GetProcessArgs -
 func GetProcessArgs(
 	shardCoordinator sharding.Coordinator,
-	
 	coreComponents factory.CoreComponentsHolder,
 	dataComponents factory.DataComponentsHolder,
 	cryptoComponents factory.CryptoComponentsHolder,

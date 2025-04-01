@@ -11,12 +11,12 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/core/pubkeyConverter"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
-	logger "github.com/TerraDharitri/drt-go-chain-logger"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	consensusComp "github.com/TerraDharitri/drt-go-chain/factory/consensus"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	consensusMocks "github.com/TerraDharitri/drt-go-chain/testscommon/consensus"
+	logger "github.com/TerraDharitri/drt-go-chain-logger"
 	"github.com/stretchr/testify/assert"
 )
 

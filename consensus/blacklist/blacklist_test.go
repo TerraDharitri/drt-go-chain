@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain/consensus/blacklist"
 	"github.com/TerraDharitri/drt-go-chain/consensus/mock"
 	"github.com/TerraDharitri/drt-go-chain/consensus/spos"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/stretchr/testify/require"
 )
 

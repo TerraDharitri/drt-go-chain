@@ -3,9 +3,9 @@ package receipts
 import (
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain/common/holders"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
-	"github.com/TerraDharitri/drt-go-chain/common/holders"
 	"github.com/stretchr/testify/require"
 )
 

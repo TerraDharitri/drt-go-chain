@@ -1,9 +1,9 @@
 package mock
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/p2p"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 )
 
 // ResolverStub -

@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"sort"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/genesis"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 )
 
 type nodesListSplitter struct {

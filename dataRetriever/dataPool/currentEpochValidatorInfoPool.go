@@ -3,9 +3,9 @@ package dataPool
 import (
 	"sync"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/state"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 )
 
 var _ dataRetriever.ValidatorInfoCacher = (*validatorInfoMapCacher)(nil)

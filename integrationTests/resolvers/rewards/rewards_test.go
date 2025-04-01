@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests/resolvers"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/factory"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 )
 
 func TestRequestResolveRewardsByHashRequestingShardResolvingOtherShard(t *testing.T) {

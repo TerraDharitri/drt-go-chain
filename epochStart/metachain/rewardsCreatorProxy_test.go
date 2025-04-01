@@ -5,21 +5,20 @@ import (
 	"math/big"
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain/common"
+	"github.com/TerraDharitri/drt-go-chain/epochStart"
+	"github.com/TerraDharitri/drt-go-chain/epochStart/mock"
+	"github.com/TerraDharitri/drt-go-chain/state"
+	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/stakingcommon"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain-core/data/rewardTx"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
-	"github.com/TerraDharitri/drt-go-chain/common"
-	"github.com/TerraDharitri/drt-go-chain/epochStart"
-	"github.com/TerraDharitri/drt-go-chain/epochStart/mock"
-	"github.com/TerraDharitri/drt-go-chain/state"
-	"github.com/TerraDharitri/drt-go-chain/testscommon"
-	"github.com/TerraDharitri/drt-go-chain/testscommon/economicsmocks"
-	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
-	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
-	"github.com/TerraDharitri/drt-go-chain/testscommon/stakingcommon"
 	"github.com/stretchr/testify/require"
 )
 
@@ -369,22 +368,10 @@ func createDefaultBlockBody() *block.Body {
 }
 
 func createDefaultRewardsCreatorProxyArgs() RewardsCreatorProxyArgs {
-	rewardsTopUpGradientPoint, _ := big.NewInt(0).SetString("3000000000000000000000000", 10)
-
-	rewardsHandler := &economicsmocks.EconomicsHandlerStub{
-		RewardsTopUpGradientPointCalled: func() *big.Int {
-			return rewardsTopUpGradientPoint
-		},
-		RewardsTopUpFactorCalled: func() float64 {
-			return 0.25
-		},
-	}
-
 	return RewardsCreatorProxyArgs{
 		BaseRewardsCreatorArgs: getBaseRewardsArguments(),
 		StakingDataProvider:    &stakingcommon.StakingDataProviderStub{},
 		EconomicsDataProvider:  NewEpochEconomicsStatistics(),
-		RewardsHandler:         rewardsHandler,
 	}
 }
 

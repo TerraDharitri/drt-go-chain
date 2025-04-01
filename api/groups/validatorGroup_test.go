@@ -7,13 +7,13 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/data/validator"
 	apiErrors "github.com/TerraDharitri/drt-go-chain/api/errors"
 	"github.com/TerraDharitri/drt-go-chain/api/groups"
 	"github.com/TerraDharitri/drt-go-chain/api/mock"
 	"github.com/TerraDharitri/drt-go-chain/api/shared"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/config"
+	"github.com/TerraDharitri/drt-go-chain-core/data/validator"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

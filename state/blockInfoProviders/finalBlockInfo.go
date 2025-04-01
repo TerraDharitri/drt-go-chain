@@ -1,10 +1,10 @@
 package blockInfoProviders
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	chainData "github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/common/holders"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	chainData "github.com/TerraDharitri/drt-go-chain-core/data"
 )
 
 type finalBlockInfo struct {

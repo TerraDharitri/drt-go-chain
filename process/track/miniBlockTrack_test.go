@@ -3,7 +3,6 @@ package track_test
 import (
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
@@ -11,6 +10,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	dataRetrieverMock "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/stretchr/testify/assert"
 )
 

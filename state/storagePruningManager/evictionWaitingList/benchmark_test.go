@@ -4,9 +4,9 @@ import (
 	"encoding/binary"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/hashing/blake2b"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/state"
+	"github.com/TerraDharitri/drt-go-chain-core/hashing/blake2b"
 	"github.com/stretchr/testify/require"
 )
 

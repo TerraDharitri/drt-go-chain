@@ -4,12 +4,12 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data/batch"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/mock"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/requestHandlers"
 	dataRetrieverStub "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data/batch"
 	"github.com/stretchr/testify/assert"
 )
 

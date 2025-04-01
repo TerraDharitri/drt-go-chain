@@ -4,11 +4,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/epochStart/mock"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
@@ -22,6 +17,11 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/testscommon/nodeTypeProviderMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/shardingMocks"
 	vic "github.com/TerraDharitri/drt-go-chain/testscommon/validatorInfoCacher"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

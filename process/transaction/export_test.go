@@ -7,6 +7,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/data/smartContractResult"
 	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
+	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/state"
 )
@@ -55,6 +56,7 @@ func (txProc *txProcessor) ProcessUserTx(
 	userTx *transaction.Transaction,
 	relayedTxValue *big.Int,
 	relayedNonce uint64,
+	relayerAddr []byte,
 	originalTxHash []byte,
 ) (vmcommon.ReturnCode, error) {
 	return txProc.processUserTx(
@@ -62,6 +64,7 @@ func (txProc *txProcessor) ProcessUserTx(
 		userTx,
 		relayedTxValue,
 		relayedNonce,
+		relayerAddr,
 		originalTxHash)
 }
 
@@ -98,6 +101,11 @@ func (txProc *txProcessor) ExecuteFailedRelayedTransaction(
 // CheckMaxGasPrice calls the un-exported method checkMaxGasPrice
 func (inTx *InterceptedTransaction) CheckMaxGasPrice() error {
 	return inTx.checkMaxGasPrice()
+}
+
+// SetEnableEpochsHandler sets the internal enable epochs handler
+func (inTx *InterceptedTransaction) SetEnableEpochsHandler(handler common.EnableEpochsHandler) {
+	inTx.enableEpochsHandler = handler
 }
 
 // ShouldIncreaseNonce calls the un-exported method shouldIncreaseNonce

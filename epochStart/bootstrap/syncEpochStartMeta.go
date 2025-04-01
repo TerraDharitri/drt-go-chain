@@ -4,10 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/hashing"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/epochStart"
@@ -17,6 +13,10 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/process/interceptors"
 	interceptorsFactory "github.com/TerraDharitri/drt-go-chain/process/interceptors/factory"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/hashing"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 )
 
 var _ epochStart.StartOfEpochMetaSyncer = (*epochStartMetaSyncer)(nil)

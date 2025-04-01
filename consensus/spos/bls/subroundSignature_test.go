@@ -3,9 +3,6 @@ package bls_test
 import (
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain/consensus"
 	"github.com/TerraDharitri/drt-go-chain/consensus/mock"
 	"github.com/TerraDharitri/drt-go-chain/consensus/spos"
@@ -13,6 +10,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	consensusMocks "github.com/TerraDharitri/drt-go-chain/testscommon/consensus"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/statusHandler"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 )

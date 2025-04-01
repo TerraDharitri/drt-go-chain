@@ -5,7 +5,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/factory/resolverscontainer"
@@ -19,6 +18,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/testscommon/p2pmocks"
 	storageStubs "github.com/TerraDharitri/drt-go-chain/testscommon/storage"
 	trieMock "github.com/TerraDharitri/drt-go-chain/testscommon/trie"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/stretchr/testify/assert"
 )
 

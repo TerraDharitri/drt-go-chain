@@ -12,13 +12,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/core/versioning"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	dataBatch "github.com/TerraDharitri/drt-go-chain-core/data/batch"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/common/statistics"
 	disabledStatistics "github.com/TerraDharitri/drt-go-chain/common/statistics/disabled"
@@ -53,6 +46,13 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/testscommon/syncer"
 	validatorInfoCacherStub "github.com/TerraDharitri/drt-go-chain/testscommon/validatorInfoCacher"
 	"github.com/TerraDharitri/drt-go-chain/trie/factory"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/core/versioning"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	dataBatch "github.com/TerraDharitri/drt-go-chain-core/data/batch"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -208,7 +208,7 @@ func createMockEpochStartBootstrapArgs(
 			},
 			Requesters: generalCfg.Requesters,
 		},
-		EconomicsData: &economicsmocks.EconomicsHandlerStub{
+		EconomicsData: &economicsmocks.EconomicsHandlerMock{
 			MinGasPriceCalled: func() uint64 {
 				return 1
 			},

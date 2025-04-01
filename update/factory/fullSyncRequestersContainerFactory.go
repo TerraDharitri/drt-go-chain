@@ -11,7 +11,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/factory/resolverscontainer"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/requestHandlers/requesters"
-	topicsender "github.com/TerraDharitri/drt-go-chain/dataRetriever/topicSender"
+	"github.com/TerraDharitri/drt-go-chain/dataRetriever/topicSender"
 	"github.com/TerraDharitri/drt-go-chain/epochStart/bootstrap/disabled"
 	"github.com/TerraDharitri/drt-go-chain/p2p"
 	"github.com/TerraDharitri/drt-go-chain/process/factory"

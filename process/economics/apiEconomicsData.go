@@ -1,8 +1,8 @@
 package economics
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
 )
 
 type apiEconomicsData struct {

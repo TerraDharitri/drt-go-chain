@@ -1,11 +1,11 @@
 package interceptedBlocks
 
 import (
+	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain/sharding"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain/process"
-	"github.com/TerraDharitri/drt-go-chain/sharding"
 )
 
 const maxLenMiniBlockReservedField = 10

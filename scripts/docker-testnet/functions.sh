@@ -8,8 +8,8 @@ IP_HOST_BYTE=3
 cloneRepositories() {
   cd $(dirname $DHARITRIDIR)
 
-  git clone git@github.com:dharitri/drt-chain-deploy-go.git || true
-  git clone git@github.com:dharitri/drt-chain-proxy-go.git || true
+  git clone git@github.com:dharitri/drt-go-chain-deploy.git || true
+  git clone git@github.com:dharitri/drt-go-chain-proxy.git || true
 }
 
 buildNodeImages() {
@@ -224,9 +224,8 @@ buildProxyImage() {
 
 startProxyDocker() {
   docker run -d --name "proxy" \
-      -v $TESTNETDIR/proxy/config:/drt-chain-proxy-go/cmd/proxy/config \
+      -v $TESTNETDIR/proxy/config:/drt-go-chain-proxy/cmd/proxy/config \
       --network ${DOCKER_NETWORK_NAME} \
       -p $PORT_PROXY:8080 \
       proxy:dev
 }
-drt-go-chain-proxy

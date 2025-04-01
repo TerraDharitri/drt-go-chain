@@ -42,7 +42,7 @@ VERSION:
 	// address defines a flag for setting the address and port on which the node will listen for connections
 	address = cli.StringFlag{
 		Name:        "address",
-		Usage:       "Address and port number on which the application will try to connect to the drt-chain-go node",
+		Usage:       "Address and port number on which the application will try to connect to the drt-go-chain node",
 		Value:       "127.0.0.1:8080",
 		Destination: &argsConfig.address,
 	}
@@ -158,7 +158,7 @@ func startTermuiViewer(ctx *cli.Context) error {
 func initCliFlags() {
 	cliApp = cli.NewApp()
 	cli.AppHelpTemplate = nodeHelpTemplate
-	cliApp.Name = "Dharitri Terminal UI App"
+	cliApp.Name = "DharitrI Terminal UI App"
 	cliApp.Version = fmt.Sprintf("%s/%s/%s-%s", "1.0.0", runtime.Version(), runtime.GOOS, runtime.GOARCH)
 	cliApp.Usage = "Terminal UI application used to display metrics from the node"
 	cliApp.Flags = []cli.Flag{
@@ -171,8 +171,8 @@ func initCliFlags() {
 	}
 	cliApp.Authors = []cli.Author{
 		{
-			Name:  "The Dharitri Team",
-			Email: "contact@dharitri.com",
+			Name:  "The DharitrI Team",
+			Email: "contact@dharitri.org",
 		},
 	}
 }

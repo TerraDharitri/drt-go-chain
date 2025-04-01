@@ -30,6 +30,7 @@ else
   echo "Using $PACKAGE_MANAGER to install required packages: $REQUIRED_PACKAGES"
   $INSTALL_PACKAGES_COMMAND
 fi
+
 if [[ "$DISTRIBUTION" =~ ^(ubuntu|debian)$ ]]; then
 
   if ! [ -x "$(command -v go)" ]; then
@@ -53,12 +54,12 @@ fi
 
 
 cd $(dirname $DHARITRIDIR)
-git clone git@github.com:dharitri/drt-chain-deploy-go.git
-git clone git@github.com:dharitri/drt-chain-proxy-go.git
+git clone git@github.com:dharitri/drt-go-chain-deploy.git
+git clone git@github.com:dharitri/drt-go-chain-proxy.git
 
 
 if [[ $PRIVATE_REPOS -eq 1 ]]; then
-  git clone git@github.com:dharitri/drt-chain-txgen-go.git
-  cd drt-chain-txgen-go
+  git clone git@github.com:dharitri/drt-go-chain-txgen.git
+  cd drt-go-chain-txgen
   git checkout master
 fi

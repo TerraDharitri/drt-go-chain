@@ -147,7 +147,7 @@ func TestLoadEconomicsConfig(t *testing.T) {
 
 		testString := `
 [GlobalSettings]
-    GenesisTotalSupply = "20000000000000000000000000" #20MIL REWA
+    GenesisTotalSupply = "20000000000000000000000000" #20MIL rEWA
 `
 
 		filePath := path.Join(t.TempDir(), "testFile02")
@@ -182,7 +182,7 @@ func TestLoadSystemSmartContractsConfig(t *testing.T) {
 
 		testString := `
 [StakingSystemSCConfig]
-    GenesisNodePrice = "2500000000000000000000" #2.5K REWA
+    GenesisNodePrice = "2500000000000000000000" #2.5K rEWA
 `
 
 		filePath := path.Join(t.TempDir(), "testFile02")
@@ -462,7 +462,7 @@ func TestGetSkBytesFromP2pKey(t *testing.T) {
 -----BEGIN PRIVATE KEY for drt1ecdwux5tvanwryhr7cn5l9kc07ayquec7h2jc608kz0ycychzexs0xhdkv-----
 INVALIDiZTI4ODY1ZGQ1MzZmOWYyOGEwOTZhNmY5NmQ2MzZjMjhmNzMzNDAwNDBj
 MTU0ZDA4Nzg3MTBhOTE5ZWNlMWFlZTFhOGI2NzY2ZTE5MmUzZjYyNzRmOTZkODdm
-YmE0MDczMzhmNWQ1MmM2OWU3YjA5ZTRjMTdrtNzE2NGQ=
+YmE0MDczMzhmNWQ1MmM2OWU3YjA5ZTRjMTMxNzE2NGQ=
 -----END PRIVATE KEY for drt1ecdwux5tvanwryhr7cn5l9kc07ayquec7h2jc608kz0ycychzexs0xhdkv-----
 `
 		filePath := path.Join(t.TempDir(), "testFile01")
@@ -486,7 +486,7 @@ YmE0MDczMzhmNWQ1MmM2OWU3YjA5ZTRjMTdrtNzE2NGQ=
 -----BEGIN PRIVATE KEY for drt1ecdwux5tvanwryhr7cn5l9kc07ayquec7h2jc608kz0ycychzexs0xhdkv-----
 NDliYzliZTI4ODY1ZGQ1MzZmOWYyOGEwOTZhNmY5NmQ2MzZjMjhmNzMzNDAwNDBj
 MTU0ZDA4Nzg3MTBhOTE5ZWNlMWFlZTFhOGI2NzY2ZTE5MmUzZjYyNzRmOTZkODdm
-YmE0MDczMzhmNWQ1MmM2OWU3YjA5ZTRjMTdrtNzE2NGQ=
+YmE0MDczMzhmNWQ1MmM2OWU3YjA5ZTRjMTMxNzE2NGQ=
 -----END PRIVATE KEY for drt1ecdwux5tvanwryhr7cn5l9kc07ayquec7h2jc608kz0ycychzexs0xhdkv-----
 `
 		filePath := path.Join(t.TempDir(), "testFile01")

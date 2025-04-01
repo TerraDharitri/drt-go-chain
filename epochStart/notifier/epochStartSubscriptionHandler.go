@@ -5,9 +5,9 @@ import (
 	"sort"
 	"sync"
 
+	"github.com/TerraDharitri/drt-go-chain/epochStart"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain/epochStart"
 )
 
 // EpochStartNotifier defines which actions should be done for handling new epoch's events

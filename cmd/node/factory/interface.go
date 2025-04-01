@@ -3,9 +3,9 @@ package factory
 import (
 	"time"
 
+	"github.com/TerraDharitri/drt-go-chain/p2p"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain/p2p"
 )
 
 // HeaderSigVerifierHandler is the interface needed to check that a header's signature is correct

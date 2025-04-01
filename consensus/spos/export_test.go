@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/TerraDharitri/drt-go-chain/consensus"
 	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 )
 
 // RedundancySingleKeySteppedIn exposes the redundancySingleKeySteppedIn constant

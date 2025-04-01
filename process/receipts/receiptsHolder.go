@@ -3,11 +3,11 @@ package receipts
 import (
 	"fmt"
 
+	"github.com/TerraDharitri/drt-go-chain/common"
+	"github.com/TerraDharitri/drt-go-chain/common/holders"
 	"github.com/TerraDharitri/drt-go-chain-core/data/batch"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
-	"github.com/TerraDharitri/drt-go-chain/common"
-	"github.com/TerraDharitri/drt-go-chain/common/holders"
 )
 
 func marshalReceiptsHolder(holder common.ReceiptsHolder, marshaller marshal.Marshalizer) ([]byte, error) {

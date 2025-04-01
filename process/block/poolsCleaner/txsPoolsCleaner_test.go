@@ -5,7 +5,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
@@ -13,6 +12,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/storage/txcache"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	dataRetrieverMock "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
+	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	"github.com/stretchr/testify/assert"
 )
 

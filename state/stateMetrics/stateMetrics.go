@@ -4,9 +4,9 @@ import (
 	"errors"
 	"sync"
 
+	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain/common"
 )
 
 const (
