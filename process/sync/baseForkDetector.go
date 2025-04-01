@@ -5,10 +5,10 @@ import (
 	"math"
 	"sync"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain/consensus"
 	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
 )
 
 type headerInfo struct {

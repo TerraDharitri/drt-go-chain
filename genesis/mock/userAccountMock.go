@@ -5,8 +5,8 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain/common"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 )
 
 // ErrNegativeValue -

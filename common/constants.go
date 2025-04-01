@@ -41,7 +41,7 @@ const ObserverList PeerType = "observer"
 const NewList PeerType = "new"
 
 // MetachainTopicIdentifier is the identifier used in topics to define the metachain shard ID
-const MetachainTopicIdentifier = "META" // TODO - move this to drt-chain-core-go and change wherever we use the string value
+const MetachainTopicIdentifier = "META" // TODO - move this to drt-go-chain-core and change wherever we use the string value
 
 // AuctionList represents the list of peers which don't participate in consensus yet, but will be selected
 // based on their top up stake
@@ -339,6 +339,9 @@ const MetricMinGasLimit = "drt_min_gas_limit"
 
 // MetricExtraGasLimitGuardedTx specifies the extra gas limit required for guarded transactions
 const MetricExtraGasLimitGuardedTx = "drt_extra_gas_limit_guarded_tx"
+
+// MetricExtraGasLimitRelayedTx specifies the extra gas limit required for relayed v3 transactions
+const MetricExtraGasLimitRelayedTx = "drt_extra_gas_limit_relayed_tx"
 
 // MetricRewardsTopUpGradientPoint is the metric that specifies the rewards top up gradient point
 const MetricRewardsTopUpGradientPoint = "drt_rewards_top_up_gradient_point"
@@ -736,6 +739,12 @@ const (
 
 	// MetricFixRelayedMoveBalanceToNonPayableSCEnableEpoch represents the epoch when the fix for relayed move balance to non-payable sc is enabled
 	MetricFixRelayedMoveBalanceToNonPayableSCEnableEpoch = "drt_fix_relayed_move_balance_to_non_payable_sc_enable_epoch"
+
+	// MetricRelayedTransactionsV3EnableEpoch represents the epoch when the relayed transactions v3 are enabled
+	MetricRelayedTransactionsV3EnableEpoch = "drt_relayed_transactions_v3_enable_epoch"
+
+	// MetricRelayedTransactionsV3FixDCDTTransferEnableEpoch represents the epoch when the fix for relayed transactions v3 with dcdt transfer are enabled
+	MetricRelayedTransactionsV3FixDCDTTransferEnableEpoch = "drt_relayed_transactions_v3_fix_dcdt_transfer_enable_epoch"
 
 	// MetricMaxNodesChangeEnableEpoch holds configuration for changing the maximum number of nodes and the enabling epoch
 	MetricMaxNodesChangeEnableEpoch = "drt_max_nodes_change_enable_epoch"
@@ -1234,5 +1243,7 @@ const (
 	FixRelayedBaseCostFlag                             core.EnableEpochFlag = "FixRelayedBaseCostFlag"
 	MultiDCDTNFTTransferAndExecuteByUserFlag           core.EnableEpochFlag = "MultiDCDTNFTTransferAndExecuteByUserFlag"
 	FixRelayedMoveBalanceToNonPayableSCFlag            core.EnableEpochFlag = "FixRelayedMoveBalanceToNonPayableSCFlag"
+	RelayedTransactionsV3Flag                          core.EnableEpochFlag = "RelayedTransactionsV3Flag"
+	RelayedTransactionsV3FixDCDTTransferFlag           core.EnableEpochFlag = "RelayedTransactionsV3FixDCDTTransferFlag"
 	// all new flags must be added to createAllFlagsMap method, as part of enableEpochsHandler allFlagsDefined
 )

@@ -16,11 +16,11 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
-	logger "github.com/TerraDharitri/drt-go-chain-logger"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/genesis"
 	"github.com/TerraDharitri/drt-go-chain/genesis/data"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
+	logger "github.com/TerraDharitri/drt-go-chain-logger"
 )
 
 var log = logger.GetOrCreate("genesis/parsing")

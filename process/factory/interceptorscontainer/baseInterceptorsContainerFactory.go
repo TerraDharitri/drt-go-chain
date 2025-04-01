@@ -4,9 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/heartbeat"
@@ -20,6 +17,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
 	"github.com/TerraDharitri/drt-go-chain/state"
 	"github.com/TerraDharitri/drt-go-chain/storage"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 )
 
 const (

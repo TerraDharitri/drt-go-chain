@@ -5,7 +5,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/versioning"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/p2p"
@@ -25,6 +24,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/testscommon/shardingMocks"
 	stateMock "github.com/TerraDharitri/drt-go-chain/testscommon/state"
 	storageStubs "github.com/TerraDharitri/drt-go-chain/testscommon/storage"
+	"github.com/TerraDharitri/drt-go-chain-core/core/versioning"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -713,7 +713,7 @@ func getArgumentsShard(
 		Store:                        createShardStore(),
 		DataPool:                     createShardDataPools(),
 		MaxTxNonceDeltaAllowed:       maxTxNonceDeltaAllowed,
-		TxFeeHandler:                 &economicsmocks.EconomicsHandlerStub{},
+		TxFeeHandler:                 &economicsmocks.EconomicsHandlerMock{},
 		BlockBlackList:               &testscommon.TimeCacheStub{},
 		HeaderSigVerifier:            &mock.HeaderSigVerifierStub{},
 		HeaderIntegrityVerifier:      &mock.HeaderIntegrityVerifierStub{},

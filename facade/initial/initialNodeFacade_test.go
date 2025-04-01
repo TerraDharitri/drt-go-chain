@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/data/api"
 	"github.com/TerraDharitri/drt-go-chain/facade"
 	"github.com/TerraDharitri/drt-go-chain/node/external"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain-core/data/api"
 	"github.com/stretchr/testify/assert"
 )
 

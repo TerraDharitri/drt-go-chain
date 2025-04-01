@@ -1,8 +1,8 @@
 package disabled
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain/epochStart"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
 )
 
 // EpochStartNotifier -

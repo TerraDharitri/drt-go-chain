@@ -3,12 +3,12 @@ package interceptedBlocks
 import (
 	"fmt"
 
+	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain/sharding"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
-	"github.com/TerraDharitri/drt-go-chain/process"
-	"github.com/TerraDharitri/drt-go-chain/sharding"
 )
 
 var _ process.InterceptedData = (*InterceptedMiniblock)(nil)

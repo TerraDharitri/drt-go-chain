@@ -7,14 +7,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	outportcore "github.com/TerraDharitri/drt-go-chain-core/data/outport"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/consensus/spos"
 	"github.com/TerraDharitri/drt-go-chain/outport"
 	"github.com/TerraDharitri/drt-go-chain/outport/disabled"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	outportcore "github.com/TerraDharitri/drt-go-chain-core/data/outport"
 )
 
 // subroundStartRound defines the data needed by the subround StartRound

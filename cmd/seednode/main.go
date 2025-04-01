@@ -127,7 +127,7 @@ func main() {
 	app.Authors = []cli.Author{
 		{
 			Name:  "The Dharitri Team",
-			Email: "contact@dharitri.com",
+			Email: "contact@dharitri.org",
 		},
 	}
 

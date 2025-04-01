@@ -3,10 +3,10 @@ package requesters
 import (
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
 	dataRetrieverTests "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/stretchr/testify/assert"
 )
 

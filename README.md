@@ -1,6 +1,6 @@
 <div style="text-align:center">
   <img
-  src="https://raw.githubusercontent.com/dharitri/drt-go-chain/master/dharitri-logo.svg"
+  src="https://raw.githubusercontent.com/TerraDharitri/drt-go-chain/main/dharitri-logo.svg"
   alt="Dharitri">
 </div>
 <br>
@@ -8,8 +8,8 @@
 [![](https://img.shields.io/badge/made%20by-Dharitri-blue.svg)](http://dharitri.org/)
 [![](https://img.shields.io/badge/project-Dharitri%20Mainnet-blue.svg)](https://explorer.dharitri.org/)
 [![Go Report Card](https://goreportcard.com/badge/github.com/TerraDharitri/drt-go-chain)](https://goreportcard.com/report/github.com/TerraDharitri/drt-go-chain)
-[![codecov](https://codecov.io/gh/dharitri/drt-go-chain/branch/master/graph/badge.svg?token=MYS5EDASOJ)](https://codecov.io/gh/dharitri/drt-go-chain)
-[![Contributors](https://img.shields.io/github/contributors/dharitri/drt-go-chain)](https://github.com/TerraDharitri/drt-go-chain/graphs/contributors)
+[![codecov](https://codecov.io/gh/TerraDharitri/drt-go-chain/branch/main/graph/badge.svg?token=MYS5EDASOJ)](https://codecov.io/gh/TerraDharitri/drt-go-chain)
+[![Contributors](https://img.shields.io/github/contributors/TerraDharitri/drt-go-chain)](https://github.com/TerraDharitri/drt-go-chain/graphs/contributors)
 
 # drt-go-chain
 
@@ -23,7 +23,7 @@ In order to join the network as an observer or as a validator, the required step
 The installation of go should proceed as shown in official golang installation guide https://golang.org/doc/install . In order to run the node, minimum golang version should be 1.17.6.
 
 ### Step 2: clone the repository and build the binaries:
-The main branch that will be used is the master branch. Alternatively, an older release tag can be used.
+The main branch that will be used is the main branch. Alternatively, an older release tag can be used.
 
 ```
 # set $GOPATH if not set and export to ~/.profile along with Go binary path
@@ -31,7 +31,7 @@ $ if [[ $GOPATH=="" ]]; then GOPATH="$HOME/go" fi
 $ mkdir -p $GOPATH/src/github.com/TerraDharitri
 $ cd $GOPATH/src/github.com/TerraDharitri
 $ git clone https://github.com/TerraDharitri/drt-go-chain
-$ cd drt-go-chain && git checkout master
+$ cd drt-go-chain && git checkout main
 $ cd cmd/node && go build
 ```
 The node depends on the Wasm Virtual Machine, which is automatically managed by the node.
@@ -66,7 +66,7 @@ The node binary has some flags defined (for a brief description, the user can us
 $ go test ./...	
 ```
 
-## Compiling new fields in .proto files (should be updated when required PR will be merged in gogo protobuf master branch):
+## Compiling new fields in .proto files (should be updated when required PR will be merged in gogo protobuf main branch):
 1. Download protoc compiler: https://github.com/protocolbuffers/protobuf/releases 
  (if you are running under linux on a x64 you might want to download protoc-3.11.4-linux-x86_64.zip)
 2. Expand archive, copy the /include/google folder in /usr/include using <br>
@@ -211,7 +211,7 @@ Please make sure your contributions adhere to our coding guidelines:
 
  - Code must adhere to the official Go [formatting](https://golang.org/doc/effective_go.html#formatting) guidelines.
  - Code must be documented adhering to the official Go [commentary](https://golang.org/doc/effective_go.html#commentary) guidelines.
- - Pull requests need to be based on and opened against the master branch.
+ - Pull requests need to be based on and opened against the main branch.
  - Commit messages should be prefixed with the package(s) they modify.
     - E.g. "outport/process: fixed a typo"
 

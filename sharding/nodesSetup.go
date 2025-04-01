@@ -136,9 +136,7 @@ func (ns *NodesSetup) processConfig() error {
 		address := ns.InitialNodes[i].Address
 		ns.InitialNodes[i].address, err = ns.addressPubkeyConverter.Decode(address)
 		if err != nil {
-			// return fmt.Errorf("%w, %s for string %s", ErrCouldNotParseAddress, err.Error(), address)
-			return fmt.Errorf("%w: failed to decode address %s: %v", ErrCouldNotParseAddress, address, err)
-
+			return fmt.Errorf("%w, %s for string %s", ErrCouldNotParseAddress, err.Error(), address)
 		}
 
 		// decoder treats empty string as correct, it is not allowed to have empty string as public key

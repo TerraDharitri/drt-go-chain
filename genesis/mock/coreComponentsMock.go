@@ -1,12 +1,12 @@
 package mock
 
 import (
+	"github.com/TerraDharitri/drt-go-chain/common"
+	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/data/typeConverters"
 	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
-	"github.com/TerraDharitri/drt-go-chain/common"
-	"github.com/TerraDharitri/drt-go-chain/process"
 )
 
 // CoreComponentsMock -

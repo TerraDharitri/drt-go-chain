@@ -3,10 +3,10 @@ package mock
 import (
 	"math/big"
 
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/TerraDharitri/drt-go-chain-core/data/outport"
 	"github.com/TerraDharitri/drt-go-chain/genesis"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/TerraDharitri/drt-go-chain-core/data/outport"
 )
 
 // AccountsParserStub -

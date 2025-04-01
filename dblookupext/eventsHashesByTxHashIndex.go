@@ -5,12 +5,12 @@ package dblookupext
 import (
 	"fmt"
 
+	"github.com/TerraDharitri/drt-go-chain/common/logging"
+	"github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/receipt"
 	"github.com/TerraDharitri/drt-go-chain-core/data/smartContractResult"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
-	"github.com/TerraDharitri/drt-go-chain/common/logging"
-	"github.com/TerraDharitri/drt-go-chain/storage"
 )
 
 type eventsHashesByTxHash struct {

@@ -12,7 +12,7 @@ USAGE:
    assessment [global options]
    
 AUTHOR:
-   The Dharitri Team <contact@dharitri.com>
+   The Dharitri Team <contact@dharitri.org>
    
 GLOBAL OPTIONS:
    --output-file value  The output file format where benchmarks will be written in csv format. (default: "./output-%host-%time.csv")

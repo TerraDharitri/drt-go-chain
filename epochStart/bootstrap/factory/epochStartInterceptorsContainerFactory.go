@@ -3,9 +3,6 @@ package factory
 import (
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data/typeConverters"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
@@ -18,6 +15,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/sharding"
 	"github.com/TerraDharitri/drt-go-chain/storage/cache"
 	"github.com/TerraDharitri/drt-go-chain/update"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data/typeConverters"
 )
 
 const timeSpanForBadHeaders = time.Minute

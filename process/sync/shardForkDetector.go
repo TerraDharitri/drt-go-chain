@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"math"
 
+	"github.com/TerraDharitri/drt-go-chain/consensus"
+	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain/consensus"
-	"github.com/TerraDharitri/drt-go-chain/process"
 )
 
 var _ process.ForkDetector = (*shardForkDetector)(nil)

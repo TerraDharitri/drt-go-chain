@@ -4,18 +4,18 @@ import (
 	"bytes"
 	"sort"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/TerraDharitri/drt-go-chain-core/hashing"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/epochStart"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
 	"github.com/davecgh/go-spew/spew"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/TerraDharitri/drt-go-chain-core/hashing"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 )
 
 var _ process.EpochStartDataCreator = (*epochStartData)(nil)

@@ -7,15 +7,15 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data/batch"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/mock"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/resolvers"
 	"github.com/TerraDharitri/drt-go-chain/p2p"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/p2pmocks"
 	trieMock "github.com/TerraDharitri/drt-go-chain/testscommon/trie"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data/batch"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

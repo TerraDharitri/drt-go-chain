@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/consensus"
 	"github.com/TerraDharitri/drt-go-chain/consensus/spos"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 )
 
 type subroundSignature struct {

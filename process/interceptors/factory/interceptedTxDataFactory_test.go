@@ -4,10 +4,10 @@ import (
 	"math/big"
 	"testing"
 
-	dataTransaction "github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
 	"github.com/TerraDharitri/drt-go-chain/process/transaction"
+	dataTransaction "github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	"github.com/stretchr/testify/assert"
 )
 

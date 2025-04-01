@@ -1,11 +1,11 @@
 package processor
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/hashing"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
 	"github.com/TerraDharitri/drt-go-chain/storage"
+	"github.com/TerraDharitri/drt-go-chain-core/hashing"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 )
 
 // ArgMiniblockInterceptorProcessor is the argument for the interceptor processor used for miniblocks

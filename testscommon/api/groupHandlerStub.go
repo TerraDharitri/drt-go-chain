@@ -1,8 +1,8 @@
 package api
 
 import (
-	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/gin-gonic/gin"
+	"github.com/TerraDharitri/drt-go-chain/config"
 )
 
 // GroupHandlerStub -

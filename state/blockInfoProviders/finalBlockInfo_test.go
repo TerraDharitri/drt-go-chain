@@ -3,9 +3,9 @@ package blockInfoProviders
 import (
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/common/holders"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/stretchr/testify/assert"
 )
 

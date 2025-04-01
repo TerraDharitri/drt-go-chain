@@ -80,7 +80,7 @@ cli-docs:
 lint-install:
 ifeq (,$(wildcard test -f bin/golangci-lint))
 	@echo "Installing golint"
-	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/main/install.sh | sh -s
 endif
 
 run-lint:

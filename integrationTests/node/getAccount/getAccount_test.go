@@ -4,14 +4,14 @@ import (
 	"math/big"
 	"testing"
 
-	chainData "github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/api"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests"
 	"github.com/TerraDharitri/drt-go-chain/node"
 	"github.com/TerraDharitri/drt-go-chain/state"
 	"github.com/TerraDharitri/drt-go-chain/state/blockInfoProviders"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	chainData "github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/api"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

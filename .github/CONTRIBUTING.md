@@ -1,7 +1,7 @@
 
 # Contributing to drt-go-chain
 
-If you are unfamiliar with the workflow of contributing to GitHub, you can refer to [this article](https://github.com/firstcontributions/first-contributions/blob/master/README.md)
+If you are unfamiliar with the workflow of contributing to GitHub, you can refer to [this article](https://github.com/firstcontributions/first-contributions/blob/main/README.md)
 
 ## External contributions 
 
@@ -9,13 +9,13 @@ If you are not part of the team and want to contribute to this repository, you m
 
 The development should happen in a personal fork, cloned on the local machine. **Make sure you use signed commits before opening** a pull request.
 
-For external contributors, the PRs should be targeted towards the `master` branch. A team responsible will instruct 
+For external contributors, the PRs should be targeted towards the `main` branch. A team responsible will instruct 
 the PR owner to re-target it against another branch, in accordance to internal branches management.
 
 **tl;dr**:
-- fork `drt-go-chain` and use `master` branch.
+- fork `drt-go-chain` and use `main` branch.
 - use signed commits. [docs](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits).
-- open a PR against the `master` branch of `dharitri/drt-go-chain`.
+- open a PR against the `main` branch of `TerraDharitri/drt-go-chain`.
 
 ## Use linter
 
@@ -55,14 +55,14 @@ Internal Branches/Releases Management (to be checked by both the code owner and 
 
 ### `drt-go-chain`
 If the PR is:
-1. a hotfix: it will be targeted towards `master` branch.
+1. a hotfix: it will be targeted towards `main` branch.
 2. a feature:
    2.1. a small feature (a single PR is needed): targeted towards an `rc` branch.
    2.2. a big feature (more than one PR is needed): create a feature branch (`feat/...`) that is targeted towards an `rc` branch.
 
-### Satellite projects (`drt-go-chain-vm-common`, `drt-chain-core-go`, and so on)
+### Satellite projects (`drt-go-chain-vm-common`, `drt-go-chain-core`, and so on)
 If the PR is:
-1. a hotfix: it will be targeted towards `master`/`main` branch.
+1. a hotfix: it will be targeted towards `main`/`main` branch.
 2. a feature:
    2.1. a small feature (a single PR is needed): targeted towards an `rc` branch and create a new tag&release after merging, and reference it in `drt-go-chain` (if needed).
    2.2. a big feature:

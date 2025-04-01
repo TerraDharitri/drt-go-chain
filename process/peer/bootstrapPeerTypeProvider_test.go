@@ -3,9 +3,9 @@ package peer
 import (
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/state"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/stretchr/testify/assert"
 )
 

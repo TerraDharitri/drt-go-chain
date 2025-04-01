@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/shardingMocks"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/stretchr/testify/assert"
 )
 

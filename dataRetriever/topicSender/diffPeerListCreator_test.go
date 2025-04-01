@@ -4,11 +4,11 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/mock"
-	topicsender "github.com/TerraDharitri/drt-go-chain/dataRetriever/topicSender"
+	"github.com/TerraDharitri/drt-go-chain/dataRetriever/topicSender"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -3,9 +3,9 @@ package factory
 import (
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	statusHandlerMock "github.com/TerraDharitri/drt-go-chain/testscommon/statusHandler"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/stretchr/testify/assert"
 )
 

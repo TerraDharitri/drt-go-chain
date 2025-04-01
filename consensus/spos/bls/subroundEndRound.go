@@ -7,15 +7,15 @@ import (
 	"sync"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/display"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/consensus"
 	"github.com/TerraDharitri/drt-go-chain/consensus/spos"
 	"github.com/TerraDharitri/drt-go-chain/p2p"
 	"github.com/TerraDharitri/drt-go-chain/process/headerCheck"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/display"
 )
 
 type subroundEndRound struct {

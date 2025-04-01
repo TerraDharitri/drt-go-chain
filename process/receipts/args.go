@@ -1,11 +1,11 @@
 package receipts
 
 import (
+	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
-	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 )
 
 // ArgsNewReceiptsRepository holds arguments for creating a receiptsRepository

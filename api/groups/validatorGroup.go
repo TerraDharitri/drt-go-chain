@@ -5,12 +5,12 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data/validator"
 	"github.com/TerraDharitri/drt-go-chain/api/errors"
 	"github.com/TerraDharitri/drt-go-chain/api/shared"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/gin-gonic/gin"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data/validator"
 )
 
 const (

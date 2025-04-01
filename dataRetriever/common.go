@@ -1,8 +1,8 @@
 package dataRetriever
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain/process/factory"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 )
 
 // SetEpochHandlerToHdrResolver sets the epoch handler to the metablock hdr resolver

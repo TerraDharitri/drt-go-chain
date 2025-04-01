@@ -5,9 +5,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/hashing"
-	"github.com/TerraDharitri/drt-go-chain-core/hashing/blake2b"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/common/holders"
 	disabledStatistics "github.com/TerraDharitri/drt-go-chain/common/statistics/disabled"
@@ -18,6 +15,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	testStorage "github.com/TerraDharitri/drt-go-chain/testscommon/storage"
 	"github.com/TerraDharitri/drt-go-chain/trie"
+	"github.com/TerraDharitri/drt-go-chain-core/hashing"
+	"github.com/TerraDharitri/drt-go-chain-core/hashing/blake2b"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/stretchr/testify/require"
 )
 

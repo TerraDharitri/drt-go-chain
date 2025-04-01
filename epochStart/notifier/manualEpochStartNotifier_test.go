@@ -4,9 +4,9 @@ import (
 	"sync/atomic"
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain/testscommon/genericMocks"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain/testscommon/genericMocks"
 	"github.com/stretchr/testify/assert"
 )
 

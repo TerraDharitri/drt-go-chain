@@ -4,10 +4,10 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/mock"
 	dataRetrieverMock "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/stretchr/testify/require"
 )
 

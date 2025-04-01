@@ -1,11 +1,11 @@
 package types
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain/epochStart"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/update"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 )
 
 // ScheduledDataSyncerCreateArgs holds the arguments to create a scheduled data syncer factory

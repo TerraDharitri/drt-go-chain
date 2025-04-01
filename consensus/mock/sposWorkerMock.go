@@ -3,10 +3,10 @@ package mock
 import (
 	"context"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain/consensus"
 	"github.com/TerraDharitri/drt-go-chain/p2p"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
 )
 
 // SposWorkerMock -

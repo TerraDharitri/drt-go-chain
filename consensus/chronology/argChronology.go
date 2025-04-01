@@ -3,9 +3,9 @@ package chronology
 import (
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain/consensus"
 	"github.com/TerraDharitri/drt-go-chain/ntp"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 )
 
 // ArgChronology holds all dependencies required by the chronology component

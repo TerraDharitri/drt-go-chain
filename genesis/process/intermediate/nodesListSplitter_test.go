@@ -4,12 +4,12 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/genesis"
 	"github.com/TerraDharitri/drt-go-chain/genesis/data"
 	"github.com/TerraDharitri/drt-go-chain/genesis/mock"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

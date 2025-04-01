@@ -5,9 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	p2pFactory "github.com/TerraDharitri/drt-go-chain/p2p/factory"
 	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/stretchr/testify/assert"
 )
 

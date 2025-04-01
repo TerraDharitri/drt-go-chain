@@ -1,13 +1,13 @@
 package storageBootstrap
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/block/bootstrapStorage"
 	"github.com/TerraDharitri/drt-go-chain/process/sync"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 )
 
 var _ process.BootstrapperFromStorage = (*shardStorageBootstrapper)(nil)

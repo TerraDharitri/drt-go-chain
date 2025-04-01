@@ -7,11 +7,11 @@ export METASHARD_ID=4294967295
 export DHARITRIDIR=$(dirname $(dirname $DHARITRITESTNETSCRIPTSDIR))
 
 # Enable the Dharitri Proxy. Note that this is a private repository
-# (drt-chain-proxy-go).
+# (drt-go-chain-proxy).
 export USE_PROXY=1
 
 # Enable the Dharitri Transaction Generator. Note that this is a private
-# repository (drt-chain-txgen-go).
+# repository (drt-go-chain-txgen).
 export USE_TXGEN=0
 
 # Path where the testnet will be instantiated. This folder is assumed to not
@@ -19,8 +19,8 @@ export USE_TXGEN=0
 # anyway.
 export TESTNETDIR="$HOME/Dharitri/testnet"
 
-# Path to drt-chain-deploy-go, branch: master. Default: near drt-go-chain.
-export CONFIGGENERATORDIR="$(dirname $DHARITRIDIR)/drt-chain-deploy-go/cmd/filegen"
+# Path to drt-go-chain-deploy, branch: main. Default: near drt-go-chain.
+export CONFIGGENERATORDIR="$(dirname $DHARITRIDIR)/drt-go-chain-deploy/cmd/filegen"
 export CONFIGGENERATOR="$CONFIGGENERATORDIR/filegen"    # Leave unchanged.
 export CONFIGGENERATOROUTPUTDIR="output"
 
@@ -119,7 +119,7 @@ fi
 ########################################################################
 # Proxy configuration
 
-# Path to drt-chain-proxy-go, branch: master. Default: near drt-go-chain.
+# Path to drt-go-chain-proxy, branch: main. Default: near drt-go-chain.
 export PROXYDIR="$(dirname $DHARITRIDIR)/drt-go-chain-proxy/cmd/proxy"
 export PROXY=$PROXYDIR/proxy    # Leave unchanged.
 
@@ -131,8 +131,8 @@ export PROXY_DELAY=10
 ########################################################################
 # TxGen configuration
 
-# Path to drt-chain-txgen-go. Default: near drt-go-chain.
-export TXGENDIR="$(dirname $DHARITRIDIR)/drt-chain-txgen-go/cmd/txgen"
+# Path to drt-go-chain-txgen. Default: near drt-go-chain.
+export TXGENDIR="$(dirname $DHARITRIDIR)/drt-go-chain-txgen/cmd/txgen"
 export TXGEN=$TXGENDIR/txgen    # Leave unchanged.
 
 export PORT_TXGEN="7951"

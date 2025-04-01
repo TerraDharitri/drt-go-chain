@@ -9,7 +9,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
 	"github.com/TerraDharitri/drt-go-chain/config"
-	errErd "github.com/TerraDharitri/drt-go-chain/errors"
+	errDrt "github.com/TerraDharitri/drt-go-chain/errors"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests/mock"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
@@ -35,7 +35,7 @@ func TestCreateShardCoordinator(t *testing.T) {
 		t.Parallel()
 
 		shardC, nodeType, err := CreateShardCoordinator(nil, nil, config.PreferencesConfig{}, nil)
-		require.Equal(t, errErd.ErrNilGenesisNodesSetupHandler, err)
+		require.Equal(t, errDrt.ErrNilGenesisNodesSetupHandler, err)
 		require.Empty(t, nodeType)
 		require.True(t, check.IfNil(shardC))
 	})
@@ -43,7 +43,7 @@ func TestCreateShardCoordinator(t *testing.T) {
 		t.Parallel()
 
 		shardC, nodeType, err := CreateShardCoordinator(&genesisMocks.NodesSetupStub{}, nil, config.PreferencesConfig{}, nil)
-		require.Equal(t, errErd.ErrNilPublicKey, err)
+		require.Equal(t, errDrt.ErrNilPublicKey, err)
 		require.Empty(t, nodeType)
 		require.True(t, check.IfNil(shardC))
 	})
@@ -51,7 +51,7 @@ func TestCreateShardCoordinator(t *testing.T) {
 		t.Parallel()
 
 		shardC, nodeType, err := CreateShardCoordinator(&genesisMocks.NodesSetupStub{}, &cryptoMocks.PublicKeyStub{}, config.PreferencesConfig{}, nil)
-		require.Equal(t, errErd.ErrNilLogger, err)
+		require.Equal(t, errDrt.ErrNilLogger, err)
 		require.Empty(t, nodeType)
 		require.True(t, check.IfNil(shardC))
 	})
@@ -211,7 +211,7 @@ func TestCreateNodesCoordinator(t *testing.T) {
 			&validatorInfoCacherMocks.ValidatorInfoCacherStub{},
 			&shardingMocks.NodesCoordinatorRegistryFactoryMock{},
 		)
-		require.Equal(t, errErd.ErrNilShuffleOutCloser, err)
+		require.Equal(t, errDrt.ErrNilShuffleOutCloser, err)
 		require.True(t, check.IfNil(nodesC))
 	})
 	t.Run("nil nodes config should error", func(t *testing.T) {
@@ -237,7 +237,7 @@ func TestCreateNodesCoordinator(t *testing.T) {
 			&validatorInfoCacherMocks.ValidatorInfoCacherStub{},
 			&shardingMocks.NodesCoordinatorRegistryFactoryMock{},
 		)
-		require.Equal(t, errErd.ErrNilGenesisNodesSetupHandler, err)
+		require.Equal(t, errDrt.ErrNilGenesisNodesSetupHandler, err)
 		require.True(t, check.IfNil(nodesC))
 	})
 	t.Run("nil epoch start notifier should error", func(t *testing.T) {
@@ -263,7 +263,7 @@ func TestCreateNodesCoordinator(t *testing.T) {
 			&validatorInfoCacherMocks.ValidatorInfoCacherStub{},
 			&shardingMocks.NodesCoordinatorRegistryFactoryMock{},
 		)
-		require.Equal(t, errErd.ErrNilEpochStartNotifier, err)
+		require.Equal(t, errDrt.ErrNilEpochStartNotifier, err)
 		require.True(t, check.IfNil(nodesC))
 	})
 	t.Run("nil pub key should error", func(t *testing.T) {
@@ -289,7 +289,7 @@ func TestCreateNodesCoordinator(t *testing.T) {
 			&validatorInfoCacherMocks.ValidatorInfoCacherStub{},
 			&shardingMocks.NodesCoordinatorRegistryFactoryMock{},
 		)
-		require.Equal(t, errErd.ErrNilPublicKey, err)
+		require.Equal(t, errDrt.ErrNilPublicKey, err)
 		require.True(t, check.IfNil(nodesC))
 	})
 	t.Run("nil bootstrap params should error", func(t *testing.T) {
@@ -315,7 +315,7 @@ func TestCreateNodesCoordinator(t *testing.T) {
 			&validatorInfoCacherMocks.ValidatorInfoCacherStub{},
 			&shardingMocks.NodesCoordinatorRegistryFactoryMock{},
 		)
-		require.Equal(t, errErd.ErrNilBootstrapParamsHandler, err)
+		require.Equal(t, errDrt.ErrNilBootstrapParamsHandler, err)
 		require.True(t, check.IfNil(nodesC))
 	})
 	t.Run("nil chan should error", func(t *testing.T) {
@@ -615,7 +615,7 @@ func TestCreateNodesShuffleOut(t *testing.T) {
 		t.Parallel()
 
 		shuffler, err := CreateNodesShuffleOut(nil, config.EpochStartConfig{}, make(chan endProcess.ArgEndProcess, 1))
-		require.Equal(t, errErd.ErrNilGenesisNodesSetupHandler, err)
+		require.Equal(t, errDrt.ErrNilGenesisNodesSetupHandler, err)
 		require.True(t, check.IfNil(shuffler))
 	})
 	t.Run("invalid MaxShuffledOutRestartThreshold should error", func(t *testing.T) {

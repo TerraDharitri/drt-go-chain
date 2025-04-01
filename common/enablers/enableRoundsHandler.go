@@ -5,9 +5,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/atomic"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain-core/core/atomic"
 )
 
 const (

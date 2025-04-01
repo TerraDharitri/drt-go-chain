@@ -4,12 +4,12 @@ import (
 	"crypto/rand"
 	"sync/atomic"
 
+	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data/batch"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
-	"github.com/TerraDharitri/drt-go-chain/process"
 )
 
 // blockSizeComputation is able to estimate the size in bytes of a block body given the number of contained

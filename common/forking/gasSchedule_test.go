@@ -6,10 +6,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/common/mock"
 	"github.com/TerraDharitri/drt-go-chain/config"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

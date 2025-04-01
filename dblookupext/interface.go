@@ -1,9 +1,9 @@
 package dblookupext
 
 import (
+	"github.com/TerraDharitri/drt-go-chain/dblookupext/dcdtSupply"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/TerraDharitri/drt-go-chain/dblookupext/dcdtSupply"
 )
 
 // HistoryRepositoryFactory can create new instances of HistoryRepository

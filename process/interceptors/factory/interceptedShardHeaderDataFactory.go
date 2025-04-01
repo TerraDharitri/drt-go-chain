@@ -1,12 +1,12 @@
 package factory
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/hashing"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/block/interceptedBlocks"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/hashing"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 )
 
 var _ process.InterceptedDataFactory = (*interceptedShardHeaderDataFactory)(nil)

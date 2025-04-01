@@ -5,9 +5,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
+	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
 )
 
 type storageRequester struct {

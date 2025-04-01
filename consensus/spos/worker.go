@@ -21,7 +21,7 @@ import (
 
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/consensus"
-	errorsErd "github.com/TerraDharitri/drt-go-chain/errors"
+	errorsDrt "github.com/TerraDharitri/drt-go-chain/errors"
 	"github.com/TerraDharitri/drt-go-chain/ntp"
 	"github.com/TerraDharitri/drt-go-chain/p2p"
 	"github.com/TerraDharitri/drt-go-chain/process"
@@ -443,8 +443,8 @@ func (wrk *Worker) shouldBlacklistPeer(err error) bool {
 		errors.Is(err, ErrMessageForPastRound) ||
 		errors.Is(err, ErrMessageForFutureRound) ||
 		errors.Is(err, ErrNodeIsNotInEligibleList) ||
-		errors.Is(err, errorsErd.ErrPIDMismatch) ||
-		errors.Is(err, errorsErd.ErrSignatureMismatch) ||
+		errors.Is(err, errorsDrt.ErrPIDMismatch) ||
+		errors.Is(err, errorsDrt.ErrSignatureMismatch) ||
 		errors.Is(err, nodesCoordinator.ErrEpochNodesConfigDoesNotExist) ||
 		errors.Is(err, ErrMessageTypeLimitReached) {
 		return false

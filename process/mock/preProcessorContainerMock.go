@@ -1,8 +1,8 @@
 package mock
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 )
 
 // PreProcessorContainerMock -

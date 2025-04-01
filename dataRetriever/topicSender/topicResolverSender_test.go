@@ -5,13 +5,13 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/mock"
-	topicsender "github.com/TerraDharitri/drt-go-chain/dataRetriever/topicSender"
+	"github.com/TerraDharitri/drt-go-chain/dataRetriever/topicSender"
 	"github.com/TerraDharitri/drt-go-chain/p2p"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/p2pmocks"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

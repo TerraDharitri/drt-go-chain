@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/cmd/assessment/mock"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

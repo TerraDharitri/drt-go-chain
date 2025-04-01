@@ -5,10 +5,6 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/epochStart"
 	"github.com/TerraDharitri/drt-go-chain/epochStart/bootstrap/disabled"
@@ -17,6 +13,10 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
 	"github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/trie/factory"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 )
 
 func (e *epochStartBootstrap) initializeFromLocalStorage() {

@@ -3,8 +3,9 @@ package testscommon
 import (
 	"bytes"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
 	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
+
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 )
 
 type keysHandlerSingleSignerMock struct {

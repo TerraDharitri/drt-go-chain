@@ -12,8 +12,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	dataTx "github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	apiErrors "github.com/TerraDharitri/drt-go-chain/api/errors"
 	"github.com/TerraDharitri/drt-go-chain/api/groups"
 	"github.com/TerraDharitri/drt-go-chain/api/mock"
@@ -22,6 +20,8 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/node/external"
 	txSimData "github.com/TerraDharitri/drt-go-chain/process/transactionEvaluator/data"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	dataTx "github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

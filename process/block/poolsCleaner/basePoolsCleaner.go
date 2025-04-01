@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 )
 
 const minRoundsToKeepUnprocessedData = int64(1)

@@ -3,10 +3,10 @@ package groups
 import (
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/data/api"
 	"github.com/TerraDharitri/drt-go-chain/api/errors"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/data/api"
 	"github.com/stretchr/testify/require"
 )
 

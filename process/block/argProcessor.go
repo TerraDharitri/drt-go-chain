@@ -1,11 +1,6 @@
 package block
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/typeConverters"
-	"github.com/TerraDharitri/drt-go-chain-core/hashing"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	nodeFactory "github.com/TerraDharitri/drt-go-chain/cmd/node/factory"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/config"
@@ -18,6 +13,11 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/sharding"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
 	"github.com/TerraDharitri/drt-go-chain/state"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/typeConverters"
+	"github.com/TerraDharitri/drt-go-chain-core/hashing"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 )
 
 type coreComponentsHolder interface {

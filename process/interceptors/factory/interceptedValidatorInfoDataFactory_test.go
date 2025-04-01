@@ -3,11 +3,11 @@ package factory
 import (
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/state"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

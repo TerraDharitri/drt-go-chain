@@ -1,11 +1,11 @@
 package factory
 
 import (
+	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain/process/peer"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
-	"github.com/TerraDharitri/drt-go-chain/process"
-	"github.com/TerraDharitri/drt-go-chain/process/peer"
 )
 
 type interceptedValidatorInfoDataFactory struct {

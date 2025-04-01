@@ -202,6 +202,8 @@ func InitConfigMetrics(
 	appStatusHandler.SetUInt64Value(common.MetricCryptoOpcodesV2EnableEpoch, uint64(enableEpochs.CryptoOpcodesV2EnableEpoch))
 	appStatusHandler.SetUInt64Value(common.MetricMultiDCDTNFTTransferAndExecuteByUserEnableEpoch, uint64(enableEpochs.MultiDCDTNFTTransferAndExecuteByUserEnableEpoch))
 	appStatusHandler.SetUInt64Value(common.MetricFixRelayedMoveBalanceToNonPayableSCEnableEpoch, uint64(enableEpochs.FixRelayedMoveBalanceToNonPayableSCEnableEpoch))
+	appStatusHandler.SetUInt64Value(common.MetricRelayedTransactionsV3EnableEpoch, uint64(enableEpochs.RelayedTransactionsV3EnableEpoch))
+	appStatusHandler.SetUInt64Value(common.MetricRelayedTransactionsV3FixDCDTTransferEnableEpoch, uint64(enableEpochs.RelayedTransactionsV3FixDCDTTransferEnableEpoch))
 
 	for i, nodesChangeConfig := range enableEpochs.MaxNodesChangeEnableEpoch {
 		epochEnable := fmt.Sprintf("%s%d%s", common.MetricMaxNodesChangeEnableEpoch, i, common.EpochEnableSuffix)

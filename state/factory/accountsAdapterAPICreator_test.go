@@ -4,7 +4,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/state"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
@@ -12,6 +11,7 @@ import (
 	mockState "github.com/TerraDharitri/drt-go-chain/testscommon/state"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/storageManager"
 	mockTrie "github.com/TerraDharitri/drt-go-chain/testscommon/trie"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/stretchr/testify/assert"
 )
 

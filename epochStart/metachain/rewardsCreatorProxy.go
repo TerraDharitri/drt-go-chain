@@ -4,12 +4,12 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/epochStart"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/state"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 )
 
 type configuredRewardsCreator string
@@ -26,7 +26,6 @@ type RewardsCreatorProxyArgs struct {
 	BaseRewardsCreatorArgs
 	StakingDataProvider   epochStart.StakingDataProvider
 	EconomicsDataProvider epochStart.EpochEconomicsDataProvider
-	RewardsHandler        process.RewardsHandler
 }
 
 type rewardsCreatorProxy struct {

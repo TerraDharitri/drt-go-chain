@@ -3,12 +3,6 @@ package storagerequesterscontainer
 import (
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
-	"github.com/TerraDharitri/drt-go-chain-core/data/typeConverters"
-	"github.com/TerraDharitri/drt-go-chain-core/hashing"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/common/statistics"
 	"github.com/TerraDharitri/drt-go-chain/config"
@@ -19,6 +13,12 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/p2p"
 	"github.com/TerraDharitri/drt-go-chain/process/factory"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
+	"github.com/TerraDharitri/drt-go-chain-core/data/typeConverters"
+	"github.com/TerraDharitri/drt-go-chain-core/hashing"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 )
 
 const defaultBeforeGracefulClose = time.Minute

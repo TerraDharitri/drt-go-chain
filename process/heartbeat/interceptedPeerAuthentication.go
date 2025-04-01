@@ -8,9 +8,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
-	logger "github.com/TerraDharitri/drt-go-chain-logger"
 	"github.com/TerraDharitri/drt-go-chain/heartbeat"
 	"github.com/TerraDharitri/drt-go-chain/process"
+	logger "github.com/TerraDharitri/drt-go-chain-logger"
 )
 
 // ArgInterceptedPeerAuthentication is the argument used in the intercepted peer authentication constructor

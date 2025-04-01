@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/TerraDharitri/drt-go-chain/p2p"
+	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain/process/factory"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
-	"github.com/TerraDharitri/drt-go-chain/p2p"
-	"github.com/TerraDharitri/drt-go-chain/process"
-	"github.com/TerraDharitri/drt-go-chain/process/factory"
 )
 
 // ArgsEpochStartMetaBlockInterceptor holds the arguments needed for creating a new epochStartMetaBlockInterceptor

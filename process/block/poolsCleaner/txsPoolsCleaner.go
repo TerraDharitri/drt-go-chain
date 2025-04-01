@@ -7,14 +7,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/core/closing"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/storage/txcache"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/core/closing"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
 )
 
 var _ closing.Closer = (*txsPoolsCleaner)(nil)

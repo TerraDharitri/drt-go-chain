@@ -3,10 +3,10 @@ package disabled
 import (
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain/consensus"
 	"github.com/TerraDharitri/drt-go-chain/p2p"
 	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 )
 
 var _ consensus.P2PAntifloodHandler = (*AntiFlood)(nil)

@@ -71,14 +71,6 @@ func TestMempoolHost_GetTransferredValue(t *testing.T) {
 			RcvAddr: testscommon.TestPubKeyAlice,
 			Data:    []byte("MultiDCDTNFTTransfer@8049d639e5a6980d1cd2392abcce41029cda74a1563523a202f09641cc2618f8@03@4e46542d313233343536@0a@01@544553542d393837363534@01@01@524557412d303030303030@@0de0b6b3a7640000"),
 		})
-		hexAmount := "0de0b6b3a7640000"
-		amount, success := new(big.Int).SetString(hexAmount, 16)
-		if !success {
-			fmt.Println("Failed to parse amount")
-		} else {
-			fmt.Println("Parsed amount:", amount)
-		}
-		fmt.Print(value)
 		require.Equal(t, big.NewInt(1000000000000000000), value)
 	})
 

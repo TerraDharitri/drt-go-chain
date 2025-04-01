@@ -12,7 +12,7 @@ func TestLogsConverter_TxLogToApiResourceShouldWork(t *testing.T) {
 	pkConverter, _ := pubkeyConverter.NewBech32PubkeyConverter(32, "drt")
 	logsConverter := newLogsConverter(pkConverter)
 
-	contractAddressBech32 := "drt1qqqqqqqqqqqqqpgqxwakt2g7u9atsnr03gqcgmhcv38pt7mkd94q8vqld4"
+	contractAddressBech32 := "drt1qqqqqqqqqqqqqpgq2nfn5uxjjkjlrzad3jrak8p3p30v79pseddsxzxpzs"
 	contractAddress, _ := pkConverter.Decode(contractAddressBech32)
 
 	txLog := &transaction.Log{

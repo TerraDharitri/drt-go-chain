@@ -9,10 +9,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/partitioning"
-	"github.com/TerraDharitri/drt-go-chain-core/data/batch"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/mock"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/resolvers"
@@ -20,6 +16,10 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/p2p"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/p2pmocks"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/partitioning"
+	"github.com/TerraDharitri/drt-go-chain-core/data/batch"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

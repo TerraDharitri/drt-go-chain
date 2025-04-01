@@ -1,8 +1,8 @@
 package state
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/common"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 )
 
 // PeerAccountsDB will save and synchronize data from peer processor, plus will synchronize with nodesCoordinator

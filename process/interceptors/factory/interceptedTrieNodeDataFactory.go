@@ -1,10 +1,10 @@
 package factory
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/trie"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 )
 
 var _ process.InterceptedDataFactory = (*interceptedTrieNodeDataFactory)(nil)

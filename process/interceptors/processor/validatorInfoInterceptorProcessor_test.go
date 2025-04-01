@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/epochStart/mock"
 	"github.com/TerraDharitri/drt-go-chain/process"
@@ -14,6 +13,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

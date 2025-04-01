@@ -537,7 +537,7 @@ func TestPeerInfo_PeerInfoErrorsShouldErr(t *testing.T) {
 func TestPeerInfo_PeerInfoShouldWork(t *testing.T) {
 	t.Parallel()
 
-	pidProvided := "16Uiu2HAmRCVXdXqt8BXfhrzotczHdrtXvgHPd7iwGWvS53JT1xdw6"
+	pidProvided := "16Uiu2HAmRCVXdXqt8BXfhrzotczHDRTXvgHPd7iwGWvS53JT1xdw6"
 	val := core.QueryP2PPeerInfo{
 		Pid: pidProvided,
 	}

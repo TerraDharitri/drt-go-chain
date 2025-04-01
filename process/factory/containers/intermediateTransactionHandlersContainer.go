@@ -3,10 +3,10 @@ package containers
 import (
 	"fmt"
 
+	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/core/container"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/TerraDharitri/drt-go-chain/process"
 )
 
 var _ process.IntermediateProcessorContainer = (*intermediateTransactionHandlersContainer)(nil)

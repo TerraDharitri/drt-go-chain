@@ -6,10 +6,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/hashing"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/TerraDharitri/drt-go-chain/api/mock"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/common/errChan"
@@ -26,6 +22,10 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/trie"
 	"github.com/TerraDharitri/drt-go-chain/trie/keyBuilder"
 	"github.com/TerraDharitri/drt-go-chain/trie/storageMarker"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/hashing"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

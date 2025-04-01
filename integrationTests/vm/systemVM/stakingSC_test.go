@@ -8,8 +8,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests"
@@ -18,6 +16,8 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/state"
 	"github.com/TerraDharitri/drt-go-chain/state/accounts"
 	"github.com/TerraDharitri/drt-go-chain/vm"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

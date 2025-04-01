@@ -3,9 +3,9 @@ package processor
 import (
 	"strconv"
 
+	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain/process"
 )
 
 type shardProvider interface {

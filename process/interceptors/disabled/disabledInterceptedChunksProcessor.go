@@ -1,8 +1,8 @@
 package disabled
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/data/batch"
 	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain-core/data/batch"
 )
 
 type disabledInterceptedChunksProcessor struct {

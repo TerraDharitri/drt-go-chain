@@ -1,10 +1,10 @@
 package blockchain
 
 import (
+	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain/common"
 )
 
 var _ data.ChainHandler = (*blockChain)(nil)

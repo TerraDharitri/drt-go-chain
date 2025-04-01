@@ -16,7 +16,7 @@
     #   "1" for Mainnet
     #   "D" for Devnet
     #   "T" for Testnet
-    ChainID = "T"
+    ChainID = "undefined"
 
     # MinTransactionVersion represents the minimum transaction version accepted
     MinTransactionVersion = 1
@@ -813,7 +813,7 @@
     FolderPath = "health-records"
 
 [SoftwareVersionConfig]
-    StableTagLocation = "https://api.github.com/repos/dharitri/drt-chain-go/releases/latest"
+    StableTagLocation = "https://api.github.com/repos/TerraDharitri/drt-go-chain/releases/latest"
     PollingIntervalInMinutes = 65
 
 [GatewayMetricsConfig]

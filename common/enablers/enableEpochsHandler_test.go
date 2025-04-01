@@ -123,6 +123,8 @@ func createEnableEpochsConfig() config.EnableEpochs {
 		MultiDCDTNFTTransferAndExecuteByUserEnableEpoch:          106,
 		FixRelayedMoveBalanceToNonPayableSCEnableEpoch:           107,
 		UseGasBoundedShouldFailExecutionEnableEpoch:              108,
+		RelayedTransactionsV3EnableEpoch:                         109,
+		RelayedTransactionsV3FixDCDTTransferEnableEpoch:          110,
 	}
 }
 
@@ -448,6 +450,8 @@ func TestEnableEpochsHandler_GetActivationEpoch(t *testing.T) {
 	require.Equal(t, cfg.FixRelayedBaseCostEnableEpoch, handler.GetActivationEpoch(common.FixRelayedBaseCostFlag))
 	require.Equal(t, cfg.MultiDCDTNFTTransferAndExecuteByUserEnableEpoch, handler.GetActivationEpoch(common.MultiDCDTNFTTransferAndExecuteByUserFlag))
 	require.Equal(t, cfg.FixRelayedMoveBalanceToNonPayableSCEnableEpoch, handler.GetActivationEpoch(common.FixRelayedMoveBalanceToNonPayableSCFlag))
+	require.Equal(t, cfg.RelayedTransactionsV3EnableEpoch, handler.GetActivationEpoch(common.RelayedTransactionsV3Flag))
+	require.Equal(t, cfg.RelayedTransactionsV3FixDCDTTransferEnableEpoch, handler.GetActivationEpoch(common.RelayedTransactionsV3FixDCDTTransferFlag))
 }
 
 func TestEnableEpochsHandler_IsInterfaceNil(t *testing.T) {

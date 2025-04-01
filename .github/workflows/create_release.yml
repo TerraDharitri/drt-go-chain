@@ -3,7 +3,7 @@ name: Create release
 on:
   push:
     branches:
-      - master
+      - main
       - rc/*
   workflow_dispatch:
 
@@ -19,14 +19,14 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     name: Build
     steps:
-      - name: Set up Go 1.23.5
-        uses: actions/setup-go@v3
+      - name: Set up Go 1.20.7
+        uses: actions/setup-go@v5
         with:
-          go-version: 1.23.5
+          go-version: 1.20.7
         id: go
 
       - name: Check out code into the Go module directory
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: "0"
 
@@ -47,7 +47,7 @@ jobs:
           GOPATH=$(go env GOPATH)
           ARCHIVE="dharitri_""$APP_VER_SHORT""_""$GOOS""_""$GOARCH"".zip"
           BUILD_DIR=${GITHUB_WORKSPACE}/build
-          VM_GO_VERSION=$(cat go.mod | grep drt-chain-vm-go | sort -n | tail -n -1| awk -F '/' '{print$3}'| sed 's/ /@/g')
+          VM_GO_VERSION=$(cat go.mod | grep drt-go-chain-vm | sort -n | tail -n -1| awk -F '/' '{print$3}'| sed 's/ /@/g')
           VM_GO_DIR=${GOPATH}/pkg/mod/github.com/TerraDharitri/${VM_GO_VERSION}
 
           echo "GOOS=${GOOS}" >> $GITHUB_ENV
@@ -140,7 +140,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
         # https://docs.github.com/en/free-pro-team@latest/actions/guides/storing-workflow-data-as-artifacts#downloading-or-deleting-artifacts
         # A directory for each artifact is created using its name

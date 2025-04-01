@@ -1,9 +1,9 @@
 package mock
 
 import (
+	txSimData "github.com/TerraDharitri/drt-go-chain/process/transactionEvaluator/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
-	txSimData "github.com/TerraDharitri/drt-go-chain/process/transactionEvaluator/data"
 )
 
 // TransactionSimulatorStub -

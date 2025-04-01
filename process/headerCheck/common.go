@@ -1,10 +1,10 @@
 package headerCheck
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
 )
 
 // ComputeConsensusGroup will compute the consensus group that assembled the provided block

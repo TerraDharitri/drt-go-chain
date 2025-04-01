@@ -211,6 +211,8 @@ func TestInitConfigMetrics(t *testing.T) {
 			FixRelayedBaseCostEnableEpoch:                            104,
 			MultiDCDTNFTTransferAndExecuteByUserEnableEpoch:          105,
 			FixRelayedMoveBalanceToNonPayableSCEnableEpoch:           106,
+			RelayedTransactionsV3EnableEpoch:                         107,
+			RelayedTransactionsV3FixDCDTTransferEnableEpoch:          108,
 			MaxNodesChangeEnableEpoch: []config.MaxNodesChangeConfig{
 				{
 					EpochEnable:            0,
@@ -332,6 +334,8 @@ func TestInitConfigMetrics(t *testing.T) {
 		"drt_fix_relayed_base_cost_enable_epoch":                               uint32(104),
 		"drt_multi_dcdt_transfer_execute_by_user_enable_epoch":                 uint32(105),
 		"drt_fix_relayed_move_balance_to_non_payable_sc_enable_epoch":          uint32(106),
+		"drt_relayed_transactions_v3_enable_epoch":                             uint32(107),
+		"drt_relayed_transactions_v3_fix_dcdt_transfer_enable_epoch":           uint32(108),
 		"drt_max_nodes_change_enable_epoch":                                    nil,
 		"drt_total_supply":                                                     "12345",
 		"drt_hysteresis":                                                       "0.100000",

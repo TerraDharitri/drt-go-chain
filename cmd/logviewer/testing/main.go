@@ -39,7 +39,7 @@ VERSION:
 	// addressFlag defines a flag for setting the address and port on which the node will listen for connections
 	addressFlag = cli.StringFlag{
 		Name:        "address",
-		Usage:       "Address and port number on which the application will try to connect to the drt-chain-go node",
+		Usage:       "Address and port number on which the application will try to connect to the drt-go-chain node",
 		Value:       "127.0.0.1:8080",
 		Destination: &address,
 	}
@@ -87,7 +87,7 @@ func initCliFlags() {
 	cliApp.Authors = []cli.Author{
 		{
 			Name:  "The Dharitri Team",
-			Email: "contact@dharitri.com",
+			Email: "contact@dharitri.org",
 		},
 	}
 }

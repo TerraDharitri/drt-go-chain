@@ -2,17 +2,19 @@ package relayedTx
 
 import (
 	"encoding/hex"
-	"fmt"
 	"math/big"
 
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
+	logger "github.com/TerraDharitri/drt-go-chain-logger"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/state"
 )
+
+var log = logger.GetOrCreate("relayedtests")
 
 // CreateGeneralSetupForRelayTxTest will create the general setup for relayed transactions
 func CreateGeneralSetupForRelayTxTest(baseCostFixEnabled bool) ([]*integrationTests.TestProcessorNode, []int, []*integrationTests.TestWalletAccount, *integrationTests.TestWalletAccount) {
@@ -94,7 +96,7 @@ func CreateAndSendRelayedAndUserTx(
 
 	_, err := txDispatcherNode.SendTransaction(relayedTx)
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Error("CreateAndSendRelayedAndUserTx.SendTransaction", "error", err)
 	}
 
 	return relayedTx, userTx
@@ -117,10 +119,32 @@ func CreateAndSendRelayedAndUserTxV2(
 
 	_, err := txDispatcherNode.SendTransaction(relayedTx)
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Error("CreateAndSendRelayedAndUserTxV2.SendTransaction", "error", err)
 	}
 
 	return relayedTx, userTx
+}
+
+// CreateAndSendRelayedAndUserTxV3 will create and send a relayed user transaction v3
+func CreateAndSendRelayedAndUserTxV3(
+	nodes []*integrationTests.TestProcessorNode,
+	relayer *integrationTests.TestWalletAccount,
+	player *integrationTests.TestWalletAccount,
+	rcvAddr []byte,
+	value *big.Int,
+	gasLimit uint64,
+	txData []byte,
+) (*transaction.Transaction, *transaction.Transaction) {
+	txDispatcherNode := getNodeWithinSameShardAsPlayer(nodes, relayer.Address)
+
+	relayedTx := createRelayedTxV3(txDispatcherNode.EconomicsData, relayer, player, rcvAddr, value, gasLimit, txData)
+
+	_, err := txDispatcherNode.SendTransaction(relayedTx)
+	if err != nil {
+		log.Error("CreateAndSendRelayedAndUserTxV3.SendTransaction", "error", err)
+	}
+
+	return relayedTx, relayedTx
 }
 
 func createUserTx(
@@ -212,6 +236,40 @@ func createRelayedTxV2(
 	return tx
 }
 
+func createRelayedTxV3(
+	economicsFee process.FeeHandler,
+	relayer *integrationTests.TestWalletAccount,
+	player *integrationTests.TestWalletAccount,
+	rcvAddr []byte,
+	value *big.Int,
+	gasLimit uint64,
+	txData []byte,
+) *transaction.Transaction {
+	tx := &transaction.Transaction{
+		Nonce:       player.Nonce,
+		Value:       big.NewInt(0).Set(value),
+		RcvAddr:     rcvAddr,
+		SndAddr:     player.Address,
+		GasPrice:    integrationTests.MinTxGasPrice,
+		GasLimit:    gasLimit + integrationTests.MinTxGasLimit,
+		Data:        txData,
+		ChainID:     integrationTests.ChainID,
+		Version:     integrationTests.MinTransactionVersion,
+		RelayerAddr: relayer.Address,
+	}
+	txBuff, _ := tx.GetDataForSigning(integrationTests.TestAddressPubkeyConverter, integrationTests.TestTxSignMarshalizer, integrationTests.TestTxSignHasher)
+	tx.Signature, _ = player.SingleSigner.Sign(player.SkTxSign, txBuff)
+	tx.RelayerSignature, _ = relayer.SingleSigner.Sign(relayer.SkTxSign, txBuff)
+
+	player.Nonce++
+	player.Balance.Sub(player.Balance, value)
+
+	txFee := economicsFee.ComputeTxFee(tx)
+	relayer.Balance.Sub(relayer.Balance, txFee)
+
+	return tx
+}
+
 func createAndSendSimpleTransaction(
 	nodes []*integrationTests.TestProcessorNode,
 	player *integrationTests.TestWalletAccount,
@@ -225,7 +283,7 @@ func createAndSendSimpleTransaction(
 	userTx := createUserTx(player, rcvAddr, value, gasLimit, txData)
 	_, err := txDispatcherNode.SendTransaction(userTx)
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Error("createAndSendSimpleTransaction.SendTransaction", "error", err)
 	}
 
 }

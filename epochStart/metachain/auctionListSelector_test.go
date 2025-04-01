@@ -705,9 +705,9 @@ func TestAuctionListSelector_calcSoftAuctionNodesConfigEdgeCases(t *testing.T) {
 	t.Run("large top up difference, would qualify more nodes than an owner has, expect correct computation", func(t *testing.T) {
 		argsLargeTopUp := createAuctionListSelectorArgs(nil)
 		argsLargeTopUp.SoftAuctionConfig = config.SoftAuctionConfig{
-			TopUpStep:             "10000000000000000000",       // 10 REWA
-			MinTopUp:              "1000000000000000000",        // 1 REWA
-			MaxTopUp:              "32000000000000000000000000", // 32 mil REWA
+			TopUpStep:             "10000000000000000000",       // 10 rEWA
+			MinTopUp:              "1000000000000000000",        // 1 rEWA
+			MaxTopUp:              "32000000000000000000000000", // 32 mil rEWA
 			MaxNumberOfIterations: 10,
 		}
 		argsLargeTopUp.Denomination = 18
@@ -718,7 +718,7 @@ func TestAuctionListSelector_calcSoftAuctionNodesConfigEdgeCases(t *testing.T) {
 		v2 := &state.ValidatorInfo{PublicKey: []byte("pk2")}
 
 		oneREWA, _ := big.NewInt(0).SetString("1000000000000000000", 10)
-		owner1TopUp, _ := big.NewInt(0).SetString("32000000000000000000000000", 10) // 31 mil REWA
+		owner1TopUp, _ := big.NewInt(0).SetString("32000000000000000000000000", 10) // 31 mil rEWA
 		owner1 := "owner1"
 		owner2 := "owner2"
 		ownersData := map[string]*OwnerAuctionData{

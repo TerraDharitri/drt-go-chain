@@ -3,9 +3,6 @@ package integrationTests
 import (
 	"fmt"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
-	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests/mock"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
@@ -15,6 +12,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/testscommon/genesisMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/nodeTypeProviderMock"
 	vic "github.com/TerraDharitri/drt-go-chain/testscommon/validatorInfoCacher"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
+	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 )
 
 // ArgIndexHashedNodesCoordinatorFactory -

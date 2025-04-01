@@ -3,10 +3,10 @@ package epochProviders
 import (
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/resolvers/epochproviders"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/resolvers/epochproviders/disabled"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

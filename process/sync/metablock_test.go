@@ -11,10 +11,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/consensus/round"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
@@ -30,6 +26,10 @@ import (
 	stateMock "github.com/TerraDharitri/drt-go-chain/testscommon/state"
 	statusHandlerMock "github.com/TerraDharitri/drt-go-chain/testscommon/statusHandler"
 	storageStubs "github.com/TerraDharitri/drt-go-chain/testscommon/storage"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

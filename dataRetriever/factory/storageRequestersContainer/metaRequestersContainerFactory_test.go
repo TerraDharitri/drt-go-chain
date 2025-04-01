@@ -4,8 +4,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
 	"github.com/TerraDharitri/drt-go-chain/common/statistics"
 	"github.com/TerraDharitri/drt-go-chain/common/statistics/disabled"
 	"github.com/TerraDharitri/drt-go-chain/config"
@@ -18,6 +16,8 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/p2pmocks"
 	storageStubs "github.com/TerraDharitri/drt-go-chain/testscommon/storage"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

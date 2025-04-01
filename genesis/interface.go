@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"math/big"
 
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/TerraDharitri/drt-go-chain-core/data/outport"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
 	"github.com/TerraDharitri/drt-go-chain/state"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/TerraDharitri/drt-go-chain-core/data/outport"
 )
 
 // DelegationType defines the constant used when checking if a smart contract is of delegation type

@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"fmt"
 
+	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 )
 
 var _ dataRetriever.PeerListCreator = (*diffPeerListCreator)(nil)

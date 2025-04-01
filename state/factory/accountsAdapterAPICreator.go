@@ -3,9 +3,9 @@ package factory
 import (
 	"fmt"
 
-	chainData "github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain/state"
 	"github.com/TerraDharitri/drt-go-chain/state/blockInfoProviders"
+	chainData "github.com/TerraDharitri/drt-go-chain-core/data"
 )
 
 // CreateAccountsAdapterAPIOnFinal creates a new instance of AccountsAdapterAPI that tracks the final blocks state

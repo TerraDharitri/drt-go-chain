@@ -21,7 +21,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/common/factory"
 	disabledStatistics "github.com/TerraDharitri/drt-go-chain/common/statistics/disabled"
 	"github.com/TerraDharitri/drt-go-chain/config"
-	errorsdrt "github.com/TerraDharitri/drt-go-chain/errors"
+	errorsDrt "github.com/TerraDharitri/drt-go-chain/errors"
 	"github.com/TerraDharitri/drt-go-chain/factory/mock"
 	processComp "github.com/TerraDharitri/drt-go-chain/factory/processing"
 	"github.com/TerraDharitri/drt-go-chain/genesis"
@@ -199,9 +199,12 @@ func createMockProcessComponentsFactoryArgs() processComp.ProcessComponentsFacto
 				},
 			},
 			EpochChangeNotifier: &epochNotifier.EpochNotifierStub{},
-			EconomicsHandler: &economicsmocks.EconomicsHandlerStub{
-				ProtocolSustainabilityAddressCalled: func() string {
+			EconomicsHandler: &economicsmocks.EconomicsHandlerMock{
+				ProtocolSustainabilityAddressInEpochCalled: func(epoch uint32) string {
 					return testingProtocolSustainabilityAddress
+				},
+				GenesisTotalSupplyCalled: func() *big.Int {
+					return big.NewInt(100000000)
 				},
 			},
 			Hash:                         blake2b.NewBlake2b(),
@@ -278,7 +281,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 		args := createMockProcessComponentsFactoryArgs()
 		args.AccountsParser = nil
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilAccountsParser))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilAccountsParser))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil GasSchedule should error", func(t *testing.T) {
@@ -287,7 +290,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 		args := createMockProcessComponentsFactoryArgs()
 		args.GasSchedule = nil
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilGasSchedule))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilGasSchedule))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil Data should error", func(t *testing.T) {
@@ -296,7 +299,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 		args := createMockProcessComponentsFactoryArgs()
 		args.Data = nil
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilDataComponentsHolder))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilDataComponentsHolder))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil BlockChain should error", func(t *testing.T) {
@@ -307,7 +310,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 			BlockChain: nil,
 		}
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilBlockChainHandler))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilBlockChainHandler))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil DataPool should error", func(t *testing.T) {
@@ -319,7 +322,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 			DataPool:   nil,
 		}
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilDataPoolsHolder))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilDataPoolsHolder))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil StorageService should error", func(t *testing.T) {
@@ -332,7 +335,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 			Store:      nil,
 		}
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilStorageService))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilStorageService))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil CoreData should error", func(t *testing.T) {
@@ -341,7 +344,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 		args := createMockProcessComponentsFactoryArgs()
 		args.CoreData = nil
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilCoreComponentsHolder))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilCoreComponentsHolder))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil EconomicsData should error", func(t *testing.T) {
@@ -352,7 +355,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 			EconomicsHandler: nil,
 		}
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilEconomicsData))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilEconomicsData))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil GenesisNodesSetup should error", func(t *testing.T) {
@@ -360,11 +363,11 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 
 		args := createMockProcessComponentsFactoryArgs()
 		args.CoreData = &mock.CoreComponentsMock{
-			EconomicsHandler: &economicsmocks.EconomicsHandlerStub{},
+			EconomicsHandler: &economicsmocks.EconomicsHandlerMock{},
 			NodesConfig:      nil,
 		}
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilGenesisNodesSetupHandler))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilGenesisNodesSetupHandler))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil AddressPubKeyConverter should error", func(t *testing.T) {
@@ -372,12 +375,12 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 
 		args := createMockProcessComponentsFactoryArgs()
 		args.CoreData = &mock.CoreComponentsMock{
-			EconomicsHandler: &economicsmocks.EconomicsHandlerStub{},
+			EconomicsHandler: &economicsmocks.EconomicsHandlerMock{},
 			NodesConfig:      &nodesSetupMock.NodesSetupStub{},
 			AddrPubKeyConv:   nil,
 		}
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilAddressPublicKeyConverter))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilAddressPublicKeyConverter))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil EpochNotifier should error", func(t *testing.T) {
@@ -385,13 +388,13 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 
 		args := createMockProcessComponentsFactoryArgs()
 		args.CoreData = &mock.CoreComponentsMock{
-			EconomicsHandler:    &economicsmocks.EconomicsHandlerStub{},
+			EconomicsHandler:    &economicsmocks.EconomicsHandlerMock{},
 			NodesConfig:         &nodesSetupMock.NodesSetupStub{},
 			AddrPubKeyConv:      &testscommon.PubkeyConverterStub{},
 			EpochChangeNotifier: nil,
 		}
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilEpochNotifier))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilEpochNotifier))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil ValidatorPubKeyConverter should error", func(t *testing.T) {
@@ -399,14 +402,14 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 
 		args := createMockProcessComponentsFactoryArgs()
 		args.CoreData = &mock.CoreComponentsMock{
-			EconomicsHandler:    &economicsmocks.EconomicsHandlerStub{},
+			EconomicsHandler:    &economicsmocks.EconomicsHandlerMock{},
 			NodesConfig:         &nodesSetupMock.NodesSetupStub{},
 			AddrPubKeyConv:      &testscommon.PubkeyConverterStub{},
 			EpochChangeNotifier: &epochNotifier.EpochNotifierStub{},
 			ValPubKeyConv:       nil,
 		}
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilPubKeyConverter))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilPubKeyConverter))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil InternalMarshalizer should error", func(t *testing.T) {
@@ -414,7 +417,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 
 		args := createMockProcessComponentsFactoryArgs()
 		args.CoreData = &mock.CoreComponentsMock{
-			EconomicsHandler:    &economicsmocks.EconomicsHandlerStub{},
+			EconomicsHandler:    &economicsmocks.EconomicsHandlerMock{},
 			NodesConfig:         &nodesSetupMock.NodesSetupStub{},
 			AddrPubKeyConv:      &testscommon.PubkeyConverterStub{},
 			EpochChangeNotifier: &epochNotifier.EpochNotifierStub{},
@@ -422,7 +425,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 			IntMarsh:            nil,
 		}
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilInternalMarshalizer))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilInternalMarshalizer))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil Uint64ByteSliceConverter should error", func(t *testing.T) {
@@ -430,7 +433,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 
 		args := createMockProcessComponentsFactoryArgs()
 		args.CoreData = &mock.CoreComponentsMock{
-			EconomicsHandler:    &economicsmocks.EconomicsHandlerStub{},
+			EconomicsHandler:    &economicsmocks.EconomicsHandlerMock{},
 			NodesConfig:         &nodesSetupMock.NodesSetupStub{},
 			AddrPubKeyConv:      &testscommon.PubkeyConverterStub{},
 			EpochChangeNotifier: &epochNotifier.EpochNotifierStub{},
@@ -439,7 +442,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 			UInt64ByteSliceConv: nil,
 		}
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilUint64ByteSliceConverter))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilUint64ByteSliceConverter))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil Crypto should error", func(t *testing.T) {
@@ -448,7 +451,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 		args := createMockProcessComponentsFactoryArgs()
 		args.Crypto = nil
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilCryptoComponentsHolder))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilCryptoComponentsHolder))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil BlockSignKeyGen should error", func(t *testing.T) {
@@ -459,7 +462,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 			BlKeyGen: nil,
 		}
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilBlockSignKeyGen))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilBlockSignKeyGen))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil State should error", func(t *testing.T) {
@@ -468,7 +471,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 		args := createMockProcessComponentsFactoryArgs()
 		args.State = nil
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilStateComponentsHolder))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilStateComponentsHolder))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil AccountsAdapter should error", func(t *testing.T) {
@@ -479,7 +482,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 			Accounts: nil,
 		}
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilAccountsAdapter))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilAccountsAdapter))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil Network should error", func(t *testing.T) {
@@ -488,7 +491,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 		args := createMockProcessComponentsFactoryArgs()
 		args.Network = nil
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilNetworkComponentsHolder))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilNetworkComponentsHolder))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil NetworkMessenger should error", func(t *testing.T) {
@@ -499,7 +502,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 			Messenger: nil,
 		}
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilMessenger))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilMessenger))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil InputAntiFloodHandler should error", func(t *testing.T) {
@@ -511,7 +514,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 			InputAntiFlood: nil,
 		}
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilInputAntiFloodHandler))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilInputAntiFloodHandler))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil SystemSCConfig should error", func(t *testing.T) {
@@ -520,7 +523,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 		args := createMockProcessComponentsFactoryArgs()
 		args.SystemSCConfig = nil
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilSystemSCConfig))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilSystemSCConfig))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil BootstrapComponents should error", func(t *testing.T) {
@@ -529,7 +532,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 		args := createMockProcessComponentsFactoryArgs()
 		args.BootstrapComponents = nil
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilBootstrapComponentsHolder))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilBootstrapComponentsHolder))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil ShardCoordinator should error", func(t *testing.T) {
@@ -540,7 +543,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 			ShCoordinator: nil,
 		}
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilShardCoordinator))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilShardCoordinator))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil EpochBootstrapParams should error", func(t *testing.T) {
@@ -552,7 +555,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 			BootstrapParams: nil,
 		}
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilBootstrapParamsHandler))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilBootstrapParamsHandler))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil StatusComponents should error", func(t *testing.T) {
@@ -561,7 +564,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 		args := createMockProcessComponentsFactoryArgs()
 		args.StatusComponents = nil
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilStatusComponentsHolder))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilStatusComponentsHolder))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil OutportHandler should error", func(t *testing.T) {
@@ -572,7 +575,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 			Outport: nil,
 		}
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilOutportHandler))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilOutportHandler))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil HistoryRepo should error", func(t *testing.T) {
@@ -581,7 +584,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 		args := createMockProcessComponentsFactoryArgs()
 		args.HistoryRepo = nil
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilHistoryRepository))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilHistoryRepository))
 		require.Nil(t, pcf)
 	})
 	t.Run("nil StatusCoreComponents should error", func(t *testing.T) {
@@ -590,7 +593,7 @@ func TestNewProcessComponentsFactory(t *testing.T) {
 		args := createMockProcessComponentsFactoryArgs()
 		args.StatusCoreComponents = nil
 		pcf, err := processComp.NewProcessComponentsFactory(args)
-		require.True(t, errors.Is(err, errorsdrt.ErrNilStatusCoreComponents))
+		require.True(t, errors.Is(err, errorsDrt.ErrNilStatusCoreComponents))
 		require.Nil(t, pcf)
 	})
 	t.Run("should work", func(t *testing.T) {
@@ -697,7 +700,7 @@ func TestProcessComponentsFactory_Create(t *testing.T) {
 		blockChainStub.GetGenesisHeaderCalled = func() coreData.HeaderHandler {
 			return nil
 		}
-		testCreateWithArgs(t, args, errorsdrt.ErrGenesisBlockNotInitialized.Error())
+		testCreateWithArgs(t, args, errorsDrt.ErrGenesisBlockNotInitialized.Error())
 	})
 	t.Run("indexGenesisBlocks fails due to GenerateInitialTransactions failure should error", func(t *testing.T) {
 		t.Parallel()

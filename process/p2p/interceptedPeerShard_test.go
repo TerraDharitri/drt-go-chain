@@ -6,10 +6,10 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	p2pFactory "github.com/TerraDharitri/drt-go-chain/p2p/factory"
 	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/stretchr/testify/assert"
 )
 

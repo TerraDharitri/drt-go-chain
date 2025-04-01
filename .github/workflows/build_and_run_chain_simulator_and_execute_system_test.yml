@@ -30,9 +30,9 @@ jobs:
     env:
       BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
       TARGET_BRANCH: ""
-      drt_CHAIN_GO_TARGET_BRANCH: ""
-      drt_CHAIN_SIMULATOR_TARGET_BRANCH: ""
-      drt_CHAIN_TESTING_SUITE_TARGET_BRANCH: ""
+      DRT_GO_CHAIN_TARGET_BRANCH: ""
+      DRT_CHAIN_SIMULATOR_TARGET_BRANCH: ""
+      DRT_CHAIN_TESTING_SUITE_TARGET_BRANCH: ""
 
     steps:
       - name: Determine Target Branches
@@ -42,18 +42,18 @@ jobs:
 
           # Default target branches based on the PR base branch
           if [[ "${{ github.event.pull_request.base.ref }}" == "main" ]]; then
-            echo "drt_CHAIN_SIMULATOR_TARGET_BRANCH=main" >> $GITHUB_ENV
-            echo "drt_CHAIN_TESTING_SUITE_TARGET_BRANCH=main" >> $GITHUB_ENV
-          elif [[ "${{ github.event.pull_request.base.ref }}" == "master" ]]; then
-            echo "drt_CHAIN_SIMULATOR_TARGET_BRANCH=main" >> $GITHUB_ENV
-            echo "drt_CHAIN_TESTING_SUITE_TARGET_BRANCH=main" >> $GITHUB_ENV
+            echo "DRT_CHAIN_SIMULATOR_TARGET_BRANCH=main" >> $GITHUB_ENV
+            echo "DRT_CHAIN_TESTING_SUITE_TARGET_BRANCH=main" >> $GITHUB_ENV
+          elif [[ "${{ github.event.pull_request.base.ref }}" == "main" ]]; then
+            echo "DRT_CHAIN_SIMULATOR_TARGET_BRANCH=main" >> $GITHUB_ENV
+            echo "DRT_CHAIN_TESTING_SUITE_TARGET_BRANCH=main" >> $GITHUB_ENV
           else
-            echo "drt_CHAIN_SIMULATOR_TARGET_BRANCH=${{ github.event.pull_request.base.ref }}" >> $GITHUB_ENV
-            echo "drt_CHAIN_TESTING_SUITE_TARGET_BRANCH=${{ github.event.pull_request.base.ref }}" >> $GITHUB_ENV
+            echo "DRT_CHAIN_SIMULATOR_TARGET_BRANCH=${{ github.event.pull_request.base.ref }}" >> $GITHUB_ENV
+            echo "DRT_CHAIN_TESTING_SUITE_TARGET_BRANCH=${{ github.event.pull_request.base.ref }}" >> $GITHUB_ENV
           fi
 
-          # Always set drt_CHAIN_GO_TARGET_BRANCH based on the PR base branch
-          echo "drt_CHAIN_GO_TARGET_BRANCH=${{ github.event.pull_request.base.ref }}" >> $GITHUB_ENV
+          # Always set DRT_GO_CHAIN_TARGET_BRANCH based on the PR base branch
+          echo "DRT_GO_CHAIN_TARGET_BRANCH=${{ github.event.pull_request.base.ref }}" >> $GITHUB_ENV
 
 
       - name: Fetch and Parse Last Comment for Branches
@@ -76,15 +76,15 @@ jobs:
               core.setOutput('latest_comment', body);
 
               // Parse the branches from the last comment
-              const simulatorBranchMatch = body.match(/drt-chain-simulator-go:\s*(\S+)/);
+              const simulatorBranchMatch = body.match(/drt-go-chain-simulator:\s*(\S+)/);
               const testingSuiteBranchMatch = body.match(/drt-chain-testing-suite:\s*(\S+)/);
 
               // Override the target branches if specified
               if (simulatorBranchMatch) {
-                core.exportVariable('drt_CHAIN_SIMULATOR_TARGET_BRANCH', simulatorBranchMatch[1]);
+                core.exportVariable('DRT_CHAIN_SIMULATOR_TARGET_BRANCH', simulatorBranchMatch[1]);
               }
               if (testingSuiteBranchMatch) {
-                core.exportVariable('drt_CHAIN_TESTING_SUITE_TARGET_BRANCH', testingSuiteBranchMatch[1]);
+                core.exportVariable('DRT_CHAIN_TESTING_SUITE_TARGET_BRANCH', testingSuiteBranchMatch[1]);
               }
             } else {
               core.info('The last comment does not contain "Run Tests:". Skipping branch override.');
@@ -94,20 +94,20 @@ jobs:
       - name: Print Target Branches
         run: |
           echo "Current branch drt-go-chain: ${{ env.CURRENT_BRANCH }}"
-          echo "drt-go-chain target branch: ${{ env.drt_CHAIN_GO_TARGET_BRANCH }}"
-          echo "drt-chain-simulator-go target branch: ${{ env.drt_CHAIN_SIMULATOR_TARGET_BRANCH }}"
-          echo "drt-chain-testing-suite target branch: ${{ env.drt_CHAIN_TESTING_SUITE_TARGET_BRANCH }}"
+          echo "drt-go-chain target branch: ${{ env.DRT_GO_CHAIN_TARGET_BRANCH }}"
+          echo "drt-go-chain-simulator target branch: ${{ env.DRT_CHAIN_SIMULATOR_TARGET_BRANCH }}"
+          echo "drt-chain-testing-suite target branch: ${{ env.DRT_CHAIN_TESTING_SUITE_TARGET_BRANCH }}"
 
-      - name: Set up Go 1.23.5
-        uses: actions/setup-go@v3
+      - name: Set up Go 1.20.7
+        uses: actions/setup-go@v5
         with:
-          go-version: 1.23.5
+          go-version: 1.20.7
         id: go
 
       - name: Checkout drt-go-chain
         uses: actions/checkout@v4
         with:
-          repository: 'dharitri/drt-go-chain'
+          repository: 'TerraDharitri/drt-go-chain'
           ref: ${{ github.head_ref }}
           fetch-depth: 0
           path: 'drt-go-chain'
@@ -122,12 +122,12 @@ jobs:
           echo "LATEST_COMMIT_HASH=${latest_commit_hash}" >> $GITHUB_ENV
           echo "Latest commit hash: ${latest_commit_hash}"
 
-      - name: Checkout drt-chain-simulator-go
+      - name: Checkout drt-go-chain-simulator
         uses: actions/checkout@v4
         with:
-          repository: 'dharitri/drt-chain-simulator-go'
-          ref: ${{ env.drt_CHAIN_SIMULATOR_TARGET_BRANCH || github.event.pull_request.base.ref }}
-          path: 'drt-chain-simulator-go'
+          repository: 'TerraDharitri/drt-go-chain-simulator'
+          ref: ${{ env.DRT_CHAIN_SIMULATOR_TARGET_BRANCH || github.event.pull_request.base.ref }}
+          path: 'drt-go-chain-simulator'
 
       - name: Set up Python 3.10
         uses: actions/setup-python@v2
@@ -136,24 +136,24 @@ jobs:
 
       - name: Install Python Dependencies and Update go.mod
         run: |
-          cd drt-chain-simulator-go
+          cd drt-go-chain-simulator
           pip install -r scripts/update-go-mod/requirements.txt
           python scripts/update-go-mod/update-go-mod.py $LATEST_COMMIT_HASH
 
       - name: Run go build
         run: |
-          cd drt-chain-simulator-go/cmd/chainsimulator
+          cd drt-go-chain-simulator/cmd/chainsimulator
           go build
           echo "CHAIN_SIMULATOR_BUILD_PATH=$(pwd)" >> $GITHUB_ENV
 
       - name: Checkout drt-chain-testing-suite
         uses: actions/checkout@v4
         with:
-          repository: 'dharitri/drt-chain-testing-suite'
+          repository: 'TerraDharitri/drt-chain-testing-suite'
           path: 'drt-chain-testing-suite'
           fetch-depth: 0
-          ref: ${{ env.drt_CHAIN_TESTING_SUITE_TARGET_BRANCH || github.event.pull_request.base.ref }}
-          token: ${{ secrets.MVX_TESTER_GH_TOKEN }}
+          ref: ${{ env.DRT_CHAIN_TESTING_SUITE_TARGET_BRANCH || github.event.pull_request.base.ref }}
+          token: ${{ secrets.DRT_TESTER_GH_TOKEN }}
 
       - name: Install Dependencies
         run: |
@@ -179,7 +179,7 @@ jobs:
 
       - name: Upload test report
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pytest-report-${{ github.run_id }}
           path: reports/report.html
@@ -215,7 +215,7 @@ jobs:
             git commit -m "Deploy Test Report at $BRANCH_NAME/$TIMESTAMP"
 
             # Set remote URL with authentication token
-            git remote set-url origin https://x-access-token:${{ secrets.MVX_TESTER_GH_TOKEN }}@github.com/TerraDharitri/drt-chain-testing-suite.git
+            git remote set-url origin https://x-access-token:${{ secrets.DRT_TESTER_GH_TOKEN }}@github.com/TerraDharitri/drt-chain-testing-suite.git
 
             # Push changes to the remote 'gh-pages' branch
             git push --force origin gh-pages
@@ -255,9 +255,9 @@ jobs:
           TIMESTAMP: ${{ env.TIMESTAMP }}
           BRANCH_NAME: ${{ env.BRANCH_NAME }}
           CURRENT_BRANCH: ${{ env.CURRENT_BRANCH }}
-          drt_CHAIN_GO_TARGET_BRANCH: ${{ env.drt_CHAIN_GO_TARGET_BRANCH }}
-          drt_CHAIN_SIMULATOR_TARGET_BRANCH: ${{ env.drt_CHAIN_SIMULATOR_TARGET_BRANCH }}
-          drt_CHAIN_TESTING_SUITE_TARGET_BRANCH: ${{ env.drt_CHAIN_TESTING_SUITE_TARGET_BRANCH }}
+          DRT_GO_CHAIN_TARGET_BRANCH: ${{ env.DRT_GO_CHAIN_TARGET_BRANCH }}
+          DRT_CHAIN_SIMULATOR_TARGET_BRANCH: ${{ env.DRT_CHAIN_SIMULATOR_TARGET_BRANCH }}
+          DRT_CHAIN_TESTING_SUITE_TARGET_BRANCH: ${{ env.DRT_CHAIN_TESTING_SUITE_TARGET_BRANCH }}
           LATEST_COMMIT_HASH: ${{ env.LATEST_COMMIT_HASH }}
           PYTEST_EXIT_CODE: ${{ env.PYTEST_EXIT_CODE }}
 
@@ -267,9 +267,9 @@ jobs:
             const timestamp = process.env.TIMESTAMP;
             const branchName = process.env.BRANCH_NAME;
             const currentBranch = process.env.CURRENT_BRANCH;
-            const goTargetBranch = process.env.drt_CHAIN_GO_TARGET_BRANCH;
-            const simulatorTargetBranch = process.env.drt_CHAIN_SIMULATOR_TARGET_BRANCH;
-            const testingSuiteTargetBranch = process.env.drt_CHAIN_TESTING_SUITE_TARGET_BRANCH;
+            const goTargetBranch = process.env.DRT_GO_CHAIN_TARGET_BRANCH;
+            const simulatorTargetBranch = process.env.DRT_CHAIN_SIMULATOR_TARGET_BRANCH;
+            const testingSuiteTargetBranch = process.env.DRT_CHAIN_TESTING_SUITE_TARGET_BRANCH;
             const commitHash = process.env.LATEST_COMMIT_HASH;
             const exitCode = process.env.PYTEST_EXIT_CODE;
             const issue_number = context.issue.number;
@@ -286,7 +286,7 @@ jobs:
               - **drt-go-chain Commit Hash:** \`${commitHash}\`
               - **Current Branch:** \`${currentBranch}\`
               - **drt-go-chain Target Branch:** \`${goTargetBranch}\`
-              - **drt-chain-simulator-go Target Branch:** \`${simulatorTargetBranch}\`
+              - **drt-go-chain-simulator Target Branch:** \`${simulatorTargetBranch}\`
               - **drt-chain-testing-suite Target Branch:** \`${testingSuiteTargetBranch}\`
             
               🚀 **Environment Variables:**

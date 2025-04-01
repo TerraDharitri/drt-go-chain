@@ -3,8 +3,8 @@ package spos
 import (
 	"sync"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/consensus"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 )
 
 // roundConsensus defines the data needed by spos to do the consensus in each round

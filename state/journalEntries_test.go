@@ -4,13 +4,13 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/state"
 	"github.com/TerraDharitri/drt-go-chain/state/accounts"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
 	stateMock "github.com/TerraDharitri/drt-go-chain/testscommon/state"
 	trieMock "github.com/TerraDharitri/drt-go-chain/testscommon/trie"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/stretchr/testify/assert"
 )
 

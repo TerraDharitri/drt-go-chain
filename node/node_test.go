@@ -2214,7 +2214,7 @@ func TestCreateTransaction_SignatureLengthChecks(t *testing.T) {
 	coreComponents.VmMarsh = getMarshalizer()
 	coreComponents.TxMarsh = getMarshalizer()
 	coreComponents.Hash = getHasher()
-	coreComponents.EconomicsHandler = &economicsmocks.EconomicsHandlerStub{
+	coreComponents.EconomicsHandler = &economicsmocks.EconomicsHandlerMock{
 		GenesisTotalSupplyCalled: func() *big.Int {
 			str := strings.Repeat("1", maxValueLength)
 			bi := big.NewInt(0)
@@ -2284,7 +2284,7 @@ func TestCreateTransaction_SenderLengthChecks(t *testing.T) {
 	coreComponents.ChainIdCalled = func() string {
 		return chainID
 	}
-	coreComponents.EconomicsHandler = &economicsmocks.EconomicsHandlerStub{
+	coreComponents.EconomicsHandler = &economicsmocks.EconomicsHandlerMock{
 		GenesisTotalSupplyCalled: func() *big.Int {
 			str := strings.Repeat("1", maxLength)
 			bi := big.NewInt(0)
@@ -2345,7 +2345,7 @@ func TestCreateTransaction_ReceiverLengthChecks(t *testing.T) {
 	coreComponents.ChainIdCalled = func() string {
 		return chainID
 	}
-	coreComponents.EconomicsHandler = &economicsmocks.EconomicsHandlerStub{
+	coreComponents.EconomicsHandler = &economicsmocks.EconomicsHandlerMock{
 		GenesisTotalSupplyCalled: func() *big.Int {
 			str := strings.Repeat("1", maxLength)
 			bi := big.NewInt(0)
@@ -2405,7 +2405,7 @@ func TestCreateTransaction_TooBigSenderUsernameShouldErr(t *testing.T) {
 	coreComponents.ChainIdCalled = func() string {
 		return chainID
 	}
-	coreComponents.EconomicsHandler = &economicsmocks.EconomicsHandlerStub{
+	coreComponents.EconomicsHandler = &economicsmocks.EconomicsHandlerMock{
 		GenesisTotalSupplyCalled: func() *big.Int {
 			str := strings.Repeat("1", maxLength)
 			bi := big.NewInt(0)
@@ -2458,7 +2458,7 @@ func TestCreateTransaction_TooBigReceiverUsernameShouldErr(t *testing.T) {
 	coreComponents.ChainIdCalled = func() string {
 		return chainID
 	}
-	coreComponents.EconomicsHandler = &economicsmocks.EconomicsHandlerStub{
+	coreComponents.EconomicsHandler = &economicsmocks.EconomicsHandlerMock{
 		GenesisTotalSupplyCalled: func() *big.Int {
 			str := strings.Repeat("1", maxLength)
 			bi := big.NewInt(0)
@@ -2511,7 +2511,7 @@ func TestCreateTransaction_DataFieldSizeExceedsMaxShouldErr(t *testing.T) {
 	coreComponents.ChainIdCalled = func() string {
 		return chainID
 	}
-	coreComponents.EconomicsHandler = &economicsmocks.EconomicsHandlerStub{
+	coreComponents.EconomicsHandler = &economicsmocks.EconomicsHandlerMock{
 		GenesisTotalSupplyCalled: func() *big.Int {
 			str := strings.Repeat("1", maxLength)
 			bi := big.NewInt(0)
@@ -2564,7 +2564,7 @@ func TestCreateTransaction_TooLargeValueFieldShouldErr(t *testing.T) {
 	coreComponents.ChainIdCalled = func() string {
 		return chainID
 	}
-	coreComponents.EconomicsHandler = &economicsmocks.EconomicsHandlerStub{
+	coreComponents.EconomicsHandler = &economicsmocks.EconomicsHandlerMock{
 		GenesisTotalSupplyCalled: func() *big.Int {
 			str := strings.Repeat("1", maxLength)
 			bi := big.NewInt(0)
@@ -2875,7 +2875,7 @@ func TestCreateTransaction_TxSignedWithHashShouldErrVersionShoudBe2(t *testing.T
 		return chainID
 	}
 
-	feeHandler := &economicsmocks.EconomicsHandlerStub{
+	feeHandler := &economicsmocks.EconomicsHandlerMock{
 		CheckValidityTxValuesCalled: func(tx data.TransactionWithFeeHandler) error {
 			return nil
 		},
@@ -2965,7 +2965,7 @@ func TestCreateTransaction_TxSignedWithHashNoEnabledShouldErr(t *testing.T) {
 		},
 	}
 
-	feeHandler := &economicsmocks.EconomicsHandlerStub{
+	feeHandler := &economicsmocks.EconomicsHandlerMock{
 		CheckValidityTxValuesCalled: func(tx data.TransactionWithFeeHandler) error {
 			return nil
 		},
@@ -3039,15 +3039,63 @@ func TestValidateTransaction_ShouldAdaptAccountNotFoundError(t *testing.T) {
 		node.WithCryptoComponents(getDefaultCryptoComponents()),
 	)
 
-	tx := &transaction.Transaction{
-		SndAddr:   bytes.Repeat([]byte("1"), 32),
-		RcvAddr:   bytes.Repeat([]byte("1"), 32),
-		Value:     big.NewInt(37),
-		Signature: []byte("signature"),
-		ChainID:   []byte("chainID"),
-	}
-	err := n.ValidateTransaction(tx)
-	require.Equal(t, "insufficient funds for address drt1xycnzvf3xycnzvf3xycnzvf3xycnzvf3xycnzvf3xycnzvf3xycsuyh7wy", err.Error())
+	t.Run("normal tx", func(t *testing.T) {
+		tx := &transaction.Transaction{
+			SndAddr:   bytes.Repeat([]byte("1"), 32),
+			RcvAddr:   bytes.Repeat([]byte("1"), 32),
+			Value:     big.NewInt(37),
+			Signature: []byte("signature"),
+			ChainID:   []byte("chainID"),
+		}
+
+		err := n.ValidateTransaction(tx)
+		require.Equal(t, "insufficient funds for address drt1xycnzvf3xycnzvf3xycnzvf3xycnzvf3xycnzvf3xycnzvf3xycsuyh7wy", err.Error())
+	})
+	t.Run("relayed tx v3, no funds for sender", func(t *testing.T) {
+		tx := &transaction.Transaction{
+			SndAddr:          bytes.Repeat([]byte("1"), 32),
+			RcvAddr:          bytes.Repeat([]byte("1"), 32),
+			Value:            big.NewInt(37),
+			Signature:        []byte("sSignature"),
+			RelayerAddr:      bytes.Repeat([]byte("2"), 32),
+			RelayerSignature: []byte("rSignature"),
+			ChainID:          []byte("chainID"),
+		}
+		err := n.ValidateTransaction(tx)
+		require.Equal(t, "insufficient funds for address drt1xycnzvf3xycnzvf3xycnzvf3xycnzvf3xycnzvf3xycnzvf3xycsuyh7wy", err.Error())
+	})
+	t.Run("relayed tx v3, no funds for relayer", func(t *testing.T) {
+		tx := &transaction.Transaction{
+			SndAddr:          bytes.Repeat([]byte("1"), 32),
+			RcvAddr:          bytes.Repeat([]byte("1"), 32),
+			Value:            big.NewInt(37),
+			Signature:        []byte("sSignature"),
+			RelayerAddr:      bytes.Repeat([]byte("2"), 32),
+			RelayerSignature: []byte("rSignature"),
+			ChainID:          []byte("chainID"),
+		}
+
+		stateComp := getDefaultStateComponents()
+		stateComp.AccountsAPI = &stateMock.AccountsStub{
+			GetExistingAccountCalled: func(addressContainer []byte) (vmcommon.AccountHandler, error) {
+				if bytes.Equal(addressContainer, tx.SndAddr) {
+					return &stateMock.UserAccountStub{}, nil
+				}
+
+				return nil, errors.New("account not found")
+			},
+		}
+		nLocal, _ := node.NewNode(
+			node.WithCoreComponents(getDefaultCoreComponents()),
+			node.WithBootstrapComponents(getDefaultBootstrapComponents()),
+			node.WithProcessComponents(getDefaultProcessComponents()),
+			node.WithStateComponents(stateComp),
+			node.WithCryptoComponents(getDefaultCryptoComponents()),
+		)
+
+		err := nLocal.ValidateTransaction(tx)
+		require.Equal(t, "insufficient funds for address drt1xgeryv3jxgeryv3jxgeryv3jxgeryv3jxgeryv3jxgeryv3jxgeq3jsemv", err.Error())
+	})
 }
 
 func TestCreateShardedStores_NilShardCoordinatorShouldError(t *testing.T) {
@@ -5294,7 +5342,7 @@ func getDefaultCoreComponents() *nodeMockFactory.CoreComponentsMock {
 		StartTime:                time.Time{},
 		EpochChangeNotifier:      &epochNotifier.EpochNotifierStub{},
 		TxVersionCheckHandler:    versioning.NewTxVersionChecker(0),
-		EnableEpochsHandlerField: &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
+		EnableEpochsHandlerField: enableEpochsHandlerMock.NewEnableEpochsHandlerStub(common.RelayedTransactionsV3Flag),
 	}
 }
 

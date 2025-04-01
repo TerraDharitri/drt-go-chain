@@ -7,14 +7,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data/batch"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/interceptors"
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/p2pmocks"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data/batch"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

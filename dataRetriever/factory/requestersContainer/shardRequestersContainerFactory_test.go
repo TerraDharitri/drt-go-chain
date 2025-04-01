@@ -5,9 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	requesterscontainer "github.com/TerraDharitri/drt-go-chain/dataRetriever/factory/requestersContainer"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
+	"github.com/TerraDharitri/drt-go-chain/dataRetriever/factory/requestersContainer"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/mock"
 	"github.com/TerraDharitri/drt-go-chain/p2p"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/p2pmocks"

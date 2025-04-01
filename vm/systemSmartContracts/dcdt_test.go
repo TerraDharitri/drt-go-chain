@@ -2812,7 +2812,7 @@ func TestDcdt_SetSpecialRoleNewSendRoleChangeDataErr(t *testing.T) {
 			return tokenBytes
 		},
 		TransferCalled: func(destination []byte, sender []byte, value *big.Int, input []byte, _ uint64) {
-			require.Equal(t, []byte("DCDTSetRole@6d79546f6b656e@45534454526f6c654c6f63616c4275726e"), input)
+			require.Equal(t, []byte("DCDTSetRole@6d79546f6b656e@44434454526f6c654c6f63616c4275726e"), input)
 		},
 	}
 	args.Eei = eei
@@ -2848,7 +2848,7 @@ func TestDcdt_SetSpecialRoleAlreadyExists(t *testing.T) {
 			return tokenBytes
 		},
 		TransferCalled: func(destination []byte, sender []byte, value *big.Int, input []byte, _ uint64) {
-			require.Equal(t, []byte("DCDTSetRole@6d79546f6b656e@45534454526f6c654c6f63616c4275726e"), input)
+			require.Equal(t, []byte("DCDTSetRole@6d79546f6b656e@44434454526f6c654c6f63616c4275726e"), input)
 		},
 	}
 	args.Eei = eei

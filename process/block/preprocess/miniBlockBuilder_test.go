@@ -6,9 +6,6 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/storage/txcache"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
@@ -16,6 +13,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
 	stateMock "github.com/TerraDharitri/drt-go-chain/testscommon/state"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -837,7 +837,17 @@ func createDefaultMiniBlockBuilderArgs() miniBlocksBuilderArgs {
 					return 0
 				},
 			},
-			economicsFee: &economicsmocks.EconomicsHandlerStub{},
+			economicsFee: &economicsmocks.EconomicsHandlerMock{
+				MaxGasLimitPerTxCalled: func() uint64 {
+					return 1000000
+				},
+				MaxGasLimitPerBlockForSafeCrossShardCalled: func() uint64 {
+					return 1000000
+				},
+				MaxGasLimitPerBlockCalled: func(shardID uint32) uint64 {
+					return 1000000
+				},
+			},
 			gasHandler: &testscommon.GasHandlerStub{
 				RemoveGasProvidedCalled: func(hashes [][]byte) {
 				},

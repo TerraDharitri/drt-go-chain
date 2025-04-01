@@ -4,9 +4,9 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/errors"
 	"github.com/TerraDharitri/drt-go-chain/state/accounts"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/stretchr/testify/assert"
 )
 

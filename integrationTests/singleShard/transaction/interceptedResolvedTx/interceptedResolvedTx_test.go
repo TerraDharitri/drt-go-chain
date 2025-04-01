@@ -7,12 +7,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/data/rewardTx"
-	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/factory"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/data/rewardTx"
+	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

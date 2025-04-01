@@ -1,14 +1,14 @@
 package process
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/hashing"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/state"
 	disabledState "github.com/TerraDharitri/drt-go-chain/state/disabled"
 	"github.com/TerraDharitri/drt-go-chain/state/storagePruningManager/disabled"
 	"github.com/TerraDharitri/drt-go-chain/trie"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/hashing"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 )
 
 const maxTrieLevelInMemory = uint(5)

@@ -4,9 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain/cmd/termui/provider"
 	"github.com/TerraDharitri/drt-go-chain/common"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

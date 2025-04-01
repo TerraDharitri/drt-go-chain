@@ -146,4 +146,4 @@ const TxCacheSelectionGasRequested = 10_000_000_000
 const TxCacheSelectionMaxNumTxs = 30_000
 
 // TxCacheSelectionLoopMaximumDuration defines the maximum duration for the loop that selects transactions from the cache.
-const TxCacheSelectionLoopMaximumDuration = 250 * time.Millisecond
+const TxCacheSelectionLoopMaximumDuration = 150 * time.Millisecond

@@ -110,28 +110,24 @@ func CreateShardGenesisBlock(
 
 	scAddresses, scTxs, err := deployInitialSmartContracts(processors, arg, deployMetrics)
 	if err != nil {
-		fmt.Println(1)
 		return nil, nil, nil, err
 	}
 	indexingData.DeployInitialScTxs = scTxs
 
 	numSetBalances, err := setBalancesToTrie(arg)
 	if err != nil {
-		fmt.Println(2)
 		return nil, nil, nil, fmt.Errorf("%w encountered when creating genesis block for shard %d while setting the balances to trie",
 			err, arg.ShardCoordinator.SelfId())
 	}
 
 	numStaked, err := increaseStakersNonces(processors, arg)
 	if err != nil {
-		fmt.Println(3)
 		return nil, nil, nil, fmt.Errorf("%w encountered when creating genesis block for shard %d while incrementing nonces",
 			err, arg.ShardCoordinator.SelfId())
 	}
 
 	delegationResult, delegationTxs, err := executeDelegation(processors, arg, nodesListSplitter)
 	if err != nil {
-		fmt.Println(4)
 		return nil, nil, nil, fmt.Errorf("%w encountered when creating genesis block for shard %d while execution delegation",
 			err, arg.ShardCoordinator.SelfId())
 	}
@@ -139,7 +135,6 @@ func CreateShardGenesisBlock(
 
 	numCrossShardDelegations, err := incrementNoncesForCrossShardDelegations(processors, arg)
 	if err != nil {
-		fmt.Println(5)
 		return nil, nil, nil, fmt.Errorf("%w encountered when creating genesis block for shard %d while incrementing crossshard nonce",
 			err, arg.ShardCoordinator.SelfId())
 	}
@@ -149,7 +144,6 @@ func CreateShardGenesisBlock(
 
 	rootHash, err := arg.Accounts.Commit()
 	if err != nil {
-		fmt.Println(6)
 		return nil, nil, nil, fmt.Errorf("%w encountered when creating genesis block for shard %d while commiting",
 			err, arg.ShardCoordinator.SelfId())
 	}
@@ -170,19 +164,16 @@ func CreateShardGenesisBlock(
 	headerHandler := arg.versionedHeaderFactory.Create(epoch)
 	err = setInitialDataInHeader(headerHandler, arg, epoch, nonce, round, rootHash)
 	if err != nil {
-		fmt.Println(7)
 		return nil, nil, nil, err
 	}
 
 	err = processors.vmContainer.Close()
 	if err != nil {
-		fmt.Println(8)
 		return nil, nil, nil, err
 	}
 
 	err = processors.vmContainersFactory.Close()
 	if err != nil {
-		fmt.Println(9)
 		return nil, nil, nil, err
 	}
 

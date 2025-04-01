@@ -1,9 +1,9 @@
 package topicsender
 
 import (
-	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/p2p"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 )
 
 var _ dataRetriever.TopicResolverSender = (*topicResolverSender)(nil)
