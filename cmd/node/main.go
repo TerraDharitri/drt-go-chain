@@ -64,16 +64,16 @@ func main() {
 
 	app := cli.NewApp()
 	cli.AppHelpTemplate = nodeHelpTemplate
-	app.Name = "DharitrI Node CLI App"
+	app.Name = "Dharitri Node CLI App"
 	machineID := core.GetAnonymizedMachineID(app.Name)
 
 	baseVersion := fmt.Sprintf("%s/%s/%s-%s", appVersion, runtime.Version(), runtime.GOOS, runtime.GOARCH)
 	app.Version = fmt.Sprintf("%s/%s", baseVersion, machineID)
-	app.Usage = "This is the entry point for starting a new DharitrI node - the app will start after the genesis timestamp"
+	app.Usage = "This is the entry point for starting a new Dharitri node - the app will start after the genesis timestamp"
 	app.Flags = getFlags()
 	app.Authors = []cli.Author{
 		{
-			Name:  "The DharitrI Team",
+			Name:  "The Dharitri Team",
 			Email: "contact@dharitri.org",
 		},
 	}

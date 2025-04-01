@@ -349,7 +349,7 @@ func TestPeerAuthenticationSender_execute(t *testing.T) {
 		t.Parallel()
 
 		startTime := time.Now()
-		// use the DharitrI defined ed25519 operations instead of the secp256k1 implemented in the "real" network messenger,
+		// use the Dharitri defined ed25519 operations instead of the secp256k1 implemented in the "real" network messenger,
 		// should work with both
 		keyGen := signing.NewKeyGenerator(ed25519.NewEd25519())
 		skMessenger, pkMessenger := keyGen.GeneratePair()

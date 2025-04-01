@@ -1,18 +1,18 @@
 
 # Logviewer App
 
-The **DharitrI Logviewer App** exposes the following Command Line Interface:
+The **Dharitri Logviewer App** exposes the following Command Line Interface:
 
 ```
 $ logviewer --help
 
 NAME:
-   DharitrI Logviewer App - Logviewer application used to communicate with drt-go-chain node to log the message lines
+   Dharitri Logviewer App - Logviewer application used to communicate with drt-go-chain node to log the message lines
 USAGE:
    logviewer [global options]
    
 AUTHOR:
-   The DharitrI Team <contact@dharitri.org>
+   The Dharitri Team <contact@dharitri.org>
    
 GLOBAL OPTIONS:
    --address value            Address and port number on which the application will try to connect to the drt-go-chain node (default: "127.0.0.1:8080")

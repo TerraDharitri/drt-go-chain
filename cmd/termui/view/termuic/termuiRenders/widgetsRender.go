@@ -173,7 +173,7 @@ func (wr *WidgetsRender) prepareInstanceInfo() {
 	rows[5] = []string{computeRedundancyStr(wr.presenter.GetRedundancyLevel(), wr.presenter.GetRedundancyIsMainActive())}
 	rows[6] = []string{fmt.Sprintf("Chain ID: %s", chainID)}
 
-	wr.instanceInfo.Title = "DharitrI instance info:"
+	wr.instanceInfo.Title = "Dharitri instance info:"
 	wr.instanceInfo.RowSeparator = false
 	wr.instanceInfo.Rows = rows
 }

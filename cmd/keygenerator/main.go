@@ -144,7 +144,7 @@ func main() {
 	app.Usage = "This binary will generate a validatorKey.pem and walletKey.pem, each containing private key(s)"
 	app.Authors = []cli.Author{
 		{
-			Name:  "The DharitrI Team",
+			Name:  "The Dharitri Team",
 			Email: "contact@dharitri.org",
 		},
 	}

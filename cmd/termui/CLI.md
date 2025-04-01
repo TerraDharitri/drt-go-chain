@@ -1,18 +1,18 @@
 
-# DharitrI TermUI CLI
+# Dharitri TermUI CLI
 
-The **DharitrI Term UI** exposes the following Command Line Interface:
+The **Dharitri Term UI** exposes the following Command Line Interface:
 
 ```
 $ termui --help
 
 NAME:
-   DharitrI Terminal UI App - Terminal UI application used to display metrics from the node
+   Dharitri Terminal UI App - Terminal UI application used to display metrics from the node
 USAGE:
    termui [global options]
    
 AUTHOR:
-   The DharitrI Team <contact@dharitri.org>
+   The Dharitri Team <contact@dharitri.org>
    
 GLOBAL OPTIONS:
    --address value       Address and port number on which the application will try to connect to the drt-go-chain node (default: "127.0.0.1:8080")

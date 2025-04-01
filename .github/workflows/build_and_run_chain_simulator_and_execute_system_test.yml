@@ -215,7 +215,7 @@ jobs:
             git commit -m "Deploy Test Report at $BRANCH_NAME/$TIMESTAMP"
 
             # Set remote URL with authentication token
-            git remote set-url origin https://x-access-token:${{ secrets.MVX_TESTER_GH_TOKEN }}@github.com/dharitri/drt-chain-testing-suite.git
+            git remote set-url origin https://x-access-token:${{ secrets.MVX_TESTER_GH_TOKEN }}@github.com/TerraDharitri/drt-chain-testing-suite.git
 
             # Push changes to the remote 'gh-pages' branch
             git push --force origin gh-pages
@@ -280,7 +280,7 @@ jobs:
             if (timestamp && branchName && timestamp !== "" && branchName !== "") {
               const reportUrl = `https://dharitri.github.io/drt-chain-testing-suite/reports/${branchName}/${timestamp}/index.html`;
               message = `
-              📊 **DharitrI Automated Test Report:** [View Report](${reportUrl})
+              📊 **Dharitri Automated Test Report:** [View Report](${reportUrl})
             
               🔄 **Build Details:**
               - **drt-go-chain Commit Hash:** \`${commitHash}\`
@@ -292,7 +292,7 @@ jobs:
               🚀 **Environment Variables:**
             - **TIMESTAMP:** \`${timestamp}\`
             - **PYTEST_EXIT_CODE:** \`${exitCode}\`
-              🎉 **DharitrI CI/CD Workflow Complete!**
+              🎉 **Dharitri CI/CD Workflow Complete!**
               `;
             } else {
               message = "⚠️ No report was generated due to an error or cancellation of the process.\nPlease checkout gh action logs for details";

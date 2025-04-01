@@ -1,4 +1,4 @@
-name: Question about the DharitrI node
+name: Question about the Dharitri node
 description: Ask a question
 title: "[Question]: "
 labels: [question]
@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for taking the time to fill out the question form! For a faster response, please use our validator's telegram page: https://t.me/DharitrIValidators
+        Thank you for taking the time to fill out the question form! For a faster response, please use our validator's telegram page: https://t.me/DharitriValidators
   - type: textarea
     id: describe-solution
     attributes:

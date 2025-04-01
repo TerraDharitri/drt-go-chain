@@ -129,7 +129,7 @@ func main() {
 func initCliFlags() {
 	cliApp = cli.NewApp()
 	cli.AppHelpTemplate = nodeHelpTemplate
-	cliApp.Name = "DharitrI Logviewer App"
+	cliApp.Name = "Dharitri Logviewer App"
 	cliApp.Version = fmt.Sprintf("%s/%s/%s-%s", "1.0.0", runtime.Version(), runtime.GOOS, runtime.GOARCH)
 	cliApp.Usage = "Logviewer application used to communicate with drt-go-chain node to log the message lines"
 	cliApp.Flags = []cli.Flag{
@@ -143,7 +143,7 @@ func initCliFlags() {
 	}
 	cliApp.Authors = []cli.Author{
 		{
-			Name:  "The DharitrI Team",
+			Name:  "The Dharitri Team",
 			Email: "contact@dharitri.org",
 		},
 	}

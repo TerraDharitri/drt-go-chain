@@ -41,7 +41,7 @@ generateForLogViewer() {
     HELP="
 # Logviewer App
 
-The **DharitrI Logviewer App** exposes the following Command Line Interface:
+The **Dharitri Logviewer App** exposes the following Command Line Interface:
 $(code)
 \$ logviewer --help
 
@@ -55,7 +55,7 @@ generateForNode() {
     HELP="
 # Node CLI
 
-The **DharitrI Node** exposes the following Command Line Interface:
+The **Dharitri Node** exposes the following Command Line Interface:
 $(code)
 \$ node --help
 
@@ -67,9 +67,9 @@ $(code)
 
 generateForSeedNode() {
     HELP="
-# DharitrI SeedNode CLI
+# Dharitri SeedNode CLI
 
-The **DharitrI SeedNode** exposes the following Command Line Interface:
+The **Dharitri SeedNode** exposes the following Command Line Interface:
 $(code)
 \$ seednode --help
 
@@ -81,9 +81,9 @@ $(code)
 
 generateForTermUi() {
     HELP="
-# DharitrI TermUI CLI
+# Dharitri TermUI CLI
 
-The **DharitrI Term UI** exposes the following Command Line Interface:
+The **Dharitri Term UI** exposes the following Command Line Interface:
 $(code)
 \$ termui --help
 

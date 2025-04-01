@@ -230,7 +230,7 @@ func (psm *PeerShardMapper) getPeerInfoSearchingPidInFallbackCache(pid core.Peer
 
 // UpdatePeerIDPublicKeyPair updates the public key - peer ID pair in the corresponding maps
 // It also uses the intermediate pkPeerId cache that will prevent having thousands of peer ID's with
-// the same DharitrI PK that will make the node prone to an eclipse attack
+// the same Dharitri PK that will make the node prone to an eclipse attack
 func (psm *PeerShardMapper) UpdatePeerIDPublicKeyPair(pid core.PeerID, pk []byte) {
 	isNew := psm.updatePeerIDPublicKey(pid, pk)
 	if isNew {
@@ -240,7 +240,7 @@ func (psm *PeerShardMapper) UpdatePeerIDPublicKeyPair(pid core.PeerID, pk []byte
 
 // UpdatePeerIDInfo updates the public keys and the shard ID for the peer ID in the corresponding maps
 // It also uses the intermediate pkPeerId cache that will prevent having thousands of peer ID's with
-// the same DharitrI PK that will make the node prone to an eclipse attack
+// the same Dharitri PK that will make the node prone to an eclipse attack
 func (psm *PeerShardMapper) UpdatePeerIDInfo(pid core.PeerID, pk []byte, shardID uint32) {
 	isNew := psm.updatePeerIDPublicKey(pid, pk)
 	if isNew {

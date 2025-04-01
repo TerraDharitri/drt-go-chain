@@ -30,7 +30,7 @@ const signedMessagePrefix = "\x17Numbat Signed Message:\n"
 var messageSigningHasher = keccak.NewKeccak()
 
 func TestVerifyMessageSignatureFromLedger(t *testing.T) {
-	// these field values were obtained by using DharitrI App for Ledger
+	// these field values were obtained by using Dharitri App for Ledger
 	address := "drt1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssey5egf"
 	message := "test message"
 	signature := "d9c262829f504bcae7a89aa24060f8007e2b1e85be64e2d9389bea2c77d1cf409bbe374c6df821240087eec795c77b26765d09e94b89d270203edd1d2c99c806"

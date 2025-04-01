@@ -37,7 +37,7 @@ sudo chmod +x /usr/bin/protoc
 echo "Removing temporally files ..."
 rm -r ${TEMP_LOCATION}
 
-cd "${GOPATH}"/src/github.com/dharitri
+cd "${GOPATH}"/src/github.com/TerraDharitri
 
 if [ ! -d "protobuf" ]
 then

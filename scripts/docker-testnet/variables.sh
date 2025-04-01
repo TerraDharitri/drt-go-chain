@@ -23,18 +23,18 @@ export METASHARD_ID=4294967295
 # Path to drt-go-chain. Determined automatically. Do not change.
 export DHARITRIDIR=$(dirname $(dirname $DHARITRITESTNETSCRIPTSDIR))
 
-# Enable the DharitrI Proxy. Note that this is a private repository
+# Enable the Dharitri Proxy. Note that this is a private repository
 # (drt-go-chain-proxy).
 export USE_PROXY=1
 
-# Enable the DharitrI Transaction Generator. Note that this is a private
+# Enable the Dharitri Transaction Generator. Note that this is a private
 # repository (drt-go-chain-txgen).
 export USE_TXGEN=0
 
 # Path where the testnet will be instantiated. This folder is assumed to not
 # exist, but it doesn't matter if it already does. It will be created if not,
 # anyway.
-export TESTNETDIR="$HOME/DharitrI/testnet"
+export TESTNETDIR="$HOME/Dharitri/testnet"
 
 # Path to drt-go-chain-deploy, branch: master. Default: near drt-go-chain.
 export CONFIGGENERATORDIR="$(dirname $DHARITRIDIR)/drt-go-chain-deploy/cmd/filegen"

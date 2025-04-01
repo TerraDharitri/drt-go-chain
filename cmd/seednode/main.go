@@ -126,7 +126,7 @@ func main() {
 	app.Version = "v0.0.1"
 	app.Authors = []cli.Author{
 		{
-			Name:  "The DharitrI Team",
+			Name:  "The Dharitri Team",
 			Email: "contact@dharitri.org",
 		},
 	}
