@@ -7,7 +7,7 @@ require (
 	github.com/TerraDharitri/drt-go-chain-core v0.0.7
 	github.com/TerraDharitri/drt-go-chain-crypto v0.0.5
 	github.com/TerraDharitri/drt-go-chain-es-indexer v0.0.6
-	github.com/TerraDharitri/drt-go-chain-logger v0.0.3
+	github.com/TerraDharitri/drt-go-chain-logger v0.0.4
 	github.com/TerraDharitri/drt-go-chain-scenario v0.0.5
 	github.com/TerraDharitri/drt-go-chain-storage v0.0.7
 	github.com/TerraDharitri/drt-go-chain-vm v0.0.4
