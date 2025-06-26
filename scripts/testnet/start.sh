@@ -41,7 +41,7 @@ sleep $SEEDNODE_DELAY
 # Phase 4: start the Observer Nodes and Validator Nodes
 startObservers
 # startValidators
-# showTerminalSession "dharitri-nodes"
+showTerminalSession "dharitri-nodes"
 echo "Waiting for the Nodes to start ($NODE_DELAY s)..."
 sleep $NODE_DELAY
 
