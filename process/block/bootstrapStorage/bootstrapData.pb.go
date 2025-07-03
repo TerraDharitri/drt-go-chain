@@ -39,9 +39,13 @@ func (*MiniBlocksInMeta) ProtoMessage() {}
 func (*MiniBlocksInMeta) Descriptor() ([]byte, []int) {
 	return fileDescriptor_cd9e3de0f7706101, []int{0}
 }
+
+
 func (m *MiniBlocksInMeta) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
+
 func (m *MiniBlocksInMeta) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	b = b[:cap(b)]
 	n, err := m.MarshalToSizedBuffer(b)
@@ -50,6 +54,8 @@ func (m *MiniBlocksInMeta) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 	}
 	return b[:n], nil
 }
+
+
 func (m *MiniBlocksInMeta) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MiniBlocksInMeta.Merge(m, src)
 }
@@ -182,6 +188,8 @@ func (m *PendingMiniBlocksInfo) XXX_Merge(src proto.Message) {
 func (m *PendingMiniBlocksInfo) XXX_Size() int {
 	return m.Size()
 }
+
+
 func (m *PendingMiniBlocksInfo) XXX_DiscardUnknown() {
 	xxx_messageInfo_PendingMiniBlocksInfo.DiscardUnknown(m)
 }
@@ -315,9 +323,11 @@ func (*RoundNum) ProtoMessage() {}
 func (*RoundNum) Descriptor() ([]byte, []int) {
 	return fileDescriptor_cd9e3de0f7706101, []int{4}
 }
+
 func (m *RoundNum) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *RoundNum) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	b = b[:cap(b)]
 	n, err := m.MarshalToSizedBuffer(b)
@@ -326,12 +336,17 @@ func (m *RoundNum) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	}
 	return b[:n], nil
 }
+
+
 func (m *RoundNum) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_RoundNum.Merge(m, src)
 }
+
+
 func (m *RoundNum) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *RoundNum) XXX_DiscardUnknown() {
 	xxx_messageInfo_RoundNum.DiscardUnknown(m)
 }
@@ -478,6 +493,8 @@ func (this *BootstrapHeaderInfo) Equal(that interface{}) bool {
 	}
 	return true
 }
+
+
 func (this *PendingMiniBlocksInfo) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -510,6 +527,8 @@ func (this *PendingMiniBlocksInfo) Equal(that interface{}) bool {
 	}
 	return true
 }
+
+
 func (this *BootstrapData) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -578,11 +597,12 @@ func (this *BootstrapData) Equal(that interface{}) bool {
 	}
 	return true
 }
+
+
 func (this *RoundNum) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
 	}
-
 	that1, ok := that.(*RoundNum)
 	if !ok {
 		that2, ok := that.(RoundNum)

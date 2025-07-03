@@ -92,7 +92,7 @@ VERSION:
 			p2pType,
 			bothType,
 			minedWalletPrefixKeys),
-		Value:       "wallet",
+		Value:       "p2p",
 		Destination: &argsConfig.keyType,
 	}
 	// consoleOut is the flag that, if active, will print everything on the console, not on a physical file

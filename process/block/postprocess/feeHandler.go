@@ -67,7 +67,6 @@ func (f *feeHandler) GetDeveloperFees() *big.Int {
 	f.mut.RLock()
 	developerFees := big.NewInt(0).Set(f.developerFees)
 	f.mut.RUnlock()
-
 	return developerFees
 }
 
