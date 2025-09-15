@@ -71,7 +71,6 @@ type ArgsGenesisBlockCreator struct {
 	BlockSignKeyGen         crypto.KeyGenerator
 	HistoryRepository       dblookupext.HistoryRepository
 	TxExecutionOrderHandler common.TxExecutionOrderHandler
-
 	GenesisNodePrice *big.Int
 	GenesisString    string
 

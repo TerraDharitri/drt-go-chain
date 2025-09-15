@@ -179,11 +179,9 @@ func (rm *resourceMonitor) LogStatistics() {
 func (rm *resourceMonitor) StartMonitoring() {
 	ctx, cancelFunc := context.WithCancel(context.Background())
 	rm.cancelFunc = cancelFunc
-
 	refreshTime := time.Second * time.Duration(rm.generalConfig.ResourceStats.RefreshIntervalInSec)
 	timer := time.NewTimer(refreshTime)
 	defer timer.Stop()
-
 	go func() {
 		for {
 			rm.LogStatistics()

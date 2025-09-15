@@ -1433,9 +1433,7 @@ func (mp *metaProcessor) updateState(lastMetaBlock data.MetaHeaderHandler, lastM
 		log.Debug("updateState nil header")
 		return
 	}
-
 	mp.validatorStatisticsProcessor.SetLastFinalizedRootHash(lastMetaBlock.GetValidatorStatsRootHash())
-
 	prevMetaBlockHash := lastMetaBlock.GetPrevHash()
 	prevMetaBlock, errNotCritical := process.GetMetaHeader(
 		prevMetaBlockHash,
@@ -1447,7 +1445,6 @@ func (mp *metaProcessor) updateState(lastMetaBlock data.MetaHeaderHandler, lastM
 		log.Debug("could not get meta header from storage")
 		return
 	}
-
 	if lastMetaBlock.IsStartOfEpochBlock() {
 		log.Debug("trie snapshot",
 			"rootHash", lastMetaBlock.GetRootHash(),
@@ -1467,21 +1464,19 @@ func (mp *metaProcessor) updateState(lastMetaBlock data.MetaHeaderHandler, lastM
 			}
 		}()
 	}
-
+	
 	mp.updateStateStorage(
 		lastMetaBlock,
 		lastMetaBlock.GetRootHash(),
 		prevMetaBlock.GetRootHash(),
 		mp.accountsDB[state.UserAccountsState],
 	)
-
 	mp.updateStateStorage(
 		lastMetaBlock,
 		lastMetaBlock.GetValidatorStatsRootHash(),
 		prevMetaBlock.GetValidatorStatsRootHash(),
 		mp.accountsDB[state.PeerAccountsState],
 	)
-
 	mp.setFinalizedHeaderHashInIndexer(lastMetaBlock.GetPrevHash())
 	mp.blockChain.SetFinalBlockInfo(lastMetaBlock.GetNonce(), lastMetaBlockHash, lastMetaBlock.GetRootHash())
 }
@@ -1568,6 +1563,7 @@ func (mp *metaProcessor) getRewardsTxs(header *block.MetaBlock, body *block.Body
 	rewardsTx = mp.epochRewardsCreator.GetRewardsTxs(body)
 	return rewardsTx
 }
+
 
 func (mp *metaProcessor) commitEpochStart(header *block.MetaBlock, body *block.Body) {
 	if header.IsStartOfEpochBlock() {

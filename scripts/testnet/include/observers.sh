@@ -94,6 +94,7 @@ assembleCommand_startObserverNode() {
         -port $PORT --profile-mode -log-save -log-level $LOGLEVEL --log-logger-name --log-correlation --use-health-service -rest-api-interface localhost:$RESTAPIPORT \
         -destination-shard-as-observer $SHARD \
         $KEYS_FLAGS \
+        --genesis-file ./config/genesis.json \
         -working-directory $WORKING_DIR -config ./config/config_observer.toml $EXTRA_OBSERVERS_FLAGS"
 
   if [ -n "$NODE_NICENESS" ]

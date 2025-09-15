@@ -116,6 +116,7 @@ func verifyRatingsConfig(settings config.RatingsConfig) error {
 			process.ErrMaxRatingIsSmallerThanMinRating,
 			settings.General.MinRating,
 			settings.General.MaxRating)
+			
 	}
 	if settings.General.MaxRating < settings.General.StartRating || settings.General.MinRating > settings.General.StartRating {
 		return fmt.Errorf("%w: minRating: %v, startRating: %v, maxRating: %v",

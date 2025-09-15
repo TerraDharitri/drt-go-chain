@@ -89,6 +89,7 @@ startSingleValidator() {
   else
     startCommand="$(assembleCommand_startValidatorNode $VALIDATOR_INDEX $DIR_NAME)"
   fi
+  echo "$startCommand"
   runCommandInTerminal "$startCommand"
 }
 
@@ -138,7 +139,7 @@ assembleCommand_startValidatorNodeWithWatcher() {
   mkdir -p $WORKING_DIR
   echo "$node_command" > $WORKING_DIR/node-command
   echo "$PORT" > $WORKING_DIR/node-port
-
+  echo "PremKumar"
   echo "$source_command ; $watcher_command"
 }
 
@@ -154,6 +155,8 @@ assembleCommand_startValidatorNode() {
         -port $PORT --profile-mode -log-save -log-level $LOGLEVEL --log-logger-name --log-correlation --use-health-service -rest-api-interface localhost:$RESTAPIPORT \
         -sk-index $KEY_INDEX \
         -working-directory $WORKING_DIR -config ./config/config_validator.toml"
+echo "Prem"
+  echo $node_command
 
   if [ -n "$NODE_NICENESS" ]
   then

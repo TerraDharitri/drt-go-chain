@@ -56,7 +56,6 @@ func (mcc *managedCoreComponents) Create() error {
 	mcc.mutCoreComponents.Lock()
 	mcc.coreComponents = cc
 	mcc.mutCoreComponents.Unlock()
-
 	return nil
 }
 

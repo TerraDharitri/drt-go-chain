@@ -5,7 +5,7 @@
 
 # Don't change the subnet, unless you know what you are doing. Prone to errors.
 export DOCKER_NETWORK_SUBNET="172.18.0.0/24"
-export DOCKER_NETWORK_NAME="local-testnet"
+export DOCKER_NETWORK_NAME="D"
 
 # By default ports won't be published. If set to 1, all containers will port-forward to host network.
 export DOCKER_PUBLISH_PORTS=1
@@ -70,7 +70,7 @@ export GENESIS_STAKE_TYPE="direct" #'delegated' or 'direct' as in direct stake
 export OBSERVERS_ANTIFLOOD_DISABLE=0
 
 # Shard structure
-export SHARDCOUNT=2
+export SHARDCOUNT=1
 export SHARD_VALIDATORCOUNT=3
 export SHARD_OBSERVERCOUNT=1
 export SHARD_CONSENSUS_SIZE=3

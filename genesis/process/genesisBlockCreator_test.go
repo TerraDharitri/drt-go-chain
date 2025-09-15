@@ -326,6 +326,7 @@ func TestNewGenesisBlockCreator(t *testing.T) {
 		require.True(t, errors.Is(err, process.ErrNilNodesSetup))
 		require.Nil(t, gbc)
 	})
+
 	t.Run("nil Economics should error", func(t *testing.T) {
 		t.Parallel()
 
@@ -336,6 +337,7 @@ func TestNewGenesisBlockCreator(t *testing.T) {
 		require.True(t, errors.Is(err, process.ErrNilEconomicsData))
 		require.Nil(t, gbc)
 	})
+
 	t.Run("nil ShardCoordinator should error", func(t *testing.T) {
 		t.Parallel()
 
@@ -763,7 +765,6 @@ func TestCreateArgsGenesisBlockCreator_ShouldErrWhenGetNewArgForShardFails(t *te
 		initialNodesSetup,
 		big.NewInt(22000),
 	)
-
 	arg.ShardCoordinator = &mock.ShardCoordinatorMock{SelfShardId: 1}
 	arg.TrieStorageManagers = make(map[string]common.StorageManager)
 	gbc, err := NewGenesisBlockCreator(arg)
@@ -841,12 +842,14 @@ func TestCreateHardForkBlockProcessors_ShouldWork(t *testing.T) {
 			return 1
 		},
 	}
+
 	arg := createMockArgument(
 		t,
 		"testdata/genesisTest1.json",
 		initialNodesSetup,
 		big.NewInt(22000),
 	)
+	
 	arg.importHandler = &updateMock.ImportHandlerStub{
 		GetAccountsDBForShardCalled: func(shardID uint32) state.AccountsAdapter {
 			return &stateMock.AccountsStub{}
@@ -903,4 +906,5 @@ func TestCreateArgsGenesisBlockCreator_ShouldWorkAndCreateEmpty(t *testing.T) {
 		assert.Zero(t, blockInstance.GetRound())
 		assert.Zero(t, blockInstance.GetEpoch())
 	}
+
 }

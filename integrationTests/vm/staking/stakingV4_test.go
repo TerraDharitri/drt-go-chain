@@ -525,7 +525,6 @@ func TestStakingV4_StakeNewNodes(t *testing.T) {
 	}
 
 	pubKeys := generateAddresses(0, 20)
-
 	// Owner1 has 6 nodes, zero top up
 	owner1 := "owner1"
 	owner1Stats := &OwnerStats{
@@ -550,6 +549,7 @@ func TestStakingV4_StakeNewNodes(t *testing.T) {
 		},
 		TotalStake: big.NewInt(4 * nodePrice),
 	}
+
 	// Owner3 has 1 node in staking queue with topUp = nodePrice
 	owner3 := "owner3"
 	owner3Stats := &OwnerStats{
@@ -576,6 +576,7 @@ func TestStakingV4_StakeNewNodes(t *testing.T) {
 			},
 		},
 	}
+
 	node := NewTestMetaProcessorWithCustomNodes(cfg)
 	node.EpochStartTrigger.SetRoundsPerEpoch(4)
 
@@ -623,6 +624,7 @@ func TestStakingV4_StakeNewNodes(t *testing.T) {
 			TotalStake: big.NewInt(3 * nodePrice),
 		},
 	}
+	
 	// 2. Check config after staking v4 init when a new node is staked
 	node.Process(t, 4)
 	node.ProcessStake(t, newNodes1)

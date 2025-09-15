@@ -233,7 +233,6 @@ func (nr *nodeRunner) startShufflingProcessLoop(
 
 func (nr *nodeRunner) shuffleOutStatsAndGC() {
 	debugConfig := nr.configs.GeneralConfig.Debug.ShuffleOut
-
 	extraMessage := ""
 	if debugConfig.CallGCWhenShuffleOut {
 		extraMessage = " before running GC"
@@ -249,7 +248,6 @@ func (nr *nodeRunner) shuffleOutStatsAndGC() {
 	if shouldPrintAnotherNodeStatistics {
 		log.Debug("node statistics after running GC", statistics.GetRuntimeStatistics()...)
 	}
-
 	nr.doProfileOnShuffleOut()
 }
 

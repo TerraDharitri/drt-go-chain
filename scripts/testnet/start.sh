@@ -35,8 +35,8 @@ fi
 # Phase 3: start the Seednode
 startSeednode
 showTerminalSession "dharitri-tools"
-echo "Waiting for the Seednode to start ($SEEDNODE_DELAY s)..."
 sleep $SEEDNODE_DELAY
+echo "Waiting for the Seednode to start ($SEEDNODE_DELAY s)..."
 
 # Phase 4: start the Observer Nodes and Validator Nodes
 startObservers
@@ -57,6 +57,7 @@ fi
 
 # Phase 6: start the Proxy
 if [ $USE_PROXY -eq 1 ]; then
+
   startProxy
   echo "Waiting for the Proxy to start ($PROXY_DELAY s)..."
   sleep $PROXY_DELAY

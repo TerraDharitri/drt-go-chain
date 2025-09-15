@@ -51,7 +51,7 @@ func TestTxLogProcessor_SaveLogsNilTx(t *testing.T) {
 		Storer:      &storageStubs.StorerStub{},
 		Marshalizer: &mock.MarshalizerMock{},
 	})
-
+	
 	err := txLogProcessor.SaveLog([]byte("txhash"), nil, make([]*vmcommon.LogEntry, 0))
 	require.Equal(t, process.ErrNilTransaction, err)
 }
@@ -123,6 +123,7 @@ func TestTxLogProcessor_SaveLogsStoreErr(t *testing.T) {
 	logs := []*vmcommon.LogEntry{
 		{Address: []byte("first log")},
 	}
+
 	err := txLogProcessor.SaveLog([]byte("txhash"), &transaction.Transaction{}, logs)
 	require.Equal(t, retErr, err)
 }
@@ -131,7 +132,6 @@ func TestTxLogProcessor_SaveLogsCallsPutWithMarshalBuff(t *testing.T) {
 	buffExpected := []byte("marshaled log")
 	buffActual := []byte("currently wrong value")
 	expectedLogData := [][]byte{[]byte("data1"), []byte("data2")}
-
 	txLogProcessor, _ := transactionLog.NewTxLogProcessor(transactionLog.ArgTxLogProcessor{
 		Storer: &storageStubs.StorerStub{
 			PutCalled: func(key, data []byte) error {
@@ -154,7 +154,6 @@ func TestTxLogProcessor_SaveLogsCallsPutWithMarshalBuff(t *testing.T) {
 		{Address: []byte("first log"), Data: expectedLogData},
 	}
 	_ = txLogProcessor.SaveLog([]byte("txhash"), &transaction.Transaction{}, logs)
-
 	require.Equal(t, buffExpected, buffActual)
 }
 
@@ -168,9 +167,7 @@ func TestTxLogProcessor_GetLogErrNotFound(t *testing.T) {
 		Marshalizer:          &testscommon.MarshallerStub{},
 		SaveInStorageEnabled: true,
 	})
-
 	_, err := txLogProcessor.GetLog([]byte("texhash"))
-
 	require.Equal(t, process.ErrLogNotFound, err)
 }
 
@@ -189,9 +186,7 @@ func TestTxLogProcessor_GetLogUnmarshalErr(t *testing.T) {
 		},
 		SaveInStorageEnabled: true,
 	})
-
 	_, err := txLogProcessor.GetLog([]byte("texhash"))
-
 	require.Equal(t, retErr, err)
 }
 
@@ -214,15 +209,12 @@ func TestTxLogProcessor_GetLogFromCache(t *testing.T) {
 
 func TestTxLogProcessor_GetLogFromCacheNotInCacheShouldReturnFromStorage(t *testing.T) {
 	t.Parallel()
-
 	logs := []*vmcommon.LogEntry{{
 		Address: []byte("my-addr"),
 	}}
-
 	txLog := &transaction.Log{
 		Address: []byte("add"),
 	}
-
 	marshalizer := &mock.MarshalizerMock{}
 	txLogProcessor, _ := transactionLog.NewTxLogProcessor(transactionLog.ArgTxLogProcessor{
 		Storer: &storageStubs.StorerStub{
@@ -237,7 +229,6 @@ func TestTxLogProcessor_GetLogFromCacheNotInCacheShouldReturnFromStorage(t *test
 		Marshalizer: marshalizer,
 	})
 	_ = txLogProcessor.SaveLog([]byte("txhash"), &transaction.Transaction{}, logs)
-
 	_, found := txLogProcessor.GetLogFromCache([]byte("txhash"))
 	require.True(t, found)
 }
