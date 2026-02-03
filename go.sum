@@ -22,8 +22,8 @@ github.com/TerraDharitri/drt-go-chain-crypto v0.0.5 h1:C+PY99Cws11NI+4CiPT3b10D+
 github.com/TerraDharitri/drt-go-chain-crypto v0.0.5/go.mod h1:K2Zpojgafv36ZzjJQmbqQKYXvkQ3+S5U28MbUeRRc0Y=
 github.com/TerraDharitri/drt-go-chain-es-indexer v0.0.6 h1:+coHoS2GezITcFdp6HWEli2UE/auCywpdOFM88DeN+Q=
 github.com/TerraDharitri/drt-go-chain-es-indexer v0.0.6/go.mod h1:ZR1i/Iy0XdUbbOZh2brI78zWLt41Zkt3rWnv1YE5/DY=
-github.com/TerraDharitri/drt-go-chain-logger v0.0.3 h1:Q8Ff5sC/VRAVw9ZwzciYDSQEDcVdnFVJpFZ+nqVIISQ=
-github.com/TerraDharitri/drt-go-chain-logger v0.0.3/go.mod h1:0LDt8MpTLZtLK9a0WQfRVL9Tu0MwMX9Bfar9PyBGQZ4=
+github.com/TerraDharitri/drt-go-chain-logger v0.0.4 h1:l9xMFJwiEb4SoFVNbRc8eZldUZTa1dT9xlKYvV8q7QI=
+github.com/TerraDharitri/drt-go-chain-logger v0.0.4/go.mod h1:9uNDsynRp45cAAUuDBkv4ahCuH7fA/rHy5rkH5OzU2A=
 github.com/TerraDharitri/drt-go-chain-scenario v0.0.5 h1:quR26TrcY3hVF8TjvwKR63PBqpEBa4+rBzEG4NpmhVY=
 github.com/TerraDharitri/drt-go-chain-scenario v0.0.5/go.mod h1:jFZvRh+sui1BtBTLuEDkmT0jL9PdreSdaQHSU7dSsig=
 github.com/TerraDharitri/drt-go-chain-storage v0.0.7 h1:DA6d0aAmC193XeOMb+n02Kx6tFpCyvkEjl7EpIFIASU=
