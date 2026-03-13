@@ -14,18 +14,20 @@ import (
 	drtAtomic "github.com/TerraDharitri/drt-go-chain-core/core/atomic"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/core/random"
-	"github.com/TerraDharitri/drt-go-chain/heartbeat"
-	"github.com/TerraDharitri/drt-go-chain/testscommon"
-	"github.com/TerraDharitri/drt-go-chain/testscommon/shardingMocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/TerraDharitri/drt-go-chain/heartbeat"
+	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/shardingMocks"
 )
 
 func createMockArgPeerAuthenticationRequestsProcessor() ArgPeerAuthenticationRequestsProcessor {
 	return ArgPeerAuthenticationRequestsProcessor{
 		RequestHandler:          &testscommon.RequestHandlerStub{},
 		NodesCoordinator:        &shardingMocks.NodesCoordinatorStub{},
-		PeerAuthenticationPool:  &testscommon.CacherMock{},
+		PeerAuthenticationPool:  &cache.CacherMock{},
 		ShardId:                 0,
 		Epoch:                   0,
 		MinPeersThreshold:       0.8,
@@ -200,7 +202,7 @@ func TestPeerAuthenticationRequestsProcessor_startRequestingMessages(t *testing.
 			},
 		}
 
-		args.PeerAuthenticationPool = &testscommon.CacherStub{
+		args.PeerAuthenticationPool = &cache.CacherStub{
 			KeysCalled: func() [][]byte {
 				return providedEligibleKeysMap[0]
 			},
@@ -236,7 +238,7 @@ func TestPeerAuthenticationRequestsProcessor_isThresholdReached(t *testing.T) {
 	args := createMockArgPeerAuthenticationRequestsProcessor()
 	args.MinPeersThreshold = 0.6
 	counter := uint32(0)
-	args.PeerAuthenticationPool = &testscommon.CacherStub{
+	args.PeerAuthenticationPool = &cache.CacherStub{
 		KeysCalled: func() [][]byte {
 			var keys = make([][]byte, 0)
 			switch atomic.LoadUint32(&counter) {
@@ -323,7 +325,7 @@ func TestPeerAuthenticationRequestsProcessor_goRoutineIsWorkingAndCloseShouldSto
 		},
 	}
 	keysCalled := &drtAtomic.Flag{}
-	args.PeerAuthenticationPool = &testscommon.CacherStub{
+	args.PeerAuthenticationPool = &cache.CacherStub{
 		KeysCalled: func() [][]byte {
 			keysCalled.SetValue(true)
 			return make([][]byte, 0)

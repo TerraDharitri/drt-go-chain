@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core/atomic"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/common/statistics/disabled"
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
@@ -17,7 +18,6 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
 	stateTest "github.com/TerraDharitri/drt-go-chain/testscommon/state"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/storageManager"
-	"github.com/TerraDharitri/drt-go-chain-core/core/atomic"
 	"github.com/stretchr/testify/assert"
 )
 

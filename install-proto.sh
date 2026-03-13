@@ -41,7 +41,7 @@ cd "${GOPATH}"/src/github.com/TerraDharitri
 
 if [ ! -d "protobuf" ]
 then
-  echo "Cloning dharitri/protobuf..."
+  echo "Cloning TerraDharitri/protobuf..."
   git clone https://github.com/TerraDharitri/protobuf.git
 fi
 

@@ -4,15 +4,17 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/state"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
 	mockState "github.com/TerraDharitri/drt-go-chain/testscommon/state"
+	stateMock "github.com/TerraDharitri/drt-go-chain/testscommon/state"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/storageManager"
 	mockTrie "github.com/TerraDharitri/drt-go-chain/testscommon/trie"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/stretchr/testify/assert"
 )
 
 func createMockAccountsArgs() state.ArgsAccountsDB {
@@ -22,12 +24,13 @@ func createMockAccountsArgs() state.ArgsAccountsDB {
 				return &storageManager.StorageManagerStub{}
 			},
 		},
-		Hasher:                &testscommon.HasherStub{},
-		Marshaller:            &marshallerMock.MarshalizerMock{},
-		AccountFactory:        &mockState.AccountsFactoryStub{},
-		StoragePruningManager: &mockState.StoragePruningManagerStub{},
-		AddressConverter:      &testscommon.PubkeyConverterMock{},
-		SnapshotsManager:      &mockState.SnapshotsManagerStub{},
+		Hasher:                 &testscommon.HasherStub{},
+		Marshaller:             &marshallerMock.MarshalizerMock{},
+		AccountFactory:         &mockState.AccountsFactoryStub{},
+		StoragePruningManager:  &mockState.StoragePruningManagerStub{},
+		AddressConverter:       &testscommon.PubkeyConverterMock{},
+		SnapshotsManager:       &mockState.SnapshotsManagerStub{},
+		StateAccessesCollector: &stateMock.StateAccessesCollectorStub{},
 	}
 }
 

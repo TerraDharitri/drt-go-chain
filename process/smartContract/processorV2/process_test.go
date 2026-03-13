@@ -62,9 +62,10 @@ func createMockPubkeyConverter() *testscommon.PubkeyConverterMock {
 
 func createAccount(address []byte) state.UserAccountHandler {
 	argsAccCreation := stateFactory.ArgsAccountCreator{
-		Hasher:              &hashingMocks.HasherMock{},
-		Marshaller:          &marshallerMock.MarshalizerMock{},
-		EnableEpochsHandler: enableEpochsHandlerMock.NewEnableEpochsHandlerStub(),
+		Hasher:                 &hashingMocks.HasherMock{},
+		Marshaller:             &marshallerMock.MarshalizerMock{},
+		EnableEpochsHandler:    enableEpochsHandlerMock.NewEnableEpochsHandlerStub(),
+		StateAccessesCollector: &stateMock.StateAccessesCollectorStub{},
 	}
 	accountFactory, _ := stateFactory.NewAccountCreator(argsAccCreation)
 	account, _ := accountFactory.CreateAccount(address)
@@ -3552,20 +3553,41 @@ func TestScProcessor_penalizeUserIfNeededShouldWork(t *testing.T) {
 func TestScProcessor_isTooMuchGasProvidedShouldWork(t *testing.T) {
 	t.Parallel()
 
+	economicsHandler := &economicsmocks.EconomicsHandlerMock{}
+
 	gasProvided := uint64(100)
-	maxGasToRemain := gasProvided - (gasProvided / process.MaxGasFeeHigherFactorAccepted)
+	maxGasToRemain := gasProvided - (gasProvided / economicsHandler.MaxGasHigherFactorAccepted())
 
-	isTooMuchGas := isTooMuchGasProvided(gasProvided, gasProvided)
+	isTooMuchGas := isTooMuchGasProvided(gasProvided, gasProvided, economicsHandler)
 	assert.False(t, isTooMuchGas)
 
-	isTooMuchGas = isTooMuchGasProvided(gasProvided, maxGasToRemain-1)
+	isTooMuchGas = isTooMuchGasProvided(gasProvided, maxGasToRemain-1, economicsHandler)
 	assert.False(t, isTooMuchGas)
 
-	isTooMuchGas = isTooMuchGasProvided(gasProvided, maxGasToRemain)
+	isTooMuchGas = isTooMuchGasProvided(gasProvided, maxGasToRemain, economicsHandler)
 	assert.False(t, isTooMuchGas)
 
-	isTooMuchGas = isTooMuchGasProvided(gasProvided, maxGasToRemain+1)
+	isTooMuchGas = isTooMuchGasProvided(gasProvided, maxGasToRemain+1, economicsHandler)
 	assert.True(t, isTooMuchGas)
+
+	economicsHandler.MaxGasHigherFactorAcceptedCalled = func() uint64 {
+		return 2
+	}
+
+	maxGasToRemain = gasProvided - (gasProvided / economicsHandler.MaxGasHigherFactorAccepted())
+
+	isTooMuchGas = isTooMuchGasProvided(gasProvided, gasProvided, economicsHandler)
+	assert.False(t, isTooMuchGas)
+
+	isTooMuchGas = isTooMuchGasProvided(gasProvided, maxGasToRemain-1, economicsHandler)
+	assert.False(t, isTooMuchGas)
+
+	isTooMuchGas = isTooMuchGasProvided(gasProvided, maxGasToRemain, economicsHandler)
+	assert.False(t, isTooMuchGas)
+
+	isTooMuchGas = isTooMuchGasProvided(gasProvided, maxGasToRemain+1, economicsHandler)
+	assert.True(t, isTooMuchGas)
+
 }
 
 func TestSCProcessor_createSCRWhenError(t *testing.T) {
@@ -4254,7 +4276,11 @@ func TestProcess_createCompletedTxEvent(t *testing.T) {
 }
 
 func createRealEconomicsDataArgs() *economics.ArgsNewEconomicsData {
+	cfg := &config.Config{EpochStartConfig: config.EpochStartConfig{RoundsPerEpoch: 14400}}
+	cfg.GeneralSettings.ChainParametersByEpoch = []config.ChainParametersByEpochConfig{{RoundDuration: 6000}}
+
 	return &economics.ArgsNewEconomicsData{
+		GeneralConfig: cfg,
 		Economics: &config.EconomicsConfig{
 			GlobalSettings: config.GlobalSettings{
 				GenesisTotalSupply: "20000000000000000000000000",
@@ -4273,6 +4299,10 @@ func createRealEconomicsDataArgs() *economics.ArgsNewEconomicsData {
 						ProtocolSustainabilityAddress:    "drt1j25xk97yf820rgdp3mj5scavhjkn6tjyn0t63pmv5qyjj7wxlcfqa9aqd2",
 						TopUpGradientPoint:               "300000000000000000000",
 						TopUpFactor:                      0.25,
+						EcosystemGrowthPercentage:        0.0,
+						EcosystemGrowthAddress:           "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l",
+						GrowthDividendPercentage:         0.0,
+						GrowthDividendAddress:            "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l",
 					},
 				},
 			},
@@ -4286,6 +4316,7 @@ func createRealEconomicsDataArgs() *economics.ArgsNewEconomicsData {
 						MaxGasLimitPerTx:            "1500000000",
 						MinGasLimit:                 "50000",
 						ExtraGasLimitGuardedTx:      "50000",
+						MaxGasHigherFactorAccepted:  "10",
 					},
 				},
 				GasPerDataByte:         "1500",

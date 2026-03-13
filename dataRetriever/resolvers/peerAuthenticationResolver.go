@@ -7,6 +7,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data/batch"
 	logger "github.com/TerraDharitri/drt-go-chain-logger"
+
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/heartbeat"
 	"github.com/TerraDharitri/drt-go-chain/p2p"
@@ -75,10 +76,10 @@ func checkArgPeerAuthenticationResolver(arg ArgPeerAuthenticationResolver) error
 
 // ProcessReceivedMessage represents the callback func from the p2p.Messenger that is called each time a new message is received
 // (for the topic this validator was registered to, usually a request topic)
-func (res *peerAuthenticationResolver) ProcessReceivedMessage(message p2p.MessageP2P, fromConnectedPeer core.PeerID, source p2p.MessageHandler) error {
+func (res *peerAuthenticationResolver) ProcessReceivedMessage(message p2p.MessageP2P, fromConnectedPeer core.PeerID, source p2p.MessageHandler) ([]byte, error) {
 	err := res.canProcessMessage(message, fromConnectedPeer)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	res.throttler.StartProcessing()
@@ -86,20 +87,20 @@ func (res *peerAuthenticationResolver) ProcessReceivedMessage(message p2p.Messag
 
 	rd, err := res.parseReceivedMessage(message, fromConnectedPeer)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	switch rd.Type {
 	case dataRetriever.HashArrayType:
-		return res.resolveMultipleHashesRequest(rd.Value, message.Peer(), source)
+		return nil, res.resolveMultipleHashesRequest(rd.Value, message.Peer(), source)
 	default:
 		err = dataRetriever.ErrRequestTypeNotImplemented
 	}
 	if err != nil {
-		err = fmt.Errorf("%w for value %s", err, logger.DisplayByteSlice(rd.Value))
+		return nil, fmt.Errorf("%w for value %s", err, logger.DisplayByteSlice(rd.Value))
 	}
 
-	return err
+	return []byte{}, nil
 }
 
 // resolveMultipleHashesRequest sends the response for multiple hashes request

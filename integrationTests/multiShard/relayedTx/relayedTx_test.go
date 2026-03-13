@@ -10,6 +10,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/data/dcdt"
 	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/TerraDharitri/drt-go-chain/integrationTests"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests/vm/wasm"
 	"github.com/TerraDharitri/drt-go-chain/process"
@@ -17,8 +20,6 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/process/smartContract/hooks"
 	"github.com/TerraDharitri/drt-go-chain/state"
 	"github.com/TerraDharitri/drt-go-chain/vm"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 type createAndSendRelayedAndUserTxFuncType = func(

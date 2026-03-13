@@ -3,21 +3,25 @@ package factory_test
 import (
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+
 	"github.com/TerraDharitri/drt-go-chain/errors"
 	"github.com/TerraDharitri/drt-go-chain/state"
 	"github.com/TerraDharitri/drt-go-chain/state/factory"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	stateMock "github.com/TerraDharitri/drt-go-chain/testscommon/state"
+
 	"github.com/stretchr/testify/assert"
 )
 
 func getDefaultArgs() factory.ArgsAccountCreator {
 	return factory.ArgsAccountCreator{
-		Hasher:              &hashingMocks.HasherMock{},
-		Marshaller:          &marshallerMock.MarshalizerMock{},
-		EnableEpochsHandler: &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
+		Hasher:                 &hashingMocks.HasherMock{},
+		Marshaller:             &marshallerMock.MarshalizerMock{},
+		EnableEpochsHandler:    &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
+		StateAccessesCollector: &stateMock.StateAccessesCollectorStub{},
 	}
 }
 

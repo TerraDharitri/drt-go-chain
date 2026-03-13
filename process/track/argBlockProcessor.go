@@ -1,6 +1,11 @@
 package track
 
 import (
+	"github.com/TerraDharitri/drt-go-chain-core/hashing"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
+
+	"github.com/TerraDharitri/drt-go-chain/common"
+	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
 )
@@ -19,4 +24,10 @@ type ArgBlockProcessor struct {
 	SelfNotarizedHeadersNotifier          blockNotifierHandler
 	FinalMetachainHeadersNotifier         blockNotifierHandler
 	RoundHandler                          process.RoundHandler
+	EnableEpochsHandler                   common.EnableEpochsHandler
+	ProofsPool                            process.ProofsPool
+	Marshaller                            marshal.Marshalizer
+	Hasher                                hashing.Hasher
+	HeadersPool                           dataRetriever.HeadersPool
+	IsImportDBMode                        bool
 }

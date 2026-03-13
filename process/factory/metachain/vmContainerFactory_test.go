@@ -278,7 +278,10 @@ func TestNewVMContainerFactory_OkValues(t *testing.T) {
 func TestVmContainerFactory_Create(t *testing.T) {
 	t.Parallel()
 
+	cfg := &config.Config{EpochStartConfig: config.EpochStartConfig{RoundsPerEpoch: 14400}}
+	cfg.GeneralSettings.ChainParametersByEpoch = []config.ChainParametersByEpochConfig{{RoundDuration: 6000}}
 	argsNewEconomicsData := economics.ArgsNewEconomicsData{
+		GeneralConfig: cfg,
 		Economics: &config.EconomicsConfig{
 			GlobalSettings: config.GlobalSettings{
 				GenesisTotalSupply: "2000000000000000000000",
@@ -299,6 +302,10 @@ func TestVmContainerFactory_Create(t *testing.T) {
 						ProtocolSustainabilityAddress:    "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l",
 						TopUpGradientPoint:               "300000000000000000000",
 						TopUpFactor:                      0.25,
+						EcosystemGrowthPercentage:        0.0,
+						EcosystemGrowthAddress:           "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l",
+						GrowthDividendPercentage:         0.0,
+						GrowthDividendAddress:            "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l",
 					},
 				},
 			},
@@ -312,6 +319,7 @@ func TestVmContainerFactory_Create(t *testing.T) {
 						MaxGasLimitPerTx:            "10000000000",
 						MinGasLimit:                 "10",
 						ExtraGasLimitGuardedTx:      "50000",
+						MaxGasHigherFactorAccepted:  "10",
 					},
 				},
 				MinGasPrice:            "10",
@@ -353,7 +361,8 @@ func TestVmContainerFactory_Create(t *testing.T) {
 					MinVetoThreshold: 0.5,
 					LostProposalFee:  "1",
 				},
-				OwnerAddress: "3132333435363738393031323334353637383930313233343536373839303234",
+				OwnerAddress:                 "3132333435363738393031323334353637383930313233343536373839303234",
+				MaxVotingDelayPeriodInEpochs: 30,
 			},
 			StakingSystemSCConfig: config.StakingSystemSCConfig{
 				GenesisNodePrice:                     "1000",
@@ -459,6 +468,9 @@ func FillGasMapMetaChainSystemSCsCosts(value uint64) map[string]uint64 {
 	gasMap["DelegateVote"] = value
 	gasMap["RevokeVote"] = value
 	gasMap["CloseProposal"] = value
+	gasMap["ClearProposal"] = value
+	gasMap["ClaimAccumulatedFees"] = value
+	gasMap["ChangeConfig"] = value
 	gasMap["DelegationOps"] = value
 	gasMap["UnStakeTokens"] = value
 	gasMap["UnBondTokens"] = value

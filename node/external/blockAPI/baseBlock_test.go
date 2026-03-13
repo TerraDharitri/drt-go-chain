@@ -7,6 +7,7 @@ import (
 	"math/big"
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/api"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
@@ -20,7 +21,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/node/mock"
 	"github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	dataRetrieverTestsCommon "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/dblookupext"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/genericMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
 	storageMocks "github.com/TerraDharitri/drt-go-chain/testscommon/storage"
@@ -42,6 +45,7 @@ func createBaseBlockProcessor() *baseAPIBlockProcessor {
 		apiTransactionHandler:    &mock.TransactionAPIHandlerStub{},
 		logsFacade:               &testscommon.LogsFacadeStub{},
 		receiptsRepository:       &testscommon.ReceiptsRepositoryStub{},
+		enableEpochsHandler:      &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
 	}
 }
 
@@ -74,7 +78,7 @@ func TestBaseBlockGetIntraMiniblocksSCRS(t *testing.T) {
 	}
 
 	baseAPIBlockProc.apiTransactionHandler = &mock.TransactionAPIHandlerStub{
-		UnmarshalTransactionCalled: func(txBytes []byte, txType transaction.TxType) (*transaction.ApiTransactionResult, error) {
+		UnmarshalTransactionCalled: func(txBytes []byte, txType transaction.TxType, _ uint32) (*transaction.ApiTransactionResult, error) {
 			return &transaction.ApiTransactionResult{
 				Sender:   hex.EncodeToString(scResult.SndAddr),
 				Receiver: hex.EncodeToString(scResult.RcvAddr),
@@ -208,7 +212,7 @@ func TestBaseBlock_getAndAttachTxsToMb_MiniblockTxBlock(t *testing.T) {
 	}
 
 	baseAPIBlockProc.apiTransactionHandler = &mock.TransactionAPIHandlerStub{
-		UnmarshalTransactionCalled: func(txBytes []byte, txType transaction.TxType) (*transaction.ApiTransactionResult, error) {
+		UnmarshalTransactionCalled: func(txBytes []byte, txType transaction.TxType, _ uint32) (*transaction.ApiTransactionResult, error) {
 			return &transaction.ApiTransactionResult{
 				Sender:   hex.EncodeToString(tx.SndAddr),
 				Receiver: hex.EncodeToString(tx.RcvAddr),
@@ -272,7 +276,7 @@ func TestBaseBlock_getAndAttachTxsToMbShouldIncludeLogsAsSpecified(t *testing.T)
 
 	// Set up a dummy transformer for "txBytes" -> "ApiTransactionResult" (only "Nonce" is handled)
 	processor.apiTransactionHandler = &mock.TransactionAPIHandlerStub{
-		UnmarshalTransactionCalled: func(txBytes []byte, txType transaction.TxType) (*transaction.ApiTransactionResult, error) {
+		UnmarshalTransactionCalled: func(txBytes []byte, txType transaction.TxType, _ uint32) (*transaction.ApiTransactionResult, error) {
 			tx := &transaction.Transaction{}
 			err := marshalizer.Unmarshal(tx, txBytes)
 			if err != nil {
@@ -408,6 +412,166 @@ func TestAddScheduledInfoInBlock(t *testing.T) {
 			ScheduledGasRefunded:     2,
 		},
 	}, apiBlock)
+}
+
+func TestProofToAPIProof(t *testing.T) {
+	t.Parallel()
+
+	headerProof := &block.HeaderProof{
+		PubKeysBitmap:       []byte("bitmap"),
+		AggregatedSignature: []byte("sig"),
+		HeaderHash:          []byte("hash"),
+		HeaderEpoch:         1,
+		HeaderNonce:         3,
+		HeaderShardId:       2,
+		HeaderRound:         4,
+		IsStartOfEpoch:      true,
+	}
+
+	proofToAPIProof(headerProof)
+	require.Equal(t, &api.HeaderProof{
+		PubKeysBitmap:       hex.EncodeToString(headerProof.PubKeysBitmap),
+		AggregatedSignature: hex.EncodeToString(headerProof.AggregatedSignature),
+		HeaderHash:          hex.EncodeToString(headerProof.HeaderHash),
+		HeaderEpoch:         1,
+		HeaderNonce:         3,
+		HeaderShardId:       2,
+		HeaderRound:         4,
+		IsStartOfEpoch:      true,
+	}, proofToAPIProof(headerProof))
+}
+
+func TestAddProof(t *testing.T) {
+	t.Parallel()
+
+	t.Run("no proof for required block should error", func(t *testing.T) {
+		t.Parallel()
+
+		baseAPIBlockProc := createBaseBlockProcessor()
+		baseAPIBlockProc.proofsPool = &dataRetrieverTestsCommon.ProofsPoolMock{
+			GetProofCalled: func(shardID uint32, headerHash []byte) (data.HeaderProofHandler, error) {
+				return nil, errors.New("error")
+			},
+		}
+		baseAPIBlockProc.store = &storageMocks.ChainStorerStub{
+			GetStorerCalled: func(unitType dataRetriever.UnitType) (storage.Storer, error) {
+				return nil, errors.New("error")
+			},
+		}
+		baseAPIBlockProc.enableEpochsHandler = &enableEpochsHandlerMock.EnableEpochsHandlerStub{
+			IsFlagEnabledInEpochCalled: func(flag core.EnableEpochFlag, epoch uint32) bool {
+				return true
+			},
+		}
+
+		header := &block.HeaderV2{}
+
+		err := baseAPIBlockProc.addProof([]byte("hash"), header, &api.Block{})
+		require.Equal(t, errCannotFindBlockProof, err)
+	})
+
+	t.Run("proof for current block returned from pool", func(t *testing.T) {
+		t.Parallel()
+
+		baseAPIBlockProc := createBaseBlockProcessor()
+		baseAPIBlockProc.proofsPool = &dataRetrieverTestsCommon.ProofsPoolMock{
+			GetProofCalled: func(shardID uint32, headerHash []byte) (data.HeaderProofHandler, error) {
+				return &block.HeaderProof{
+					HeaderHash: []byte("hash2"),
+				}, nil
+			},
+		}
+		baseAPIBlockProc.enableEpochsHandler = &enableEpochsHandlerMock.EnableEpochsHandlerStub{
+			IsFlagEnabledInEpochCalled: func(flag core.EnableEpochFlag, epoch uint32) bool {
+				return true
+			},
+		}
+
+		header := &block.HeaderV2{}
+
+		apiBlock := &api.Block{}
+		err := baseAPIBlockProc.addProof([]byte("hash"), header, apiBlock)
+		require.Nil(t, err)
+
+		require.Equal(t, &api.HeaderProof{
+			HeaderHash: hex.EncodeToString([]byte("hash2")),
+		}, apiBlock.Proof)
+	})
+
+	t.Run("no previous proof only current proof", func(t *testing.T) {
+		t.Parallel()
+
+		baseAPIBlockProc := createBaseBlockProcessor()
+		baseAPIBlockProc.proofsPool = &dataRetrieverTestsCommon.ProofsPoolMock{
+			GetProofCalled: func(shardID uint32, headerHash []byte) (data.HeaderProofHandler, error) {
+				return &block.HeaderProof{
+					HeaderHash: []byte("hash2"),
+				}, nil
+			},
+		}
+		baseAPIBlockProc.enableEpochsHandler = &enableEpochsHandlerMock.EnableEpochsHandlerStub{
+			IsFlagEnabledInEpochCalled: func(flag core.EnableEpochFlag, epoch uint32) bool {
+				return true
+			},
+		}
+
+		baseAPIBlockProc.enableEpochsHandler = &enableEpochsHandlerMock.EnableEpochsHandlerStub{
+			IsFlagEnabledInEpochCalled: func(flag core.EnableEpochFlag, epoch uint32) bool {
+				return true
+			},
+		}
+		header := &block.HeaderV2{}
+
+		apiBlock := &api.Block{}
+		err := baseAPIBlockProc.addProof([]byte("hash"), header, apiBlock)
+		require.Nil(t, err)
+
+		require.Equal(t, &api.HeaderProof{
+			HeaderHash: hex.EncodeToString([]byte("hash2")),
+		}, apiBlock.Proof)
+	})
+
+	t.Run("proof for block returned from storage", func(t *testing.T) {
+		t.Parallel()
+
+		baseAPIBlockProc := createBaseBlockProcessor()
+		baseAPIBlockProc.proofsPool = &dataRetrieverTestsCommon.ProofsPoolMock{
+			GetProofCalled: func(shardID uint32, headerHash []byte) (data.HeaderProofHandler, error) {
+				return nil, errors.New("error")
+			},
+		}
+		baseAPIBlockProc.enableEpochsHandler = &enableEpochsHandlerMock.EnableEpochsHandlerStub{
+			IsFlagEnabledInEpochCalled: func(flag core.EnableEpochFlag, epoch uint32) bool {
+				return true
+			},
+		}
+
+		proof := &block.HeaderProof{
+			HeaderHash: []byte("hash2"),
+		}
+		proofBytes, err := baseAPIBlockProc.marshalizer.Marshal(proof)
+		require.Nil(t, err)
+
+		baseAPIBlockProc.store = &storageMocks.ChainStorerStub{
+			GetStorerCalled: func(unitType dataRetriever.UnitType) (storage.Storer, error) {
+				return &storageMocks.StorerStub{
+					GetFromEpochCalled: func(key []byte, epoch uint32) ([]byte, error) {
+						return proofBytes, nil
+					},
+				}, nil
+			},
+		}
+
+		header := &block.HeaderV2{}
+
+		apiBlock := &api.Block{}
+		err = baseAPIBlockProc.addProof([]byte("hash"), header, apiBlock)
+		require.Nil(t, err)
+
+		require.Equal(t, &api.HeaderProof{
+			HeaderHash: hex.EncodeToString([]byte("hash2")),
+		}, apiBlock.Proof)
+	})
 }
 
 func TestBigInToString(t *testing.T) {

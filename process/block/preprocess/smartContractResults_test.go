@@ -14,19 +14,21 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain-core/data/smartContractResult"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
 	"github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	commonTests "github.com/TerraDharitri/drt-go-chain/testscommon/common"
 	dataRetrieverMock "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
 	stateMock "github.com/TerraDharitri/drt-go-chain/testscommon/state"
 	storageStubs "github.com/TerraDharitri/drt-go-chain/testscommon/storage"
-	"github.com/stretchr/testify/assert"
 )
 
 func haveTime() time.Duration {
@@ -691,7 +693,7 @@ func TestScrsPreprocessor_ReceivedTransactionShouldEraseRequested(t *testing.T) 
 
 	shardedDataStub := &testscommon.ShardedDataStub{
 		ShardDataStoreCalled: func(cacheId string) (c storage.Cacher) {
-			return &testscommon.CacherStub{
+			return &cache.CacherStub{
 				PeekCalled: func(key []byte) (value interface{}, ok bool) {
 					return &smartContractResult.SmartContractResult{}, true
 				},
@@ -1430,7 +1432,7 @@ func TestScrsPreprocessor_ProcessMiniBlock(t *testing.T) {
 	tdp.TransactionsCalled = func() dataRetriever.ShardedDataCacherNotifier {
 		return &testscommon.ShardedDataStub{
 			ShardDataStoreCalled: func(id string) (c storage.Cacher) {
-				return &testscommon.CacherStub{
+				return &cache.CacherStub{
 					PeekCalled: func(key []byte) (value interface{}, ok bool) {
 						if reflect.DeepEqual(key, []byte("tx1_hash")) {
 							return &smartContractResult.SmartContractResult{Nonce: 10}, true
@@ -1589,7 +1591,7 @@ func TestScrsPreprocessor_RestoreBlockDataIntoPools(t *testing.T) {
 	}
 
 	body.MiniBlocks = append(body.MiniBlocks, &miniblock)
-	miniblockPool := testscommon.NewCacherMock()
+	miniblockPool := cache.NewCacherMock()
 	scrRestored, err := scr.RestoreBlockDataIntoPools(body, miniblockPool)
 
 	assert.Equal(t, scrRestored, 1)

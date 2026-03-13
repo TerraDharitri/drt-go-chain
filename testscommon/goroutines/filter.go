@@ -13,6 +13,8 @@ var ignorable = []string{
 	"github.com/libp2p/go-libp2p-nat.(*NAT)",
 	"net._C2func_getaddrinfo",
 	"net.cgoLookupIP", //  for net.cgoLookupIP and net.cgoLookupIPCNAME
+	"net/http.(*persistConn).readLoop",  // HTTP transport goroutine
+	"net/http.(*persistConn).writeLoop", // HTTP transport goroutine
 }
 
 // AllPassFilter returns true for all provided strings

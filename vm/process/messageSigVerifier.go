@@ -2,7 +2,7 @@ package process
 
 import (
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
+	"github.com/TerraDharitri/drt-go-chain-crypto"
 	"github.com/TerraDharitri/drt-go-chain/vm"
 )
 

@@ -5,7 +5,7 @@
 
 # Don't change the subnet, unless you know what you are doing. Prone to errors.
 export DOCKER_NETWORK_SUBNET="172.18.0.0/24"
-export DOCKER_NETWORK_NAME="D"
+export DOCKER_NETWORK_NAME="local-testnet"
 
 # By default ports won't be published. If set to 1, all containers will port-forward to host network.
 export DOCKER_PUBLISH_PORTS=1
@@ -21,33 +21,33 @@ fi
 export METASHARD_ID=4294967295
 
 # Path to drt-go-chain. Determined automatically. Do not change.
-export DHARITRIDIR=$(dirname $(dirname $DHARITRITESTNETSCRIPTSDIR))
+export TerraDharitriDIR=$(dirname $(dirname $TerraDharitriTESTNETSCRIPTSDIR))
 
-# Enable the Dharitri Proxy. Note that this is a private repository
+# Enable the DharitrI Proxy. Note that this is a private repository
 # (drt-go-chain-proxy).
 export USE_PROXY=1
 
-# Enable the Dharitri Transaction Generator. Note that this is a private
+# Enable the DharitrI Transaction Generator. Note that this is a private
 # repository (drt-go-chain-txgen).
 export USE_TXGEN=0
 
 # Path where the testnet will be instantiated. This folder is assumed to not
 # exist, but it doesn't matter if it already does. It will be created if not,
 # anyway.
-export TESTNETDIR="$HOME/Dharitri/testnet"
+export TESTNETDIR="$HOME/TerraDharitri/testnet"
 
 # Path to drt-go-chain-deploy, branch: main. Default: near drt-go-chain.
-export CONFIGGENERATORDIR="$(dirname $DHARITRIDIR)/drt-go-chain-deploy/cmd/filegen"
+export CONFIGGENERATORDIR="$(dirname $TerraDharitriDIR)/drt-go-chain-deploy/cmd/filegen"
 
 export CONFIGGENERATOR="$CONFIGGENERATORDIR/filegen"    # Leave unchanged.
 export CONFIGGENERATOROUTPUTDIR="output"
 
 # Path to the executable node. Leave unchanged unless well justified.
-export NODEDIR="$DHARITRIDIR/cmd/node"
+export NODEDIR="$TerraDharitriDIR/cmd/node"
 export NODE="$NODEDIR/node"     # Leave unchanged
 
 # Path to the executable seednode. Leave unchanged unless well justified.
-export SEEDNODEDIR="$DHARITRIDIR/cmd/seednode"
+export SEEDNODEDIR="$TerraDharitriDIR/cmd/seednode"
 export SEEDNODE="$SEEDNODEDIR/seednode"   # Leave unchanged.
 
 # Niceness value of the Seednode, Observer Nodes and Validator Nodes. Leave
@@ -70,7 +70,7 @@ export GENESIS_STAKE_TYPE="direct" #'delegated' or 'direct' as in direct stake
 export OBSERVERS_ANTIFLOOD_DISABLE=0
 
 # Shard structure
-export SHARDCOUNT=1
+export SHARDCOUNT=2
 export SHARD_VALIDATORCOUNT=3
 export SHARD_OBSERVERCOUNT=1
 export SHARD_CONSENSUS_SIZE=3
@@ -118,7 +118,7 @@ export PORT_ORIGIN_VALIDATOR_REST="9500"
 # Proxy configuration
 
 # Path to drt-go-chain-proxy, branch: main. Default: near drt-go-chain.
-export PROXYDIR="$(dirname $DHARITRIDIR)/drt-go-chain-proxy/cmd/proxy"
+export PROXYDIR="$(dirname $TerraDharitriDIR)/drt-go-chain-proxy/cmd/proxy"
 export PROXY=$PROXYDIR/proxy    # Leave unchanged.
 
 export PORT_PROXY="7950"
@@ -128,7 +128,7 @@ export PROXY_DELAY=10
 # TxGen configuration
 
 # Path to drt-go-chain-txgen. Default: near drt-go-chain.
-export TXGENDIR="$(dirname $DHARITRIDIR)/drt-go-chain-txgen/cmd/txgen"
+export TXGENDIR="$(dirname $TerraDharitriDIR)/drt-go-chain-txgen/cmd/txgen"
 export TXGEN=$TXGENDIR/txgen    # Leave unchanged.
 
 export PORT_TXGEN="7951"
@@ -156,9 +156,9 @@ export SKIP_OBSERVER_IDX=-1
 export USE_HARDFORK=1
 
 # Load local overrides, .gitignored
-LOCAL_OVERRIDES="$DHARITRITESTNETSCRIPTSDIR/local.sh"
+LOCAL_OVERRIDES="$TerraDharitriTESTNETSCRIPTSDIR/local.sh"
 if [ -f "$LOCAL_OVERRIDES" ]; then
-  source "$DHARITRITESTNETSCRIPTSDIR/local.sh"
+  source "$TerraDharitriTESTNETSCRIPTSDIR/local.sh"
 fi
 
 # Leave unchanged.

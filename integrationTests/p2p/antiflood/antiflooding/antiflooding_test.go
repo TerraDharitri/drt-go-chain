@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/TerraDharitri/drt-go-chain-core/core"
-	logger "github.com/TerraDharitri/drt-go-chain-logger"
+	"github.com/TerraDharitri/drt-go-chain-logger"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests/p2p/antiflood"
 	"github.com/TerraDharitri/drt-go-chain/p2p"

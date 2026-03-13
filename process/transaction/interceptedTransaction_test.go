@@ -16,6 +16,9 @@ import (
 	dataTransaction "github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
 	logger "github.com/TerraDharitri/drt-go-chain-logger"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/interceptors"
@@ -23,12 +26,11 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/process/smartContract"
 	"github.com/TerraDharitri/drt-go-chain/process/transaction"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/economicsmocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 var errSingleSignKeyGenMock = errors.New("errSingleSignKeyGenMock")
@@ -211,6 +213,55 @@ func createInterceptedTxFromPlainTxWithArgParser(tx *dataTransaction.Transaction
 		&hashingMocks.HasherMock{},
 		versioning.NewTxVersionChecker(tx.Version),
 		enableEpochsHandlerMock.NewEnableEpochsHandlerStub(common.RelayedTransactionsV3Flag),
+	)
+}
+
+func createInterceptedTxFromPlainTxWithEnableEpochsHandler(tx *dataTransaction.Transaction, enableEpochsHandler common.EnableEpochsHandler) (*transaction.InterceptedTransaction, error) {
+	marshaller := &mock.MarshalizerMock{}
+	txBuff, err := marshaller.Marshal(tx)
+	if err != nil {
+		return nil, err
+	}
+
+	shardCoordinator := mock.NewMultipleShardsCoordinatorMock()
+	shardCoordinator.CurrentShard = 0
+	shardCoordinator.ComputeIdCalled = func(address []byte) uint32 {
+		if bytes.Equal(address, senderAddress) ||
+			bytes.Equal(address, relayerAddress) {
+			return senderShard
+		}
+		if bytes.Equal(address, recvAddress) {
+			return recvShard
+		}
+
+		return shardCoordinator.CurrentShard
+	}
+	shardCoordinator.SameShardCalled = func(firstAddress, secondAddress []byte) bool {
+		return string(firstAddress) == string(relayerAddress) &&
+			string(secondAddress) == string(senderAddress)
+	}
+
+	return transaction.NewInterceptedTransaction(
+		txBuff,
+		marshaller,
+		marshaller,
+		&hashingMocks.HasherMock{},
+		createKeyGenMock(),
+		createDummySigner(),
+		&testscommon.PubkeyConverterStub{
+			LenCalled: func() int {
+				return 32
+			},
+		},
+		shardCoordinator,
+		createFreeTxFeeHandler(),
+		&testscommon.WhiteListHandlerStub{},
+		smartContract.NewArgumentParser(),
+		tx.ChainID,
+		false,
+		&hashingMocks.HasherMock{},
+		versioning.NewTxVersionChecker(tx.Version),
+		enableEpochsHandler,
 	)
 }
 
@@ -1365,7 +1416,7 @@ func TestInterceptedTransaction_CheckValiditySecondTimeDoesNotVerifySig(t *testi
 		return shardCoordinator.CurrentShard
 	}
 
-	cache := testscommon.NewCacherMock()
+	cache := cache.NewCacherMock()
 	whiteListerVerifiedTxs, err := interceptors.NewWhiteListDataVerifier(cache)
 	require.Nil(t, err)
 
@@ -1485,6 +1536,71 @@ func TestInterceptedTransaction_CheckValidityOfRelayedTx(t *testing.T) {
 	err = txi.CheckValidity()
 	assert.True(t, strings.Contains(err.Error(), process.ErrRecursiveRelayedTxIsNotAllowed.Error()))
 	assert.Contains(t, err.Error(), "inner transaction")
+}
+
+func TestInterceptedTransaction_CheckValidityOfRelayedTxShouldConsiderMoveBalance(t *testing.T) {
+	t.Parallel()
+
+	marshaller := &mock.MarshalizerMock{}
+	minTxVersion := uint32(1)
+	chainID := []byte("chain")
+	tx := &dataTransaction.Transaction{
+		Nonce:     1,
+		Value:     big.NewInt(2),
+		Data:      []byte("relayedTx"),
+		GasLimit:  3,
+		GasPrice:  4,
+		RcvAddr:   recvAddress,
+		SndAddr:   senderAddress,
+		Signature: sigOk,
+		ChainID:   chainID,
+		Version:   minTxVersion,
+	}
+
+	userTx := &dataTransaction.Transaction{
+		SndAddr:   recvAddress,
+		RcvAddr:   senderAddress,
+		Data:      []byte("hello"),
+		GasLimit:  3,
+		GasPrice:  4,
+		Signature: sigOk,
+		ChainID:   chainID,
+		Version:   minTxVersion,
+	}
+
+	userTx.Value = big.NewInt(0)
+	userTxData, _ := marshaller.Marshal(userTx)
+	tx.Data = []byte(core.RelayedTransaction + "@" + hex.EncodeToString(userTxData))
+	txi, _ := createInterceptedTxFromPlainTxWithEnableEpochsHandler(tx, enableEpochsHandlerMock.NewEnableEpochsHandlerStub(common.RelayedTransactionsV1V2DisableFlag))
+	err := txi.CheckValidity()
+	assert.Nil(t, err) // relayed v1 ok
+
+	tx.Data = []byte(core.RelayedTransactionV2 + "@" + hex.EncodeToString(userTx.RcvAddr) + "@" + hex.EncodeToString(big.NewInt(0).SetUint64(userTx.Nonce).Bytes()) + "@" + hex.EncodeToString(userTx.Data) + "@" + hex.EncodeToString(userTx.Signature))
+	txi, _ = createInterceptedTxFromPlainTxWithEnableEpochsHandler(tx, enableEpochsHandlerMock.NewEnableEpochsHandlerStub(common.RelayedTransactionsV1V2DisableFlag))
+	err = txi.CheckValidity()
+	assert.Nil(t, err) // relayed v2 ok
+
+	tx = &dataTransaction.Transaction{
+		Nonce:            1,
+		Value:            big.NewInt(2),
+		GasLimit:         3,
+		GasPrice:         4,
+		RcvAddr:          recvAddress,
+		SndAddr:          senderAddress,
+		ChainID:          chainID,
+		Version:          minTxVersion,
+		RelayerAddr:      relayerAddress,
+		Signature:        sigOk,
+		RelayerSignature: sigOk,
+	}
+	tx.Version = minTxVersion
+	tx.Options = 0
+	tx.GuardianAddr = nil
+	tx.GuardianSignature = nil
+	tx.Data = []byte(core.RelayedTransactionV2 + "@" + hex.EncodeToString(recvAddress) + "@" + hex.EncodeToString(big.NewInt(0).SetUint64(0).Bytes()) + "@" + hex.EncodeToString([]byte("some method")) + "@" + hex.EncodeToString(sigOk))
+	txi, _ = createInterceptedTxFromPlainTxWithEnableEpochsHandler(tx, enableEpochsHandlerMock.NewEnableEpochsHandlerStub(common.RelayedTransactionsV1V2DisableFlag, common.RelayedTransactionsV3Flag))
+	err = txi.CheckValidity()
+	assert.Nil(t, err) // v3 with recursive v2 as user tx ok
 }
 
 func TestInterceptedTransaction_CheckValidityOfRelayedTxV2(t *testing.T) {
@@ -1645,7 +1761,7 @@ func TestRelayTransaction_NotAddedToWhitelistUntilIntegrityChecked(t *testing.T)
 	t.Parallel()
 
 	marshalizer := &mock.MarshalizerMock{}
-	whiteListHandler, _ := interceptors.NewWhiteListDataVerifier(testscommon.NewCacherMock())
+	whiteListHandler, _ := interceptors.NewWhiteListDataVerifier(cache.NewCacherMock())
 
 	userTx := &dataTransaction.Transaction{
 		SndAddr:   recvAddress,

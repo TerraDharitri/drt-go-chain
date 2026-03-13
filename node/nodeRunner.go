@@ -20,6 +20,8 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
 	outportCore "github.com/TerraDharitri/drt-go-chain-core/data/outport"
 	logger "github.com/TerraDharitri/drt-go-chain-logger"
+	"github.com/google/gops/agent"
+
 	"github.com/TerraDharitri/drt-go-chain/api/gin"
 	"github.com/TerraDharitri/drt-go-chain/api/shared"
 	"github.com/TerraDharitri/drt-go-chain/common"
@@ -61,7 +63,6 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/storage/storageunit"
 	trieStatistics "github.com/TerraDharitri/drt-go-chain/trie/statistics"
 	"github.com/TerraDharitri/drt-go-chain/update/trigger"
-	"github.com/google/gops/agent"
 )
 
 type nextOperationForNode int
@@ -158,6 +159,8 @@ func printEnableEpochs(configs *config.Configs) {
 	log.Debug(readEpochFor("double key protection"), "epoch", enableEpochs.DoubleKeyProtectionEnableEpoch)
 	log.Debug(readEpochFor("dcdt"), "epoch", enableEpochs.DCDTEnableEpoch)
 	log.Debug(readEpochFor("governance"), "epoch", enableEpochs.GovernanceEnableEpoch)
+	log.Debug(readEpochFor("governance disable proposal"), "epoch", enableEpochs.GovernanceDisableProposeEnableEpoch)
+	log.Debug(readEpochFor("governance fixes"), "epoch", enableEpochs.GovernanceFixesEnableEpoch)
 	log.Debug(readEpochFor("delegation manager"), "epoch", enableEpochs.DelegationManagerEnableEpoch)
 	log.Debug(readEpochFor("delegation smart contract"), "epoch", enableEpochs.DelegationSmartContractEnableEpoch)
 	log.Debug(readEpochFor("correct last unjailed"), "epoch", enableEpochs.CorrectLastUnjailedEnableEpoch)
@@ -210,6 +213,7 @@ func printEnableEpochs(configs *config.Configs) {
 	log.Debug(readEpochFor("staking v4 step 1"), "epoch", enableEpochs.StakingV4Step1EnableEpoch)
 	log.Debug(readEpochFor("staking v4 step 2"), "epoch", enableEpochs.StakingV4Step2EnableEpoch)
 	log.Debug(readEpochFor("staking v4 step 3"), "epoch", enableEpochs.StakingV4Step3EnableEpoch)
+	log.Debug(readEpochFor("disable relayed transactions v1 v2"), "epoch", enableEpochs.RelayedTransactionsV1V2DisableEpoch)
 
 	gasSchedule := configs.EpochConfig.GasSchedule
 
@@ -233,6 +237,7 @@ func (nr *nodeRunner) startShufflingProcessLoop(
 
 func (nr *nodeRunner) shuffleOutStatsAndGC() {
 	debugConfig := nr.configs.GeneralConfig.Debug.ShuffleOut
+
 	extraMessage := ""
 	if debugConfig.CallGCWhenShuffleOut {
 		extraMessage = " before running GC"
@@ -248,6 +253,7 @@ func (nr *nodeRunner) shuffleOutStatsAndGC() {
 	if shouldPrintAnotherNodeStatistics {
 		log.Debug("node statistics after running GC", statistics.GetRuntimeStatistics()...)
 	}
+
 	nr.doProfileOnShuffleOut()
 }
 
@@ -396,6 +402,7 @@ func (nr *nodeRunner) executeOneComponentCreationCycle(
 		managedCoreComponents.EnableEpochsHandler(),
 		managedDataComponents.Datapool().CurrentEpochValidatorInfo(),
 		managedBootstrapComponents.NodesCoordinatorRegistryFactory(),
+		managedCoreComponents.ChainParametersHandler(),
 	)
 	if err != nil {
 		return true, err
@@ -738,7 +745,7 @@ func (nr *nodeRunner) createApiFacade(
 		return nil, err
 	}
 
-	log.Debug("creating dharitri node facade")
+	log.Debug("creating TerraDharitri node facade")
 
 	flagsConfig := configs.FlagsConfig
 
@@ -1472,7 +1479,7 @@ func (nr *nodeRunner) CreateManagedCoreComponents(
 		ImportDbConfig:      *nr.configs.ImportDbConfig,
 		RatingsConfig:       *nr.configs.RatingsConfig,
 		EconomicsConfig:     *nr.configs.EconomicsConfig,
-		NodesFilename:       nr.configs.ConfigurationPathsHolder.Nodes,
+		NodesConfig:         *nr.configs.NodesConfig,
 		WorkingDirectory:    nr.configs.FlagsConfig.DbDir,
 		ChanStopNodeProcess: chanStopNodeProcess,
 	}

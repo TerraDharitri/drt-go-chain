@@ -3,18 +3,20 @@ package integrationTests
 import (
 	"fmt"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
+	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain/common"
+	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests/mock"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
 	"github.com/TerraDharitri/drt-go-chain/storage"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/chainParameters"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/genesisMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/nodeTypeProviderMock"
 	vic "github.com/TerraDharitri/drt-go-chain/testscommon/validatorInfoCacher"
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
-	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 )
 
 // ArgIndexHashedNodesCoordinatorFactory -
@@ -46,10 +48,6 @@ func (tpn *IndexHashedNodesCoordinatorFactory) CreateNodesCoordinator(arg ArgInd
 	pubKeyBytes, _ := keys.MainKey.Pk.ToByteArray()
 
 	nodeShufflerArgs := &nodesCoordinator.NodesShufflerArgs{
-		NodesShard:           uint32(arg.nodesPerShard),
-		NodesMeta:            uint32(arg.nbMetaNodes),
-		Hysteresis:           hysteresis,
-		Adaptivity:           adaptivity,
 		ShuffleBetweenShards: shuffleBetweenShards,
 		MaxNodesEnableConfig: nil,
 		EnableEpochsHandler:  &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
@@ -61,23 +59,33 @@ func (tpn *IndexHashedNodesCoordinatorFactory) CreateNodesCoordinator(arg ArgInd
 		StakingV4Step2EnableEpoch,
 	)
 	argumentsNodesCoordinator := nodesCoordinator.ArgNodesCoordinator{
-		ShardConsensusGroupSize: arg.shardConsensusGroupSize,
-		MetaConsensusGroupSize:  arg.metaConsensusGroupSize,
-		Marshalizer:             TestMarshalizer,
-		Hasher:                  arg.hasher,
-		Shuffler:                nodeShuffler,
-		EpochStartNotifier:      arg.epochStartSubscriber,
-		ShardIDAsObserver:       arg.shardId,
-		NbShards:                uint32(arg.nbShards),
-		EligibleNodes:           arg.validatorsMap,
-		WaitingNodes:            arg.waitingMap,
-		SelfPublicKey:           pubKeyBytes,
-		ConsensusGroupCache:     arg.consensusGroupCache,
-		BootStorer:              arg.bootStorer,
-		ShuffledOutHandler:      &mock.ShuffledOutHandlerStub{},
-		ChanStopNode:            endProcess.GetDummyEndProcessChannel(),
-		NodeTypeProvider:        &nodeTypeProviderMock.NodeTypeProviderStub{},
-		IsFullArchive:           false,
+		ChainParametersHandler: &chainParameters.ChainParametersHandlerStub{
+			ChainParametersForEpochCalled: func(_ uint32) (config.ChainParametersByEpochConfig, error) {
+				return config.ChainParametersByEpochConfig{
+					ShardMinNumNodes:            uint32(arg.nodesPerShard),
+					MetachainMinNumNodes:        uint32(arg.nbMetaNodes),
+					Hysteresis:                  hysteresis,
+					Adaptivity:                  adaptivity,
+					ShardConsensusGroupSize:     uint32(arg.shardConsensusGroupSize),
+					MetachainConsensusGroupSize: uint32(arg.metaConsensusGroupSize),
+				}, nil
+			},
+		},
+		Marshalizer:         TestMarshalizer,
+		Hasher:              arg.hasher,
+		Shuffler:            nodeShuffler,
+		EpochStartNotifier:  arg.epochStartSubscriber,
+		ShardIDAsObserver:   arg.shardId,
+		NbShards:            uint32(arg.nbShards),
+		EligibleNodes:       arg.validatorsMap,
+		WaitingNodes:        arg.waitingMap,
+		SelfPublicKey:       pubKeyBytes,
+		ConsensusGroupCache: arg.consensusGroupCache,
+		BootStorer:          arg.bootStorer,
+		ShuffledOutHandler:  &mock.ShuffledOutHandlerStub{},
+		ChanStopNode:        endProcess.GetDummyEndProcessChannel(),
+		NodeTypeProvider:    &nodeTypeProviderMock.NodeTypeProviderStub{},
+		IsFullArchive:       false,
 		EnableEpochsHandler: &enableEpochsHandlerMock.EnableEpochsHandlerStub{
 			GetActivationEpochCalled: func(flag core.EnableEpochFlag) uint32 {
 				if flag == common.RefactorPeersMiniBlocksFlag || flag == common.StakingV4Step2Flag {
@@ -112,10 +120,6 @@ func (ihncrf *IndexHashedNodesCoordinatorWithRaterFactory) CreateNodesCoordinato
 	pubKeyBytes, _ := keys.MainKey.Pk.ToByteArray()
 
 	shufflerArgs := &nodesCoordinator.NodesShufflerArgs{
-		NodesShard:           uint32(arg.nodesPerShard),
-		NodesMeta:            uint32(arg.nbMetaNodes),
-		Hysteresis:           hysteresis,
-		Adaptivity:           adaptivity,
 		ShuffleBetweenShards: shuffleBetweenShards,
 		MaxNodesEnableConfig: nil,
 		EnableEpochsHandler:  &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
@@ -127,23 +131,33 @@ func (ihncrf *IndexHashedNodesCoordinatorWithRaterFactory) CreateNodesCoordinato
 		StakingV4Step2EnableEpoch,
 	)
 	argumentsNodesCoordinator := nodesCoordinator.ArgNodesCoordinator{
-		ShardConsensusGroupSize: arg.shardConsensusGroupSize,
-		MetaConsensusGroupSize:  arg.metaConsensusGroupSize,
-		Marshalizer:             TestMarshalizer,
-		Hasher:                  arg.hasher,
-		Shuffler:                nodeShuffler,
-		EpochStartNotifier:      arg.epochStartSubscriber,
-		ShardIDAsObserver:       arg.shardId,
-		NbShards:                uint32(arg.nbShards),
-		EligibleNodes:           arg.validatorsMap,
-		WaitingNodes:            arg.waitingMap,
-		SelfPublicKey:           pubKeyBytes,
-		ConsensusGroupCache:     arg.consensusGroupCache,
-		BootStorer:              arg.bootStorer,
-		ShuffledOutHandler:      &mock.ShuffledOutHandlerStub{},
-		ChanStopNode:            endProcess.GetDummyEndProcessChannel(),
-		NodeTypeProvider:        &nodeTypeProviderMock.NodeTypeProviderStub{},
-		IsFullArchive:           false,
+		ChainParametersHandler: &chainParameters.ChainParametersHandlerStub{
+			ChainParametersForEpochCalled: func(_ uint32) (config.ChainParametersByEpochConfig, error) {
+				return config.ChainParametersByEpochConfig{
+					ShardMinNumNodes:            uint32(arg.nodesPerShard),
+					MetachainMinNumNodes:        uint32(arg.nbMetaNodes),
+					Hysteresis:                  hysteresis,
+					Adaptivity:                  adaptivity,
+					ShardConsensusGroupSize:     uint32(arg.shardConsensusGroupSize),
+					MetachainConsensusGroupSize: uint32(arg.metaConsensusGroupSize),
+				}, nil
+			},
+		},
+		Marshalizer:         TestMarshalizer,
+		Hasher:              arg.hasher,
+		Shuffler:            nodeShuffler,
+		EpochStartNotifier:  arg.epochStartSubscriber,
+		ShardIDAsObserver:   arg.shardId,
+		NbShards:            uint32(arg.nbShards),
+		EligibleNodes:       arg.validatorsMap,
+		WaitingNodes:        arg.waitingMap,
+		SelfPublicKey:       pubKeyBytes,
+		ConsensusGroupCache: arg.consensusGroupCache,
+		BootStorer:          arg.bootStorer,
+		ShuffledOutHandler:  &mock.ShuffledOutHandlerStub{},
+		ChanStopNode:        endProcess.GetDummyEndProcessChannel(),
+		NodeTypeProvider:    &nodeTypeProviderMock.NodeTypeProviderStub{},
+		IsFullArchive:       false,
 		EnableEpochsHandler: &enableEpochsHandlerMock.EnableEpochsHandlerStub{
 			GetActivationEpochCalled: func(flag core.EnableEpochFlag) uint32 {
 				if flag == common.RefactorPeersMiniBlocksFlag {

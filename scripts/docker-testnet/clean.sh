@@ -4,9 +4,9 @@ set -eux
 
 # Delete the entire testnet folder, which includes configuration, executables and logs.
 
-export DHARITRITESTNETSCRIPTSDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+export TerraDharitriTESTNETSCRIPTSDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-source "$DHARITRITESTNETSCRIPTSDIR/variables.sh"
+source "$TerraDharitriTESTNETSCRIPTSDIR/variables.sh"
 
 # Get the IDs of containers attached to the network
 CONTAINER_IDS=$(docker network inspect -f '{{range .Containers}}{{.Name}} {{end}}' "$DOCKER_NETWORK_NAME")

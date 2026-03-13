@@ -3,10 +3,11 @@ package track
 import (
 	"bytes"
 
-	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+
+	"github.com/TerraDharitri/drt-go-chain/process"
 )
 
 type shardBlockTrack struct {
@@ -46,6 +47,12 @@ func NewShardBlockTrack(arguments ArgShardTracker) (*shardBlockTrack, error) {
 		SelfNotarizedHeadersNotifier:          bbt.selfNotarizedHeadersNotifier,
 		FinalMetachainHeadersNotifier:         bbt.finalMetachainHeadersNotifier,
 		RoundHandler:                          arguments.RoundHandler,
+		EnableEpochsHandler:                   arguments.EnableEpochsHandler,
+		ProofsPool:                            arguments.ProofsPool,
+		Marshaller:                            arguments.Marshalizer,
+		Hasher:                                arguments.Hasher,
+		HeadersPool:                           arguments.PoolsHolder.Headers(),
+		IsImportDBMode:                        arguments.IsImportDBMode,
 	}
 
 	blockProcessorObject, err := NewBlockProcessor(argBlockProcessor)
@@ -56,6 +63,7 @@ func NewShardBlockTrack(arguments ArgShardTracker) (*shardBlockTrack, error) {
 	sbt.blockProcessor = blockProcessorObject
 	sbt.headers = make(map[uint32]map[uint64][]*HeaderInfo)
 	sbt.headersPool.RegisterHandler(sbt.receivedHeader)
+	sbt.proofsPool.RegisterHandler(sbt.receivedProof)
 	sbt.headersPool.Clear()
 
 	return &sbt, nil

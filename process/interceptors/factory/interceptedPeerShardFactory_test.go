@@ -5,9 +5,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	p2pFactory "github.com/TerraDharitri/drt-go-chain/p2p/factory"
 	"github.com/TerraDharitri/drt-go-chain/process"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -60,7 +60,7 @@ func TestNewInterceptedPeerShardFactory(t *testing.T) {
 			ShardId: "5",
 		}
 		msgBuff, _ := arg.CoreComponents.InternalMarshalizer().Marshal(msg)
-		interceptedData, err := idcif.Create(msgBuff)
+		interceptedData, err := idcif.Create(msgBuff, "")
 		assert.Nil(t, err)
 		assert.False(t, check.IfNil(interceptedData))
 		assert.True(t, strings.Contains(fmt.Sprintf("%T", interceptedData), "*p2p.interceptedPeerShard"))

@@ -15,6 +15,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/hashing/sha256"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/TerraDharitri/drt-go-chain/epochStart"
 	"github.com/TerraDharitri/drt-go-chain/epochStart/mock"
 	"github.com/TerraDharitri/drt-go-chain/process"
@@ -28,8 +31,6 @@ import (
 	stateMock "github.com/TerraDharitri/drt-go-chain/testscommon/state"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/storage"
 	"github.com/TerraDharitri/drt-go-chain/trie"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestBaseRewardsCreator_NilShardCoordinator(t *testing.T) {
@@ -184,14 +185,12 @@ func TestBaseRewardsCreator_clean(t *testing.T) {
 	require.Nil(t, err)
 
 	rwd.accumulatedRewards = big.NewInt(1000)
-	rwd.protocolSustainabilityValue = big.NewInt(100)
 	rwd.mapBaseRewardsPerBlockPerValidator[0] = big.NewInt(10)
 	txHash := []byte("txHash")
 	rwd.currTxs.AddTx(txHash, &rewardTx.RewardTx{})
 
 	rwd.clean()
 	require.Equal(t, big.NewInt(0), rwd.accumulatedRewards)
-	require.Equal(t, big.NewInt(0), rwd.protocolSustainabilityValue)
 	require.Equal(t, 0, len(rwd.mapBaseRewardsPerBlockPerValidator))
 	tx, err := rwd.currTxs.GetTx(txHash)
 	require.Nil(t, tx)
@@ -219,7 +218,7 @@ func TestBaseRewardsCreator_GetLocalTxCache(t *testing.T) {
 	require.False(t, check.IfNil(txCache))
 }
 
-func TestBaseRewardsCreator_GetProtocolSustainabilityRewards(t *testing.T) {
+func TestBaseRewardsCreator_addAcceleratorRewardToMiniBlocks(t *testing.T) {
 	t.Parallel()
 
 	args := getBaseRewardsArguments()
@@ -227,20 +226,7 @@ func TestBaseRewardsCreator_GetProtocolSustainabilityRewards(t *testing.T) {
 	require.Nil(t, err)
 	require.NotNil(t, rwd)
 
-	// should return 0 as just initialized
-	rewards := rwd.GetProtocolSustainabilityRewards()
-	require.Zero(t, big.NewInt(0).Cmp(rewards))
-}
-
-func TestBaseRewardsCreator_addProtocolRewardToMiniblocks(t *testing.T) {
-	t.Parallel()
-
-	args := getBaseRewardsArguments()
-	rwd, err := NewBaseRewardsCreator(args)
-	require.Nil(t, err)
-	require.NotNil(t, rwd)
-
-	initialProtRewardValue := big.NewInt(-100)
+	initialProtRewardValue := big.NewInt(100)
 	protRwAddr, _ := args.PubkeyConverter.Decode(args.RewardsHandler.ProtocolSustainabilityAddressInEpoch(0))
 	protRwTx := &rewardTx.RewardTx{
 		Round:   100,
@@ -256,7 +242,7 @@ func TestBaseRewardsCreator_addProtocolRewardToMiniblocks(t *testing.T) {
 
 	protRwShard := args.ShardCoordinator.ComputeId(protRwAddr)
 	mbSlice := createDefaultMiniBlocksSlice()
-	err = rwd.addProtocolRewardToMiniBlocks(protRwTx, mbSlice, protRwShard)
+	err = rwd.addAcceleratorRewardToMiniBlocks(protRwTx, mbSlice, protRwShard)
 	require.Nil(t, err)
 
 	found := false
@@ -897,7 +883,7 @@ func TestBaseRewardsCreator_createProtocolSustainabilityRewardTransaction(t *tes
 		DevFeesInEpoch: big.NewInt(0),
 	}
 
-	rwTx, _, err := rwd.createProtocolSustainabilityRewardTransaction(metaBlk, &metaBlk.EpochStart.Economics)
+	rwTx, _, err := rwd.createProtocolSustainabilityRewardTransaction(metaBlk, metaBlk.EpochStart.Economics.RewardsForProtocolSustainability)
 	require.Nil(t, err)
 	require.NotNil(t, rwTx)
 	require.Equal(t, metaBlk.EpochStart.Economics.RewardsForProtocolSustainability, rwTx.Value)
@@ -1001,15 +987,23 @@ func TestBaseRewardsCreator_finalizeMiniBlocksEmptyMbsAreRemoved(t *testing.T) {
 func TestBaseRewardsCreator_fillBaseRewardsPerBlockPerNode(t *testing.T) {
 	t.Parallel()
 
+	// should work for epoch 0 even if this is a bad input
+	testFillBaseRewardsPerBlockPerNode(t, 0)
+
+	// should work for an epoch higher than 0
+	testFillBaseRewardsPerBlockPerNode(t, 1)
+}
+
+func testFillBaseRewardsPerBlockPerNode(t *testing.T, epoch uint32) {
 	args := getBaseRewardsArguments()
 	rwd, err := NewBaseRewardsCreator(args)
 	require.Nil(t, err)
 	require.NotNil(t, rwd)
 
 	baseRewardsPerNode := big.NewInt(1000000)
-	rwd.fillBaseRewardsPerBlockPerNode(baseRewardsPerNode)
-	consensusShard := args.NodesConfigProvider.ConsensusGroupSize(0)
-	consensusMeta := args.NodesConfigProvider.ConsensusGroupSize(core.MetachainShardId)
+	rwd.fillBaseRewardsPerBlockPerNode(baseRewardsPerNode, epoch)
+	consensusShard := args.NodesConfigProvider.ConsensusGroupSizeForShardAndEpoch(0, epoch)
+	consensusMeta := args.NodesConfigProvider.ConsensusGroupSizeForShardAndEpoch(core.MetachainShardId, epoch)
 	expectedRewardPerNodeInShard := big.NewInt(0).Div(baseRewardsPerNode, big.NewInt(int64(consensusShard)))
 	expectedRewardPerNodeInMeta := big.NewInt(0).Div(baseRewardsPerNode, big.NewInt(int64(consensusMeta)))
 
@@ -1152,9 +1146,10 @@ func getBaseRewardsArguments() BaseRewardsCreatorArgs {
 
 	trieFactoryManager, _ := trie.CreateTrieStorageManager(storageManagerArgs, storage.GetStorageManagerOptions())
 	argsAccCreator := factory.ArgsAccountCreator{
-		Hasher:              hasher,
-		Marshaller:          marshalizer,
-		EnableEpochsHandler: &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
+		Hasher:                 hasher,
+		Marshaller:             marshalizer,
+		EnableEpochsHandler:    &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
+		StateAccessesCollector: &stateMock.StateAccessesCollectorStub{},
 	}
 	accCreator, _ := factory.NewAccountCreator(argsAccCreator)
 	enableEpochsHandler := &enableEpochsHandlerMock.EnableEpochsHandlerStub{}
@@ -1188,7 +1183,7 @@ func getBaseRewardsArguments() BaseRewardsCreatorArgs {
 		Marshalizer:      &mock.MarshalizerMock{},
 		DataPool:         dataRetrieverMock.NewPoolsHolderMock(),
 		NodesConfigProvider: &shardingMocks.NodesCoordinatorStub{
-			ConsensusGroupSizeCalled: func(shardID uint32) int {
+			ConsensusGroupSizeCalled: func(shardID uint32, _ uint32) int {
 				if shardID == core.MetachainShardId {
 					return 400
 				}

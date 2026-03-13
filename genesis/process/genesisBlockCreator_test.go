@@ -139,7 +139,8 @@ func createMockArgument(
 					MinVetoThreshold: 0.5,
 					LostProposalFee:  "1",
 				},
-				OwnerAddress: "3132333435363738393031323334353637383930313233343536373839303234",
+				OwnerAddress:                 "3132333435363738393031323334353637383930313233343536373839303234",
+				MaxVotingDelayPeriodInEpochs: 30,
 			},
 			StakingSystemSCConfig: config.StakingSystemSCConfig{
 				GenesisNodePrice:                     nodePrice.Text(10),
@@ -200,9 +201,10 @@ func createMockArgument(
 	}
 
 	argsAccCreator := factoryState.ArgsAccountCreator{
-		Hasher:              &hashingMocks.HasherMock{},
-		Marshaller:          &mock.MarshalizerMock{},
-		EnableEpochsHandler: &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
+		Hasher:                 &hashingMocks.HasherMock{},
+		Marshaller:             &mock.MarshalizerMock{},
+		EnableEpochsHandler:    &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
+		StateAccessesCollector: &stateMock.StateAccessesCollectorStub{},
 	}
 	accCreator, err := factoryState.NewAccountCreator(argsAccCreator)
 	require.Nil(t, err)
@@ -326,7 +328,6 @@ func TestNewGenesisBlockCreator(t *testing.T) {
 		require.True(t, errors.Is(err, process.ErrNilNodesSetup))
 		require.Nil(t, gbc)
 	})
-
 	t.Run("nil Economics should error", func(t *testing.T) {
 		t.Parallel()
 
@@ -337,7 +338,6 @@ func TestNewGenesisBlockCreator(t *testing.T) {
 		require.True(t, errors.Is(err, process.ErrNilEconomicsData))
 		require.Nil(t, gbc)
 	})
-
 	t.Run("nil ShardCoordinator should error", func(t *testing.T) {
 		t.Parallel()
 
@@ -765,6 +765,7 @@ func TestCreateArgsGenesisBlockCreator_ShouldErrWhenGetNewArgForShardFails(t *te
 		initialNodesSetup,
 		big.NewInt(22000),
 	)
+
 	arg.ShardCoordinator = &mock.ShardCoordinatorMock{SelfShardId: 1}
 	arg.TrieStorageManagers = make(map[string]common.StorageManager)
 	gbc, err := NewGenesisBlockCreator(arg)
@@ -842,14 +843,12 @@ func TestCreateHardForkBlockProcessors_ShouldWork(t *testing.T) {
 			return 1
 		},
 	}
-
 	arg := createMockArgument(
 		t,
 		"testdata/genesisTest1.json",
 		initialNodesSetup,
 		big.NewInt(22000),
 	)
-	
 	arg.importHandler = &updateMock.ImportHandlerStub{
 		GetAccountsDBForShardCalled: func(shardID uint32) state.AccountsAdapter {
 			return &stateMock.AccountsStub{}
@@ -906,5 +905,4 @@ func TestCreateArgsGenesisBlockCreator_ShouldWorkAndCreateEmpty(t *testing.T) {
 		assert.Zero(t, blockInstance.GetRound())
 		assert.Zero(t, blockInstance.GetEpoch())
 	}
-
 }

@@ -35,7 +35,7 @@ import (
 
 const (
 	defaultLogsPath     = "logs"
-	logFilePrefix       = "dharitri-seed"
+	logFilePrefix       = "TerraDharitri-seed"
 	filePathPlaceholder = "[path]"
 )
 
@@ -126,7 +126,7 @@ func main() {
 	app.Version = "v0.0.1"
 	app.Authors = []cli.Author{
 		{
-			Name:  "The Dharitri Team",
+			Name:  "Team Dharitri",
 			Email: "contact@dharitri.org",
 		},
 	}

@@ -14,6 +14,9 @@ import (
 	apiData "github.com/TerraDharitri/drt-go-chain-core/data/api"
 	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	logger "github.com/TerraDharitri/drt-go-chain-logger"
+	"github.com/TerraDharitri/drt-go-chain/integrationTests"
+	"github.com/stretchr/testify/require"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	testsChainSimulator "github.com/TerraDharitri/drt-go-chain/integrationTests/chainSimulator"
@@ -26,7 +29,6 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
 	"github.com/TerraDharitri/drt-go-chain/vm"
-	"github.com/stretchr/testify/require"
 )
 
 const (
@@ -43,7 +45,7 @@ const (
 	guardAccountCost                        = 250_000
 	extraGasLimitForGuarded                 = minGasLimit
 	extraGasDCDTTransfer                    = 250000
-	extraGasMultiDCDTTransferPerToken       = 1100000
+	extraGasMultiDCDTTransfer               = 500000
 	rewaTicker                              = "REWA-000000"
 )
 
@@ -56,10 +58,10 @@ func TestRelayedV3WithChainSimulator(t *testing.T) {
 		t.Skip("this is not a short test")
 	}
 
+	t.Run("successful intra shard guarded move balance", testRelayedV3MoveBalance(0, 0, false, true))
 	t.Run("sender == relayer move balance should consume fee", testRelayedV3RelayedBySenderMoveBalance())
 	t.Run("receiver == relayer move balance should consume fee", testRelayedV3RelayedByReceiverMoveBalance())
 	t.Run("successful intra shard move balance", testRelayedV3MoveBalance(0, 0, false, false))
-	t.Run("successful intra shard guarded move balance", testRelayedV3MoveBalance(0, 0, false, true))
 	t.Run("successful intra shard move balance with extra gas", testRelayedV3MoveBalance(0, 0, true, false))
 	t.Run("successful cross shard move balance", testRelayedV3MoveBalance(0, 1, false, false))
 	t.Run("successful cross shard guarded move balance", testRelayedV3MoveBalance(0, 1, false, true))
@@ -104,7 +106,6 @@ func testRelayedV3MoveBalance(
 	guardedTx bool,
 ) func(t *testing.T) {
 	return func(t *testing.T) {
-
 		providedActivationEpoch := uint32(1)
 		alterConfigsFunc := func(cfg *config.Configs) {
 			cfg.EpochConfig.EnableEpochs.FixRelayedBaseCostEnableEpoch = providedActivationEpoch
@@ -336,7 +337,7 @@ func testRelayedV3ScCall(
 
 		// send relayed tx
 		txDataAdd := "add@" + hex.EncodeToString(big.NewInt(1).Bytes())
-		gasLimit := uint64(3000000)
+		gasLimit := uint64(2000000)
 		relayedTx := generateRelayedV3Transaction(sender.Bytes, 0, scAddressBytes, relayer.Bytes, big.NewInt(0), txDataAdd, gasLimit)
 
 		result, err := cs.SendTxAndGenerateBlockTilTxIsExecuted(relayedTx, maxNumOfBlocksToGenerateWhenExecutingTx)
@@ -655,7 +656,7 @@ func testRelayedV3MultiDCDTTransferWithREWA(
 				hex.EncodeToString(sender.Bytes) + "@02@" +
 				hex.EncodeToString([]byte(ticker)) + "@00@" + hex.EncodeToString(transferValue.Bytes()) + "@" +
 				hex.EncodeToString([]byte(rewaTicker)) + "@00@" + hex.EncodeToString(rewaTransferValue.Bytes())
-			gasLimit := minGasLimit + len(txDataTransfer)*1500 + extraGasMultiDCDTTransferPerToken*2
+			gasLimit := minGasLimit + len(txDataTransfer)*1500 + extraGasMultiDCDTTransfer
 			ownerNonce := getNonce(t, cs, owner)
 
 			dcdtTransferTx := generateTransaction(owner.Bytes, ownerNonce, owner.Bytes, big.NewInt(0), txDataTransfer, uint64(gasLimit))
@@ -677,7 +678,7 @@ func testRelayedV3MultiDCDTTransferWithREWA(
 			hex.EncodeToString(receiver.Bytes) + "@02@" +
 			hex.EncodeToString([]byte(ticker)) + "@00@" + hex.EncodeToString(transferValue.Bytes()) + "@" +
 			hex.EncodeToString([]byte(rewaTicker)) + "@00@" + hex.EncodeToString(rewaTransferValue.Bytes())
-		gasLimit := minGasLimit*2 + len(txDataTransfer)*1500 + extraGasMultiDCDTTransferPerToken*2
+		gasLimit := minGasLimit*2 + len(txDataTransfer)*1500 + extraGasMultiDCDTTransfer
 		senderNonce := getNonce(t, cs, sender)
 		relayedTx := generateRelayedV3Transaction(sender.Bytes, senderNonce, sender.Bytes, relayer.Bytes, big.NewInt(0), txDataTransfer, uint64(gasLimit))
 
@@ -1017,8 +1018,8 @@ func TestFixRelayedMoveBalanceWithChainSimulator(t *testing.T) {
 		t.Skip("this is not a short test")
 	}
 
-	expectedFeeScCallBefore := "827294920000000"
-	expectedFeeScCallAfter := "885704920000000"
+	expectedFeeScCallBefore := "827300000000000"
+	expectedFeeScCallAfter := "885719470000000"
 	t.Run("sc call", testFixRelayedMoveBalanceWithChainSimulatorScCall(expectedFeeScCallBefore, expectedFeeScCallAfter))
 
 	expectedFeeMoveBalanceBefore := "809500000000000" // 506 * 1500 + 50000 + 500
@@ -1035,6 +1036,7 @@ func testFixRelayedMoveBalanceWithChainSimulatorScCall(
 		providedActivationEpoch := uint32(7)
 		alterConfigsFunc := func(cfg *config.Configs) {
 			cfg.EpochConfig.EnableEpochs.FixRelayedBaseCostEnableEpoch = providedActivationEpoch
+			cfg.EpochConfig.EnableEpochs.RelayedTransactionsV1V2DisableEpoch = integrationTests.UnreachableEpoch
 		}
 
 		cs := startChainSimulator(t, alterConfigsFunc)
@@ -1073,7 +1075,7 @@ func testFixRelayedMoveBalanceWithChainSimulatorScCall(
 		require.NoError(t, err)
 
 		// send relayed tx, fix still not active
-		innerTx = generateTransaction(owner.Bytes, 2, scAddressBytes, big.NewInt(0), txDataAdd, 3000000)
+		innerTx = generateTransaction(owner.Bytes, 2, scAddressBytes, big.NewInt(0), txDataAdd, 1230000)
 		marshalledTx, err = json.Marshal(innerTx)
 		require.NoError(t, err)
 		txData = []byte("relayedTx@" + hex.EncodeToString(marshalledTx))
@@ -1096,7 +1098,7 @@ func testFixRelayedMoveBalanceWithChainSimulatorScCall(
 		require.NoError(t, err)
 
 		// send relayed tx after fix
-		innerTx = generateTransaction(owner.Bytes, 3, scAddressBytes, big.NewInt(0), txDataAdd, 3000000)
+		innerTx = generateTransaction(owner.Bytes, 3, scAddressBytes, big.NewInt(0), txDataAdd, 1500000)
 		marshalledTx, err = json.Marshal(innerTx)
 		require.NoError(t, err)
 		txData = []byte("relayedTx@" + hex.EncodeToString(marshalledTx))
@@ -1126,6 +1128,7 @@ func testFixRelayedMoveBalanceWithChainSimulatorMoveBalance(
 		providedActivationEpoch := uint32(5)
 		alterConfigsFunc := func(cfg *config.Configs) {
 			cfg.EpochConfig.EnableEpochs.FixRelayedBaseCostEnableEpoch = providedActivationEpoch
+			cfg.EpochConfig.EnableEpochs.RelayedTransactionsV1V2DisableEpoch = integrationTests.UnreachableEpoch
 		}
 
 		cs := startChainSimulator(t, alterConfigsFunc)
@@ -1199,6 +1202,7 @@ func TestRelayedTransactionFeeField(t *testing.T) {
 	cs := startChainSimulator(t, func(cfg *config.Configs) {
 		cfg.EpochConfig.EnableEpochs.RelayedTransactionsEnableEpoch = 1
 		cfg.EpochConfig.EnableEpochs.FixRelayedBaseCostEnableEpoch = 1
+		cfg.EpochConfig.EnableEpochs.RelayedTransactionsV1V2DisableEpoch = integrationTests.UnreachableEpoch
 	})
 	defer cs.Close()
 
@@ -1232,6 +1236,53 @@ func TestRelayedTransactionFeeField(t *testing.T) {
 		require.Equal(t, expectedFee.String(), result.InitiallyPaidFee)
 		require.Equal(t, uint64(gasLimit), result.GasUsed)
 	})
+}
+
+func TestRelayedTxCheckTxProcessingTypeAfterRelayedV1Disabled(t *testing.T) {
+	if testing.Short() {
+		t.Skip("this is not a short test")
+	}
+
+	const RelayedV1DisableEpoch = 3
+
+	cs := startChainSimulator(t, func(cfg *config.Configs) {
+		cfg.EpochConfig.EnableEpochs.RelayedTransactionsV1V2DisableEpoch = RelayedV1DisableEpoch
+	})
+	defer cs.Close()
+
+	initialBalance := big.NewInt(0).Mul(oneREWA, big.NewInt(10))
+	relayer, err := cs.GenerateAndMintWalletAddress(0, initialBalance)
+	require.NoError(t, err)
+
+	snd, err := cs.GenerateAndMintWalletAddress(0, initialBalance)
+	require.NoError(t, err)
+
+	rcv, err := cs.GenerateAndMintWalletAddress(0, big.NewInt(0))
+	require.NoError(t, err)
+
+	err = cs.GenerateBlocks(1)
+	require.Nil(t, err)
+
+	userTx := generateTransaction(snd.Bytes, 0, rcv.Bytes, oneREWA, "d", minGasLimit+gasPerDataByte)
+	buff, err := json.Marshal(userTx)
+	require.NoError(t, err)
+
+	txData := []byte("relayedTx@" + hex.EncodeToString(buff))
+	gasLimit := minGasLimit + len(txData)*gasPerDataByte + int(userTx.GasLimit)
+	relayedTx := generateTransaction(relayer.Bytes, 0, snd.Bytes, big.NewInt(0), string(txData), uint64(gasLimit))
+
+	result, err := cs.SendTxAndGenerateBlockTilTxIsExecuted(relayedTx, maxNumOfBlocksToGenerateWhenExecutingTx)
+	require.NoError(t, err)
+	require.Equal(t, process.RelayedTx.String(), result.ProcessingTypeOnSource)
+	require.Equal(t, process.RelayedTx.String(), result.ProcessingTypeOnSource)
+
+	err = cs.GenerateBlocksUntilEpochIsReached(RelayedV1DisableEpoch)
+	require.NoError(t, err)
+
+	result, err = cs.GetNodeHandler(0).GetFacadeHandler().GetTransaction(result.Hash, true)
+	require.NoError(t, err)
+	require.Equal(t, process.RelayedTx.String(), result.ProcessingTypeOnSource)
+	require.Equal(t, process.RelayedTx.String(), result.ProcessingTypeOnSource)
 }
 
 func TestRegularMoveBalanceWithRefundReceipt(t *testing.T) {

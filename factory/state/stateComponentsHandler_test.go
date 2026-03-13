@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/TerraDharitri/drt-go-chain/common"
-	errorsDrt "github.com/TerraDharitri/drt-go-chain/errors"
+	errorsMx "github.com/TerraDharitri/drt-go-chain/errors"
 	"github.com/TerraDharitri/drt-go-chain/factory"
 	stateComp "github.com/TerraDharitri/drt-go-chain/factory/state"
 	componentsMock "github.com/TerraDharitri/drt-go-chain/testscommon/components"
@@ -20,7 +20,7 @@ func TestNewManagedStateComponents(t *testing.T) {
 		t.Parallel()
 
 		managedStateComponents, err := stateComp.NewManagedStateComponents(nil)
-		require.Equal(t, errorsDrt.ErrNilStateComponentsFactory, err)
+		require.Equal(t, errorsMx.ErrNilStateComponentsFactory, err)
 		require.Nil(t, managedStateComponents)
 	})
 	t.Run("should work", func(t *testing.T) {
@@ -106,7 +106,7 @@ func TestManagedStateComponents_CheckSubcomponents(t *testing.T) {
 	stateComponentsFactory, _ := stateComp.NewStateComponentsFactory(args)
 	managedStateComponents, _ := stateComp.NewManagedStateComponents(stateComponentsFactory)
 	err := managedStateComponents.CheckSubcomponents()
-	require.Equal(t, errorsDrt.ErrNilStateComponents, err)
+	require.Equal(t, errorsMx.ErrNilStateComponents, err)
 
 	err = managedStateComponents.Create()
 	require.NoError(t, err)
@@ -131,12 +131,12 @@ func TestManagedStateComponents_Setters(t *testing.T) {
 	triesStorageManagers := map[string]common.StorageManager{"a": &storageManager.StorageManagerStub{}}
 
 	err = managedStateComponents.SetTriesContainer(nil)
-	require.Equal(t, errorsDrt.ErrNilTriesContainer, err)
+	require.Equal(t, errorsMx.ErrNilTriesContainer, err)
 	err = managedStateComponents.SetTriesContainer(triesContainer)
 	require.NoError(t, err)
 
 	err = managedStateComponents.SetTriesStorageManagers(nil)
-	require.Equal(t, errorsDrt.ErrNilTriesStorageManagers, err)
+	require.Equal(t, errorsMx.ErrNilTriesStorageManagers, err)
 	err = managedStateComponents.SetTriesStorageManagers(triesStorageManagers)
 	require.NoError(t, err)
 

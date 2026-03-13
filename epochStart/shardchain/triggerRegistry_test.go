@@ -4,15 +4,16 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/genericMocks"
 	storageStubs "github.com/TerraDharitri/drt-go-chain/testscommon/storage"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func cloneTrigger(t *trigger) *trigger {
@@ -42,6 +43,7 @@ func cloneTrigger(t *trigger) *trigger {
 	rt.requestHandler = t.requestHandler
 	rt.epochStartNotifier = t.epochStartNotifier
 	rt.headersPool = t.headersPool
+	rt.proofsPool = t.proofsPool
 	rt.epochStartShardHeader = t.epochStartShardHeader
 	rt.epochStartMeta = t.epochStartMeta
 	rt.shardHdrStorage = t.shardHdrStorage

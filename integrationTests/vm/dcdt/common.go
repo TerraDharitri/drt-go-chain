@@ -10,6 +10,8 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/data/dcdt"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
+	"github.com/stretchr/testify/require"
+
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests"
 	testVm "github.com/TerraDharitri/drt-go-chain/integrationTests/vm"
@@ -20,7 +22,6 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/txDataBuilder"
 	"github.com/TerraDharitri/drt-go-chain/vm"
-	"github.com/stretchr/testify/require"
 )
 
 // GetDCDTTokenData -
@@ -91,12 +92,12 @@ func SetRolesWithSenderAccount(nodes []*integrationTests.TestProcessorNode, issu
 func DeployNonPayableSmartContract(
 	t *testing.T,
 	nodes []*integrationTests.TestProcessorNode,
-	idxProposers []int,
+	leaders []*integrationTests.TestProcessorNode,
 	nonce *uint64,
 	round *uint64,
 	fileName string,
 ) []byte {
-	return DeployNonPayableSmartContractFromNode(t, nodes, 0, idxProposers, nonce, round, fileName)
+	return DeployNonPayableSmartContractFromNode(t, nodes, 0, leaders, nonce, round, fileName)
 }
 
 // DeployNonPayableSmartContractFromNode -
@@ -104,7 +105,7 @@ func DeployNonPayableSmartContractFromNode(
 	t *testing.T,
 	nodes []*integrationTests.TestProcessorNode,
 	idDeployer int,
-	idxProposers []int,
+	leaders []*integrationTests.TestProcessorNode,
 	nonce *uint64,
 	round *uint64,
 	fileName string,
@@ -121,7 +122,7 @@ func DeployNonPayableSmartContractFromNode(
 		integrationTests.AdditionalGasLimit,
 	)
 
-	*nonce, *round = integrationTests.WaitOperationToBeDone(t, nodes, 4, *nonce, *round, idxProposers)
+	*nonce, *round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, 4, *nonce, *round)
 
 	scShardID := nodes[0].ShardCoordinator.ComputeId(scAddress)
 	for _, node := range nodes {
@@ -165,11 +166,12 @@ func CheckAddressHasTokens(
 }
 
 // CreateNodesAndPrepareBalances -
-func CreateNodesAndPrepareBalances(numOfShards int) ([]*integrationTests.TestProcessorNode, []int) {
+func CreateNodesAndPrepareBalances(numOfShards int) ([]*integrationTests.TestProcessorNode, []*integrationTests.TestProcessorNode) {
 	enableEpochs := config.EnableEpochs{
 		OptimizeGasUsedInCrossMiniBlocksEnableEpoch: integrationTests.UnreachableEpoch,
 		ScheduledMiniBlocksEnableEpoch:              integrationTests.UnreachableEpoch,
 		MiniBlockPartialExecutionEnableEpoch:        integrationTests.UnreachableEpoch,
+		AndromedaEnableEpoch:                        integrationTests.UnreachableEpoch,
 	}
 	roundsConfig := testscommon.GetDefaultRoundsConfig()
 	return CreateNodesAndPrepareBalancesWithEpochsAndRoundsConfig(
@@ -180,7 +182,11 @@ func CreateNodesAndPrepareBalances(numOfShards int) ([]*integrationTests.TestPro
 }
 
 // CreateNodesAndPrepareBalancesWithEpochsAndRoundsConfig -
-func CreateNodesAndPrepareBalancesWithEpochsAndRoundsConfig(numOfShards int, enableEpochs config.EnableEpochs, roundsConfig config.RoundConfig) ([]*integrationTests.TestProcessorNode, []int) {
+func CreateNodesAndPrepareBalancesWithEpochsAndRoundsConfig(
+	numOfShards int,
+	enableEpochs config.EnableEpochs,
+	roundsConfig config.RoundConfig,
+) ([]*integrationTests.TestProcessorNode, []*integrationTests.TestProcessorNode) {
 	nodesPerShard := 1
 	numMetachainNodes := 1
 
@@ -198,14 +204,14 @@ func CreateNodesAndPrepareBalancesWithEpochsAndRoundsConfig(numOfShards int, ena
 		},
 	)
 
-	idxProposers := make([]int, numOfShards+1)
+	leaders := make([]*integrationTests.TestProcessorNode, numOfShards+1)
 	for i := 0; i < numOfShards; i++ {
-		idxProposers[i] = i * nodesPerShard
+		leaders[i] = nodes[i*nodesPerShard]
 	}
-	idxProposers[numOfShards] = numOfShards * nodesPerShard
+	leaders[numOfShards] = nodes[numOfShards*nodesPerShard]
 	integrationTests.DisplayAndStartNodes(nodes)
 
-	return nodes, idxProposers
+	return nodes, leaders
 }
 
 // IssueNFT -
@@ -334,7 +340,6 @@ func CheckForwarderRawSavedCallbackArgs(
 		require.Equal(t, vmcommon.Ok, vmOutputArgs.ReturnCode)
 		require.GreaterOrEqual(t, len(vmOutputArgs.ReturnData), 1)
 		if expectedResultCode == vmcommon.Ok {
-			fmt.Println(vmOutputArgs.ReturnData[0])
 			require.Equal(t, []byte{0x0}, vmOutputArgs.ReturnData[0])
 			require.Equal(t, expectedArguments, vmOutputArgs.ReturnData[1:])
 		} else {
@@ -388,7 +393,7 @@ func PrepareFungibleTokensWithLocalBurnAndMint(
 	t *testing.T,
 	nodes []*integrationTests.TestProcessorNode,
 	addressWithRoles []byte,
-	idxProposers []int,
+	leaders []*integrationTests.TestProcessorNode,
 	round *uint64,
 	nonce *uint64,
 ) string {
@@ -397,7 +402,7 @@ func PrepareFungibleTokensWithLocalBurnAndMint(
 		nodes,
 		nodes[0].OwnAccount,
 		addressWithRoles,
-		idxProposers,
+		leaders,
 		round,
 		nonce)
 }
@@ -408,7 +413,7 @@ func PrepareFungibleTokensWithLocalBurnAndMintWithIssuerAccount(
 	nodes []*integrationTests.TestProcessorNode,
 	issuerAccount *integrationTests.TestWalletAccount,
 	addressWithRoles []byte,
-	idxProposers []int,
+	leaders []*integrationTests.TestProcessorNode,
 	round *uint64,
 	nonce *uint64,
 ) string {
@@ -416,7 +421,7 @@ func PrepareFungibleTokensWithLocalBurnAndMintWithIssuerAccount(
 
 	time.Sleep(time.Second)
 	nrRoundsToPropagateMultiShard := 5
-	*nonce, *round = integrationTests.WaitOperationToBeDone(t, nodes, nrRoundsToPropagateMultiShard, *nonce, *round, idxProposers)
+	*nonce, *round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, nrRoundsToPropagateMultiShard, *nonce, *round)
 	time.Sleep(time.Second)
 
 	tokenIdentifier := string(integrationTests.GetTokenIdentifier(nodes, []byte("TKN")))
@@ -425,7 +430,7 @@ func PrepareFungibleTokensWithLocalBurnAndMintWithIssuerAccount(
 
 	time.Sleep(time.Second)
 	nrRoundsToPropagateMultiShard = 5
-	*nonce, *round = integrationTests.WaitOperationToBeDone(t, nodes, nrRoundsToPropagateMultiShard, *nonce, *round, idxProposers)
+	*nonce, *round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, nrRoundsToPropagateMultiShard, *nonce, *round)
 	time.Sleep(time.Second)
 
 	return tokenIdentifier

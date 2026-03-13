@@ -8,6 +8,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/data/typeConverters"
 	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/consensus"
 	"github.com/TerraDharitri/drt-go-chain/factory"
@@ -54,6 +55,10 @@ type CoreComponentsStub struct {
 	ProcessStatusHandlerInternal       common.ProcessStatusHandler
 	HardforkTriggerPubKeyField         []byte
 	EnableEpochsHandlerField           common.EnableEpochsHandler
+	ChainParametersHandlerField        process.ChainParametersHandler
+	ChainParametersSubscriberField     process.ChainParametersSubscriber
+	FieldsSizeCheckerField             common.FieldsSizeChecker
+	EpochChangeGracePeriodHandlerField common.EpochChangeGracePeriodHandler
 }
 
 // Create -
@@ -257,6 +262,26 @@ func (ccs *CoreComponentsStub) HardforkTriggerPubKey() []byte {
 // EnableEpochsHandler -
 func (ccs *CoreComponentsStub) EnableEpochsHandler() common.EnableEpochsHandler {
 	return ccs.EnableEpochsHandlerField
+}
+
+// ChainParametersHandler -
+func (ccs *CoreComponentsStub) ChainParametersHandler() process.ChainParametersHandler {
+	return ccs.ChainParametersHandlerField
+}
+
+// ChainParametersSubscriber -
+func (ccs *CoreComponentsStub) ChainParametersSubscriber() process.ChainParametersSubscriber {
+	return ccs.ChainParametersSubscriberField
+}
+
+// FieldsSizeChecker -
+func (ccs *CoreComponentsStub) FieldsSizeChecker() common.FieldsSizeChecker {
+	return ccs.FieldsSizeCheckerField
+}
+
+// EpochChangeGracePeriodHandler -
+func (ccs *CoreComponentsStub) EpochChangeGracePeriodHandler() common.EpochChangeGracePeriodHandler {
+	return ccs.EpochChangeGracePeriodHandlerField
 }
 
 // IsInterfaceNil -

@@ -3,7 +3,9 @@ package trie
 import (
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data/stateChange"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 )
 
@@ -15,7 +17,7 @@ type DataTrieTrackerStub struct {
 	SaveKeyValueCalled          func(key []byte, value []byte) error
 	SetDataTrieCalled           func(tr common.Trie)
 	DataTrieCalled              func() common.Trie
-	SaveDirtyDataCalled         func(trie common.Trie) ([]core.TrieData, error)
+	SaveDirtyDataCalled         func(trie common.Trie) ([]*stateChange.DataTrieChange, []core.TrieData, error)
 	SaveTrieDataCalled          func(trieData core.TrieData) error
 	MigrateDataTrieLeavesCalled func(args vmcommon.ArgsMigrateDataTrieLeaves) error
 }
@@ -61,12 +63,12 @@ func (dtts *DataTrieTrackerStub) DataTrie() common.DataTrieHandler {
 }
 
 // SaveDirtyData -
-func (dtts *DataTrieTrackerStub) SaveDirtyData(mainTrie common.Trie) ([]core.TrieData, error) {
+func (dtts *DataTrieTrackerStub) SaveDirtyData(mainTrie common.Trie) ([]*stateChange.DataTrieChange, []core.TrieData, error) {
 	if dtts.SaveDirtyDataCalled != nil {
 		return dtts.SaveDirtyDataCalled(mainTrie)
 	}
 
-	return make([]core.TrieData, 0), nil
+	return make([]*stateChange.DataTrieChange, 0), make([]core.TrieData, 0), nil
 }
 
 // MigrateDataTrieLeaves -

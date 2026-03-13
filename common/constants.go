@@ -94,6 +94,9 @@ const ConnectionTopic = "connection"
 // ValidatorInfoTopic is the topic used for validatorInfo signaling
 const ValidatorInfoTopic = "validatorInfo"
 
+// EquivalentProofsTopic is the topic used for equivalent proofs
+const EquivalentProofsTopic = "equivalentProofs"
+
 // MetricCurrentRound is the metric for monitoring the current round of a node
 const MetricCurrentRound = "drt_current_round"
 
@@ -102,6 +105,9 @@ const MetricNonce = "drt_nonce"
 
 // MetricBlockTimestamp is the metric for monitoring the timestamp of the last synchronized block
 const MetricBlockTimestamp = "drt_block_timestamp"
+
+// MetricBlockTimestampMs is the metric for monitoring the timestamp in milliseconds of the last synchronized block
+const MetricBlockTimestampMs = "drt_block_timestamp_ms"
 
 // MetricProbableHighestNonce is the metric for monitoring the max speculative nonce received by the node by listening on the network
 const MetricProbableHighestNonce = "drt_probable_highest_nonce"
@@ -731,8 +737,8 @@ const (
 	// MetricREWAInMultiTransferEnableEpoch represents the epoch when REWA in multi transfer feature is enabled
 	MetricREWAInMultiTransferEnableEpoch = "drt_rewa_in_multi_transfer_enable_epoch"
 
-	// MetricCryptoOpcodesV2EnableEpoch represents the epoch when crypto opcodes v2 feature is enabled
-	MetricCryptoOpcodesV2EnableEpoch = "drt_crypto_opcodes_v2_enable_epoch"
+	// MetricCheckBuiltInCallOnTransferValueAndFailEnableRound represents the round when check builtincall on transfer value and fail is enabled
+	MetricCheckBuiltInCallOnTransferValueAndFailEnableRound = "drt_checkbuiltincall_ontransfervalueandfail_enable_round"
 
 	// MetricMultiDCDTNFTTransferAndExecuteByUserEnableEpoch represents the epoch when enshrined sovereign opcodes are enabled
 	MetricMultiDCDTNFTTransferAndExecuteByUserEnableEpoch = "drt_multi_dcdt_transfer_execute_by_user_enable_epoch"
@@ -746,8 +752,32 @@ const (
 	// MetricRelayedTransactionsV3FixDCDTTransferEnableEpoch represents the epoch when the fix for relayed transactions v3 with dcdt transfer are enabled
 	MetricRelayedTransactionsV3FixDCDTTransferEnableEpoch = "drt_relayed_transactions_v3_fix_dcdt_transfer_enable_epoch"
 
+	// MetricMaskVMInternalDependenciesErrorsEnableEpoch represents the epoch when the additional internal erorr masking in vm is enabled
+	MetricMaskVMInternalDependenciesErrorsEnableEpoch = "drt_mask_vm_internal_dependencies_errors_enable_epoch"
+
+	// MetricFixBackTransferOPCODEEnableEpoch represents the epoch when the fix for back transfers opcode will be enabled
+	MetricFixBackTransferOPCODEEnableEpoch = "drt_fix_back_transfer_opcode_enable_epoch"
+
+	// MetricBarnardOpcodesEnableEpoch represents the epoch when Barnard opcodes will be enabled
+	MetricBarnardOpcodesEnableEpoch = "drt_barnard_opcodes_enable_epoch"
+
+	// MetricFixGetBalanceEnableEpoch represents the epoch when get balance opcode fix is enabled
+	MetricFixGetBalanceEnableEpoch = "drt_fix_get_balance_enable_epoch"
+
+	// MetricValidationOnGobDecodeEnableEpoch represents the epoch when validation on GobDecode will be taken into account
+	MetricValidationOnGobDecodeEnableEpoch = "drt_validation_on_gobdecode_enable_epoch"
+
+	// MetricAutomaticActivationOfNodesDisableEpoch represents the epoch when the automatic activation of nodes is disabled
+	MetricAutomaticActivationOfNodesDisableEpoch = "drt_automatic_activation_of_nodes_disable_epoch"
+
 	// MetricMaxNodesChangeEnableEpoch holds configuration for changing the maximum number of nodes and the enabling epoch
 	MetricMaxNodesChangeEnableEpoch = "drt_max_nodes_change_enable_epoch"
+
+	// MetricCryptoOpcodesV2EnableEpoch represents the epoch when crypto opcodes v2 feature is enabled
+	MetricCryptoOpcodesV2EnableEpoch = "drt_crypto_opcodes_v2_enable_epoch"
+
+	// MetricRelayedTransactionsV1V2DisableEpoch represents the epoch when relayed transactions v1 and v2 are disabled
+	MetricRelayedTransactionsV1V2DisableEpoch = "drt_relayed_transactions_v1_v2_disable_epoch"
 
 	// MetricEpochEnable represents the epoch when the max nodes change configuration is applied
 	MetricEpochEnable = "drt_epoch_enable"
@@ -854,10 +884,14 @@ const (
 const (
 	// StorerOrder defines the order of storers to be notified of a start of epoch event
 	StorerOrder = iota
+	// ChainParametersOrder defines the order in which ChainParameters is notified of a start of epoch event
+	ChainParametersOrder
 	// NodesCoordinatorOrder defines the order in which NodesCoordinator is notified of a start of epoch event
 	NodesCoordinatorOrder
-	// ConsensusOrder defines the order in which Consensus is notified of a start of epoch event
-	ConsensusOrder
+	// ConsensusHandlerOrder defines the order in which ConsensusHandler is notified of a start of epoch event
+	ConsensusHandlerOrder
+	// ConsensusStartRoundOrder defines the order in which Consensus StartRound subround is notified of a start of epoch event
+	ConsensusStartRoundOrder
 	// NetworkShardingOrder defines the order in which the network sharding subsystem is notified of a start of epoch event
 	NetworkShardingOrder
 	// IndexerOrder defines the order in which indexer is notified of a start of epoch event
@@ -966,7 +1000,7 @@ const PutInStorerMaxTime = time.Second
 const DefaultUnstakedEpoch = math.MaxUint32
 
 // InvalidMessageBlacklistDuration represents the time to keep a peer in the black list if it sends a message that
-// does not follow the protocol: example not useing the same marshaler as the other peers
+// does not follow the protocol: example not using the same marshaler as the other peers
 const InvalidMessageBlacklistDuration = time.Second * 3600
 
 // PublicKeyBlacklistDuration represents the time to keep a public key in the black list if it will degrade its
@@ -1121,129 +1155,140 @@ const FullArchiveMetricSuffix = "_full_archive"
 
 // Enable epoch flags definitions
 const (
-	SCDeployFlag                                       core.EnableEpochFlag = "SCDeployFlag"
-	BuiltInFunctionsFlag                               core.EnableEpochFlag = "BuiltInFunctionsFlag"
-	RelayedTransactionsFlag                            core.EnableEpochFlag = "RelayedTransactionsFlag"
-	PenalizedTooMuchGasFlag                            core.EnableEpochFlag = "PenalizedTooMuchGasFlag"
-	SwitchJailWaitingFlag                              core.EnableEpochFlag = "SwitchJailWaitingFlag"
-	BelowSignedThresholdFlag                           core.EnableEpochFlag = "BelowSignedThresholdFlag"
-	SwitchHysteresisForMinNodesFlagInSpecificEpochOnly core.EnableEpochFlag = "SwitchHysteresisForMinNodesFlagInSpecificEpochOnly"
-	TransactionSignedWithTxHashFlag                    core.EnableEpochFlag = "TransactionSignedWithTxHashFlag"
-	MetaProtectionFlag                                 core.EnableEpochFlag = "MetaProtectionFlag"
-	AheadOfTimeGasUsageFlag                            core.EnableEpochFlag = "AheadOfTimeGasUsageFlag"
-	GasPriceModifierFlag                               core.EnableEpochFlag = "GasPriceModifierFlag"
-	RepairCallbackFlag                                 core.EnableEpochFlag = "RepairCallbackFlag"
-	ReturnDataToLastTransferFlagAfterEpoch             core.EnableEpochFlag = "ReturnDataToLastTransferFlagAfterEpoch"
-	SenderInOutTransferFlag                            core.EnableEpochFlag = "SenderInOutTransferFlag"
-	StakeFlag                                          core.EnableEpochFlag = "StakeFlag"
-	StakingV2Flag                                      core.EnableEpochFlag = "StakingV2Flag"
-	StakingV2OwnerFlagInSpecificEpochOnly              core.EnableEpochFlag = "StakingV2OwnerFlagInSpecificEpochOnly"
-	StakingV2FlagAfterEpoch                            core.EnableEpochFlag = "StakingV2FlagAfterEpoch"
-	DoubleKeyProtectionFlag                            core.EnableEpochFlag = "DoubleKeyProtectionFlag"
-	DCDTFlag                                           core.EnableEpochFlag = "DCDTFlag"
-	DCDTFlagInSpecificEpochOnly                        core.EnableEpochFlag = "DCDTFlagInSpecificEpochOnly"
-	GovernanceFlag                                     core.EnableEpochFlag = "GovernanceFlag"
-	GovernanceFlagInSpecificEpochOnly                  core.EnableEpochFlag = "GovernanceFlagInSpecificEpochOnly"
-	DelegationManagerFlag                              core.EnableEpochFlag = "DelegationManagerFlag"
-	DelegationSmartContractFlag                        core.EnableEpochFlag = "DelegationSmartContractFlag"
-	DelegationSmartContractFlagInSpecificEpochOnly     core.EnableEpochFlag = "DelegationSmartContractFlagInSpecificEpochOnly"
-	CorrectLastUnJailedFlag                            core.EnableEpochFlag = "CorrectLastUnJailedFlag"
-	CorrectLastUnJailedFlagInSpecificEpochOnly         core.EnableEpochFlag = "CorrectLastUnJailedFlagInSpecificEpochOnly"
-	RelayedTransactionsV2Flag                          core.EnableEpochFlag = "RelayedTransactionsV2Flag"
-	UnBondTokensV2Flag                                 core.EnableEpochFlag = "UnBondTokensV2Flag"
-	SaveJailedAlwaysFlag                               core.EnableEpochFlag = "SaveJailedAlwaysFlag"
-	ReDelegateBelowMinCheckFlag                        core.EnableEpochFlag = "ReDelegateBelowMinCheckFlag"
-	ValidatorToDelegationFlag                          core.EnableEpochFlag = "ValidatorToDelegationFlag"
-	IncrementSCRNonceInMultiTransferFlag               core.EnableEpochFlag = "IncrementSCRNonceInMultiTransferFlag"
-	DCDTMultiTransferFlag                              core.EnableEpochFlag = "DCDTMultiTransferFlag"
-	GlobalMintBurnFlag                                 core.EnableEpochFlag = "GlobalMintBurnFlag"
-	DCDTTransferRoleFlag                               core.EnableEpochFlag = "DCDTTransferRoleFlag"
-	ComputeRewardCheckpointFlag                        core.EnableEpochFlag = "ComputeRewardCheckpointFlag"
-	SCRSizeInvariantCheckFlag                          core.EnableEpochFlag = "SCRSizeInvariantCheckFlag"
-	BackwardCompSaveKeyValueFlag                       core.EnableEpochFlag = "BackwardCompSaveKeyValueFlag"
-	DCDTNFTCreateOnMultiShardFlag                      core.EnableEpochFlag = "DCDTNFTCreateOnMultiShardFlag"
-	MetaDCDTSetFlag                                    core.EnableEpochFlag = "MetaDCDTSetFlag"
-	AddTokensToDelegationFlag                          core.EnableEpochFlag = "AddTokensToDelegationFlag"
-	MultiDCDTTransferFixOnCallBackFlag                 core.EnableEpochFlag = "MultiDCDTTransferFixOnCallBackFlag"
-	OptimizeGasUsedInCrossMiniBlocksFlag               core.EnableEpochFlag = "OptimizeGasUsedInCrossMiniBlocksFlag"
-	CorrectFirstQueuedFlag                             core.EnableEpochFlag = "CorrectFirstQueuedFlag"
-	DeleteDelegatorAfterClaimRewardsFlag               core.EnableEpochFlag = "DeleteDelegatorAfterClaimRewardsFlag"
-	RemoveNonUpdatedStorageFlag                        core.EnableEpochFlag = "RemoveNonUpdatedStorageFlag"
-	OptimizeNFTStoreFlag                               core.EnableEpochFlag = "OptimizeNFTStoreFlag"
-	CreateNFTThroughExecByCallerFlag                   core.EnableEpochFlag = "CreateNFTThroughExecByCallerFlag"
-	StopDecreasingValidatorRatingWhenStuckFlag         core.EnableEpochFlag = "StopDecreasingValidatorRatingWhenStuckFlag"
-	FrontRunningProtectionFlag                         core.EnableEpochFlag = "FrontRunningProtectionFlag"
-	PayableBySCFlag                                    core.EnableEpochFlag = "PayableBySCFlag"
-	CleanUpInformativeSCRsFlag                         core.EnableEpochFlag = "CleanUpInformativeSCRsFlag"
-	StorageAPICostOptimizationFlag                     core.EnableEpochFlag = "StorageAPICostOptimizationFlag"
-	DCDTRegisterAndSetAllRolesFlag                     core.EnableEpochFlag = "DCDTRegisterAndSetAllRolesFlag"
-	ScheduledMiniBlocksFlag                            core.EnableEpochFlag = "ScheduledMiniBlocksFlag"
-	CorrectJailedNotUnStakedEmptyQueueFlag             core.EnableEpochFlag = "CorrectJailedNotUnStakedEmptyQueueFlag"
-	DoNotReturnOldBlockInBlockchainHookFlag            core.EnableEpochFlag = "DoNotReturnOldBlockInBlockchainHookFlag"
-	AddFailedRelayedTxToInvalidMBsFlag                 core.EnableEpochFlag = "AddFailedRelayedTxToInvalidMBsFlag"
-	SCRSizeInvariantOnBuiltInResultFlag                core.EnableEpochFlag = "SCRSizeInvariantOnBuiltInResultFlag"
-	CheckCorrectTokenIDForTransferRoleFlag             core.EnableEpochFlag = "CheckCorrectTokenIDForTransferRoleFlag"
-	FailExecutionOnEveryAPIErrorFlag                   core.EnableEpochFlag = "FailExecutionOnEveryAPIErrorFlag"
-	MiniBlockPartialExecutionFlag                      core.EnableEpochFlag = "MiniBlockPartialExecutionFlag"
-	ManagedCryptoAPIsFlag                              core.EnableEpochFlag = "ManagedCryptoAPIsFlag"
-	DCDTMetadataContinuousCleanupFlag                  core.EnableEpochFlag = "DCDTMetadataContinuousCleanupFlag"
-	DisableExecByCallerFlag                            core.EnableEpochFlag = "DisableExecByCallerFlag"
-	RefactorContextFlag                                core.EnableEpochFlag = "RefactorContextFlag"
-	CheckFunctionArgumentFlag                          core.EnableEpochFlag = "CheckFunctionArgumentFlag"
-	CheckExecuteOnReadOnlyFlag                         core.EnableEpochFlag = "CheckExecuteOnReadOnlyFlag"
-	SetSenderInEeiOutputTransferFlag                   core.EnableEpochFlag = "SetSenderInEeiOutputTransferFlag"
-	FixAsyncCallbackCheckFlag                          core.EnableEpochFlag = "FixAsyncCallbackCheckFlag"
-	SaveToSystemAccountFlag                            core.EnableEpochFlag = "SaveToSystemAccountFlag"
-	CheckFrozenCollectionFlag                          core.EnableEpochFlag = "CheckFrozenCollectionFlag"
-	SendAlwaysFlag                                     core.EnableEpochFlag = "SendAlwaysFlag"
-	ValueLengthCheckFlag                               core.EnableEpochFlag = "ValueLengthCheckFlag"
-	CheckTransferFlag                                  core.EnableEpochFlag = "CheckTransferFlag"
-	DCDTNFTImprovementV1Flag                           core.EnableEpochFlag = "DCDTNFTImprovementV1Flag"
-	ChangeDelegationOwnerFlag                          core.EnableEpochFlag = "ChangeDelegationOwnerFlag"
-	RefactorPeersMiniBlocksFlag                        core.EnableEpochFlag = "RefactorPeersMiniBlocksFlag"
-	SCProcessorV2Flag                                  core.EnableEpochFlag = "SCProcessorV2Flag"
-	FixAsyncCallBackArgsListFlag                       core.EnableEpochFlag = "FixAsyncCallBackArgsListFlag"
-	FixOldTokenLiquidityFlag                           core.EnableEpochFlag = "FixOldTokenLiquidityFlag"
-	RuntimeMemStoreLimitFlag                           core.EnableEpochFlag = "RuntimeMemStoreLimitFlag"
-	RuntimeCodeSizeFixFlag                             core.EnableEpochFlag = "RuntimeCodeSizeFixFlag"
-	MaxBlockchainHookCountersFlag                      core.EnableEpochFlag = "MaxBlockchainHookCountersFlag"
-	WipeSingleNFTLiquidityDecreaseFlag                 core.EnableEpochFlag = "WipeSingleNFTLiquidityDecreaseFlag"
-	AlwaysSaveTokenMetaDataFlag                        core.EnableEpochFlag = "AlwaysSaveTokenMetaDataFlag"
-	SetGuardianFlag                                    core.EnableEpochFlag = "SetGuardianFlag"
-	RelayedNonceFixFlag                                core.EnableEpochFlag = "RelayedNonceFixFlag"
-	ConsistentTokensValuesLengthCheckFlag              core.EnableEpochFlag = "ConsistentTokensValuesLengthCheckFlag"
-	KeepExecOrderOnCreatedSCRsFlag                     core.EnableEpochFlag = "KeepExecOrderOnCreatedSCRsFlag"
-	MultiClaimOnDelegationFlag                         core.EnableEpochFlag = "MultiClaimOnDelegationFlag"
-	ChangeUsernameFlag                                 core.EnableEpochFlag = "ChangeUsernameFlag"
-	AutoBalanceDataTriesFlag                           core.EnableEpochFlag = "AutoBalanceDataTriesFlag"
-	MigrateDataTrieFlag                                core.EnableEpochFlag = "MigrateDataTrieFlag"
-	FixDelegationChangeOwnerOnAccountFlag              core.EnableEpochFlag = "FixDelegationChangeOwnerOnAccountFlag"
-	FixOOGReturnCodeFlag                               core.EnableEpochFlag = "FixOOGReturnCodeFlag"
-	DeterministicSortOnValidatorsInfoFixFlag           core.EnableEpochFlag = "DeterministicSortOnValidatorsInfoFixFlag"
-	DynamicGasCostForDataTrieStorageLoadFlag           core.EnableEpochFlag = "DynamicGasCostForDataTrieStorageLoadFlag"
-	ScToScLogEventFlag                                 core.EnableEpochFlag = "ScToScLogEventFlag"
-	BlockGasAndFeesReCheckFlag                         core.EnableEpochFlag = "BlockGasAndFeesReCheckFlag"
-	BalanceWaitingListsFlag                            core.EnableEpochFlag = "BalanceWaitingListsFlag"
-	NFTStopCreateFlag                                  core.EnableEpochFlag = "NFTStopCreateFlag"
-	FixGasRemainingForSaveKeyValueFlag                 core.EnableEpochFlag = "FixGasRemainingForSaveKeyValueFlag"
-	IsChangeOwnerAddressCrossShardThroughSCFlag        core.EnableEpochFlag = "IsChangeOwnerAddressCrossShardThroughSCFlag"
-	CurrentRandomnessOnSortingFlag                     core.EnableEpochFlag = "CurrentRandomnessOnSortingFlag"
-	StakeLimitsFlag                                    core.EnableEpochFlag = "StakeLimitsFlag"
-	StakingV4Step1Flag                                 core.EnableEpochFlag = "StakingV4Step1Flag"
-	StakingV4Step2Flag                                 core.EnableEpochFlag = "StakingV4Step2Flag"
-	StakingV4Step3Flag                                 core.EnableEpochFlag = "StakingV4Step3Flag"
-	CleanupAuctionOnLowWaitingListFlag                 core.EnableEpochFlag = "CleanupAuctionOnLowWaitingListFlag"
-	StakingV4StartedFlag                               core.EnableEpochFlag = "StakingV4StartedFlag"
-	AlwaysMergeContextsInEEIFlag                       core.EnableEpochFlag = "AlwaysMergeContextsInEEIFlag"
-	UseGasBoundedShouldFailExecutionFlag               core.EnableEpochFlag = "UseGasBoundedShouldFailExecutionFlag"
-	DynamicDCDTFlag                                    core.EnableEpochFlag = "DynamicDcdtFlag"
-	REWAInDCDTMultiTransferFlag                        core.EnableEpochFlag = "REWAInDCDTMultiTransferFlag"
-	CryptoOpcodesV2Flag                                core.EnableEpochFlag = "CryptoOpcodesV2Flag"
-	UnJailCleanupFlag                                  core.EnableEpochFlag = "UnJailCleanupFlag"
-	FixRelayedBaseCostFlag                             core.EnableEpochFlag = "FixRelayedBaseCostFlag"
-	MultiDCDTNFTTransferAndExecuteByUserFlag           core.EnableEpochFlag = "MultiDCDTNFTTransferAndExecuteByUserFlag"
-	FixRelayedMoveBalanceToNonPayableSCFlag            core.EnableEpochFlag = "FixRelayedMoveBalanceToNonPayableSCFlag"
-	RelayedTransactionsV3Flag                          core.EnableEpochFlag = "RelayedTransactionsV3Flag"
-	RelayedTransactionsV3FixDCDTTransferFlag           core.EnableEpochFlag = "RelayedTransactionsV3FixDCDTTransferFlag"
+	SCDeployFlag                                        core.EnableEpochFlag = "SCDeployFlag"
+	BuiltInFunctionsFlag                                core.EnableEpochFlag = "BuiltInFunctionsFlag"
+	RelayedTransactionsFlag                             core.EnableEpochFlag = "RelayedTransactionsFlag"
+	PenalizedTooMuchGasFlag                             core.EnableEpochFlag = "PenalizedTooMuchGasFlag"
+	SwitchJailWaitingFlag                               core.EnableEpochFlag = "SwitchJailWaitingFlag"
+	BelowSignedThresholdFlag                            core.EnableEpochFlag = "BelowSignedThresholdFlag"
+	SwitchHysteresisForMinNodesFlagInSpecificEpochOnly  core.EnableEpochFlag = "SwitchHysteresisForMinNodesFlagInSpecificEpochOnly"
+	TransactionSignedWithTxHashFlag                     core.EnableEpochFlag = "TransactionSignedWithTxHashFlag"
+	MetaProtectionFlag                                  core.EnableEpochFlag = "MetaProtectionFlag"
+	AheadOfTimeGasUsageFlag                             core.EnableEpochFlag = "AheadOfTimeGasUsageFlag"
+	GasPriceModifierFlag                                core.EnableEpochFlag = "GasPriceModifierFlag"
+	RepairCallbackFlag                                  core.EnableEpochFlag = "RepairCallbackFlag"
+	ReturnDataToLastTransferFlagAfterEpoch              core.EnableEpochFlag = "ReturnDataToLastTransferFlagAfterEpoch"
+	SenderInOutTransferFlag                             core.EnableEpochFlag = "SenderInOutTransferFlag"
+	StakeFlag                                           core.EnableEpochFlag = "StakeFlag"
+	StakingV2Flag                                       core.EnableEpochFlag = "StakingV2Flag"
+	StakingV2OwnerFlagInSpecificEpochOnly               core.EnableEpochFlag = "StakingV2OwnerFlagInSpecificEpochOnly"
+	StakingV2FlagAfterEpoch                             core.EnableEpochFlag = "StakingV2FlagAfterEpoch"
+	DoubleKeyProtectionFlag                             core.EnableEpochFlag = "DoubleKeyProtectionFlag"
+	DCDTFlag                                            core.EnableEpochFlag = "DCDTFlag"
+	DCDTFlagInSpecificEpochOnly                         core.EnableEpochFlag = "DCDTFlagInSpecificEpochOnly"
+	GovernanceFlag                                      core.EnableEpochFlag = "GovernanceFlag"
+	GovernanceDisableProposeFlag                        core.EnableEpochFlag = "GovernanceDisableProposeFlag"
+	GovernanceFixesFlag                                 core.EnableEpochFlag = "GovernanceFixesFlag"
+	GovernanceFlagInSpecificEpochOnly                   core.EnableEpochFlag = "GovernanceFlagInSpecificEpochOnly"
+	DelegationManagerFlag                               core.EnableEpochFlag = "DelegationManagerFlag"
+	DelegationSmartContractFlag                         core.EnableEpochFlag = "DelegationSmartContractFlag"
+	DelegationSmartContractFlagInSpecificEpochOnly      core.EnableEpochFlag = "DelegationSmartContractFlagInSpecificEpochOnly"
+	CorrectLastUnJailedFlag                             core.EnableEpochFlag = "CorrectLastUnJailedFlag"
+	CorrectLastUnJailedFlagInSpecificEpochOnly          core.EnableEpochFlag = "CorrectLastUnJailedFlagInSpecificEpochOnly"
+	RelayedTransactionsV2Flag                           core.EnableEpochFlag = "RelayedTransactionsV2Flag"
+	UnBondTokensV2Flag                                  core.EnableEpochFlag = "UnBondTokensV2Flag"
+	SaveJailedAlwaysFlag                                core.EnableEpochFlag = "SaveJailedAlwaysFlag"
+	ReDelegateBelowMinCheckFlag                         core.EnableEpochFlag = "ReDelegateBelowMinCheckFlag"
+	ValidatorToDelegationFlag                           core.EnableEpochFlag = "ValidatorToDelegationFlag"
+	IncrementSCRNonceInMultiTransferFlag                core.EnableEpochFlag = "IncrementSCRNonceInMultiTransferFlag"
+	DCDTMultiTransferFlag                               core.EnableEpochFlag = "DCDTMultiTransferFlag"
+	GlobalMintBurnFlag                                  core.EnableEpochFlag = "GlobalMintBurnFlag"
+	DCDTTransferRoleFlag                                core.EnableEpochFlag = "DCDTTransferRoleFlag"
+	ComputeRewardCheckpointFlag                         core.EnableEpochFlag = "ComputeRewardCheckpointFlag"
+	SCRSizeInvariantCheckFlag                           core.EnableEpochFlag = "SCRSizeInvariantCheckFlag"
+	BackwardCompSaveKeyValueFlag                        core.EnableEpochFlag = "BackwardCompSaveKeyValueFlag"
+	DCDTNFTCreateOnMultiShardFlag                       core.EnableEpochFlag = "DCDTNFTCreateOnMultiShardFlag"
+	MetaDCDTSetFlag                                     core.EnableEpochFlag = "MetaDCDTSetFlag"
+	AddTokensToDelegationFlag                           core.EnableEpochFlag = "AddTokensToDelegationFlag"
+	MultiDCDTTransferFixOnCallBackFlag                  core.EnableEpochFlag = "MultiDCDTTransferFixOnCallBackFlag"
+	OptimizeGasUsedInCrossMiniBlocksFlag                core.EnableEpochFlag = "OptimizeGasUsedInCrossMiniBlocksFlag"
+	CorrectFirstQueuedFlag                              core.EnableEpochFlag = "CorrectFirstQueuedFlag"
+	DeleteDelegatorAfterClaimRewardsFlag                core.EnableEpochFlag = "DeleteDelegatorAfterClaimRewardsFlag"
+	RemoveNonUpdatedStorageFlag                         core.EnableEpochFlag = "RemoveNonUpdatedStorageFlag"
+	OptimizeNFTStoreFlag                                core.EnableEpochFlag = "OptimizeNFTStoreFlag"
+	CreateNFTThroughExecByCallerFlag                    core.EnableEpochFlag = "CreateNFTThroughExecByCallerFlag"
+	StopDecreasingValidatorRatingWhenStuckFlag          core.EnableEpochFlag = "StopDecreasingValidatorRatingWhenStuckFlag"
+	FrontRunningProtectionFlag                          core.EnableEpochFlag = "FrontRunningProtectionFlag"
+	PayableBySCFlag                                     core.EnableEpochFlag = "PayableBySCFlag"
+	CleanUpInformativeSCRsFlag                          core.EnableEpochFlag = "CleanUpInformativeSCRsFlag"
+	StorageAPICostOptimizationFlag                      core.EnableEpochFlag = "StorageAPICostOptimizationFlag"
+	DCDTRegisterAndSetAllRolesFlag                      core.EnableEpochFlag = "DCDTRegisterAndSetAllRolesFlag"
+	ScheduledMiniBlocksFlag                             core.EnableEpochFlag = "ScheduledMiniBlocksFlag"
+	CorrectJailedNotUnStakedEmptyQueueFlag              core.EnableEpochFlag = "CorrectJailedNotUnStakedEmptyQueueFlag"
+	DoNotReturnOldBlockInBlockchainHookFlag             core.EnableEpochFlag = "DoNotReturnOldBlockInBlockchainHookFlag"
+	AddFailedRelayedTxToInvalidMBsFlag                  core.EnableEpochFlag = "AddFailedRelayedTxToInvalidMBsFlag"
+	SCRSizeInvariantOnBuiltInResultFlag                 core.EnableEpochFlag = "SCRSizeInvariantOnBuiltInResultFlag"
+	CheckCorrectTokenIDForTransferRoleFlag              core.EnableEpochFlag = "CheckCorrectTokenIDForTransferRoleFlag"
+	FailExecutionOnEveryAPIErrorFlag                    core.EnableEpochFlag = "FailExecutionOnEveryAPIErrorFlag"
+	MiniBlockPartialExecutionFlag                       core.EnableEpochFlag = "MiniBlockPartialExecutionFlag"
+	ManagedCryptoAPIsFlag                               core.EnableEpochFlag = "ManagedCryptoAPIsFlag"
+	DCDTMetadataContinuousCleanupFlag                   core.EnableEpochFlag = "DCDTMetadataContinuousCleanupFlag"
+	DisableExecByCallerFlag                             core.EnableEpochFlag = "DisableExecByCallerFlag"
+	RefactorContextFlag                                 core.EnableEpochFlag = "RefactorContextFlag"
+	CheckFunctionArgumentFlag                           core.EnableEpochFlag = "CheckFunctionArgumentFlag"
+	CheckExecuteOnReadOnlyFlag                          core.EnableEpochFlag = "CheckExecuteOnReadOnlyFlag"
+	SetSenderInEeiOutputTransferFlag                    core.EnableEpochFlag = "SetSenderInEeiOutputTransferFlag"
+	FixAsyncCallbackCheckFlag                           core.EnableEpochFlag = "FixAsyncCallbackCheckFlag"
+	SaveToSystemAccountFlag                             core.EnableEpochFlag = "SaveToSystemAccountFlag"
+	CheckFrozenCollectionFlag                           core.EnableEpochFlag = "CheckFrozenCollectionFlag"
+	SendAlwaysFlag                                      core.EnableEpochFlag = "SendAlwaysFlag"
+	ValueLengthCheckFlag                                core.EnableEpochFlag = "ValueLengthCheckFlag"
+	CheckTransferFlag                                   core.EnableEpochFlag = "CheckTransferFlag"
+	DCDTNFTImprovementV1Flag                            core.EnableEpochFlag = "DCDTNFTImprovementV1Flag"
+	ChangeDelegationOwnerFlag                           core.EnableEpochFlag = "ChangeDelegationOwnerFlag"
+	RefactorPeersMiniBlocksFlag                         core.EnableEpochFlag = "RefactorPeersMiniBlocksFlag"
+	SCProcessorV2Flag                                   core.EnableEpochFlag = "SCProcessorV2Flag"
+	FixAsyncCallBackArgsListFlag                        core.EnableEpochFlag = "FixAsyncCallBackArgsListFlag"
+	FixOldTokenLiquidityFlag                            core.EnableEpochFlag = "FixOldTokenLiquidityFlag"
+	RuntimeMemStoreLimitFlag                            core.EnableEpochFlag = "RuntimeMemStoreLimitFlag"
+	RuntimeCodeSizeFixFlag                              core.EnableEpochFlag = "RuntimeCodeSizeFixFlag"
+	MaxBlockchainHookCountersFlag                       core.EnableEpochFlag = "MaxBlockchainHookCountersFlag"
+	WipeSingleNFTLiquidityDecreaseFlag                  core.EnableEpochFlag = "WipeSingleNFTLiquidityDecreaseFlag"
+	AlwaysSaveTokenMetaDataFlag                         core.EnableEpochFlag = "AlwaysSaveTokenMetaDataFlag"
+	SetGuardianFlag                                     core.EnableEpochFlag = "SetGuardianFlag"
+	RelayedNonceFixFlag                                 core.EnableEpochFlag = "RelayedNonceFixFlag"
+	ConsistentTokensValuesLengthCheckFlag               core.EnableEpochFlag = "ConsistentTokensValuesLengthCheckFlag"
+	KeepExecOrderOnCreatedSCRsFlag                      core.EnableEpochFlag = "KeepExecOrderOnCreatedSCRsFlag"
+	MultiClaimOnDelegationFlag                          core.EnableEpochFlag = "MultiClaimOnDelegationFlag"
+	ChangeUsernameFlag                                  core.EnableEpochFlag = "ChangeUsernameFlag"
+	AutoBalanceDataTriesFlag                            core.EnableEpochFlag = "AutoBalanceDataTriesFlag"
+	MigrateDataTrieFlag                                 core.EnableEpochFlag = "MigrateDataTrieFlag"
+	FixDelegationChangeOwnerOnAccountFlag               core.EnableEpochFlag = "FixDelegationChangeOwnerOnAccountFlag"
+	FixOOGReturnCodeFlag                                core.EnableEpochFlag = "FixOOGReturnCodeFlag"
+	DeterministicSortOnValidatorsInfoFixFlag            core.EnableEpochFlag = "DeterministicSortOnValidatorsInfoFixFlag"
+	DynamicGasCostForDataTrieStorageLoadFlag            core.EnableEpochFlag = "DynamicGasCostForDataTrieStorageLoadFlag"
+	ScToScLogEventFlag                                  core.EnableEpochFlag = "ScToScLogEventFlag"
+	BlockGasAndFeesReCheckFlag                          core.EnableEpochFlag = "BlockGasAndFeesReCheckFlag"
+	BalanceWaitingListsFlag                             core.EnableEpochFlag = "BalanceWaitingListsFlag"
+	NFTStopCreateFlag                                   core.EnableEpochFlag = "NFTStopCreateFlag"
+	FixGasRemainingForSaveKeyValueFlag                  core.EnableEpochFlag = "FixGasRemainingForSaveKeyValueFlag"
+	IsChangeOwnerAddressCrossShardThroughSCFlag         core.EnableEpochFlag = "IsChangeOwnerAddressCrossShardThroughSCFlag"
+	CurrentRandomnessOnSortingFlag                      core.EnableEpochFlag = "CurrentRandomnessOnSortingFlag"
+	StakeLimitsFlag                                     core.EnableEpochFlag = "StakeLimitsFlag"
+	StakingV4Step1Flag                                  core.EnableEpochFlag = "StakingV4Step1Flag"
+	StakingV4Step2Flag                                  core.EnableEpochFlag = "StakingV4Step2Flag"
+	StakingV4Step3Flag                                  core.EnableEpochFlag = "StakingV4Step3Flag"
+	CleanupAuctionOnLowWaitingListFlag                  core.EnableEpochFlag = "CleanupAuctionOnLowWaitingListFlag"
+	StakingV4StartedFlag                                core.EnableEpochFlag = "StakingV4StartedFlag"
+	AlwaysMergeContextsInEEIFlag                        core.EnableEpochFlag = "AlwaysMergeContextsInEEIFlag"
+	UseGasBoundedShouldFailExecutionFlag                core.EnableEpochFlag = "UseGasBoundedShouldFailExecutionFlag"
+	DynamicDCDTFlag                                     core.EnableEpochFlag = "DynamicDcdtFlag"
+	REWAInDCDTMultiTransferFlag                         core.EnableEpochFlag = "REWAInDCDTMultiTransferFlag"
+	CryptoOpcodesV2Flag                                 core.EnableEpochFlag = "CryptoOpcodesV2Flag"
+	UnJailCleanupFlag                                   core.EnableEpochFlag = "UnJailCleanupFlag"
+	FixRelayedBaseCostFlag                              core.EnableEpochFlag = "FixRelayedBaseCostFlag"
+	MultiDCDTNFTTransferAndExecuteByUserFlag            core.EnableEpochFlag = "MultiDCDTNFTTransferAndExecuteByUserFlag"
+	FixRelayedMoveBalanceToNonPayableSCFlag             core.EnableEpochFlag = "FixRelayedMoveBalanceToNonPayableSCFlag"
+	RelayedTransactionsV3Flag                           core.EnableEpochFlag = "RelayedTransactionsV3Flag"
+	RelayedTransactionsV3FixDCDTTransferFlag            core.EnableEpochFlag = "RelayedTransactionsV3FixDCDTTransferFlag"
+	AndromedaFlag                                       core.EnableEpochFlag = "AndromedaFlag"
+	CheckBuiltInCallOnTransferValueAndFailExecutionFlag core.EnableEpochFlag = "CheckBuiltInCallOnTransferValueAndFailExecutionFlag"
+	MaskInternalDependenciesErrorsFlag                  core.EnableEpochFlag = "MaskInternalDependenciesErrorsFlag"
+	FixBackTransferOPCODEFlag                           core.EnableEpochFlag = "FixBackTransferOPCODEFlag"
+	ValidationOnGobDecodeFlag                           core.EnableEpochFlag = "ValidationOnGobDecodeFlag"
+	BarnardOpcodesFlag                                  core.EnableEpochFlag = "BarnardOpcodesFlag"
+	AutomaticActivationOfNodesDisableFlag               core.EnableEpochFlag = "AutomaticActivationOfNodesDisableFlag"
+	FixGetBalanceFlag                                   core.EnableEpochFlag = "FixGetBalanceFlag"
+	RelayedTransactionsV1V2DisableFlag                  core.EnableEpochFlag = "RelayedTransactionsV1V2DisableFlag"
 	// all new flags must be added to createAllFlagsMap method, as part of enableEpochsHandler allFlagsDefined
 )

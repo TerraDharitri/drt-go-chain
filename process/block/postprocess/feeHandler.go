@@ -4,8 +4,8 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain-core/data/scheduled"
+	"github.com/TerraDharitri/drt-go-chain/process"
 )
 
 var _ process.TransactionFeeHandler = (*feeHandler)(nil)
@@ -67,6 +67,7 @@ func (f *feeHandler) GetDeveloperFees() *big.Int {
 	f.mut.RLock()
 	developerFees := big.NewInt(0).Set(f.developerFees)
 	f.mut.RUnlock()
+
 	return developerFees
 }
 

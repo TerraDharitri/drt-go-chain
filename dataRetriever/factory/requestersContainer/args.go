@@ -1,12 +1,13 @@
 package requesterscontainer
 
 import (
+	"github.com/TerraDharitri/drt-go-chain-core/data/typeConverters"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
+	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/p2p"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
-	"github.com/TerraDharitri/drt-go-chain-core/data/typeConverters"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 )
 
 // FactoryArgs will hold the arguments for RequestersContainerFactory for both shard and meta
@@ -23,4 +24,5 @@ type FactoryArgs struct {
 	FullArchivePreferredPeersHolder p2p.PreferredPeersHolderHandler
 	PeersRatingHandler              dataRetriever.PeersRatingHandler
 	SizeCheckDelta                  uint32
+	EnableEpochsHandler             common.EnableEpochsHandler
 }

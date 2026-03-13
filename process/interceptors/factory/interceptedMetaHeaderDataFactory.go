@@ -1,28 +1,38 @@
 package factory
 
 import (
-	"github.com/TerraDharitri/drt-go-chain/process"
-	"github.com/TerraDharitri/drt-go-chain/process/block/interceptedBlocks"
-	"github.com/TerraDharitri/drt-go-chain/sharding"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
+
+	"github.com/TerraDharitri/drt-go-chain/common"
+	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain/process/block/interceptedBlocks"
+	"github.com/TerraDharitri/drt-go-chain/sharding"
 )
 
 var _ process.InterceptedDataFactory = (*interceptedMetaHeaderDataFactory)(nil)
 
+// ArgInterceptedMetaHeaderFactory is the DTO used to create a new instance of meta header factory
+type ArgInterceptedMetaHeaderFactory struct {
+	ArgInterceptedDataFactory
+}
+
 type interceptedMetaHeaderDataFactory struct {
-	marshalizer             marshal.Marshalizer
-	hasher                  hashing.Hasher
-	shardCoordinator        sharding.Coordinator
-	headerSigVerifier       process.InterceptedHeaderSigVerifier
-	headerIntegrityVerifier process.HeaderIntegrityVerifier
-	validityAttester        process.ValidityAttester
-	epochStartTrigger       process.EpochStartTriggerHandler
+	marshalizer                   marshal.Marshalizer
+	hasher                        hashing.Hasher
+	shardCoordinator              sharding.Coordinator
+	headerSigVerifier             process.InterceptedHeaderSigVerifier
+	headerIntegrityVerifier       process.HeaderIntegrityVerifier
+	validityAttester              process.ValidityAttester
+	epochStartTrigger             process.EpochStartTriggerHandler
+	enableEpochsHandler           common.EnableEpochsHandler
+	epochChangeGracePeriodHandler common.EpochChangeGracePeriodHandler
 }
 
 // NewInterceptedMetaHeaderDataFactory creates an instance of interceptedMetaHeaderDataFactory
-func NewInterceptedMetaHeaderDataFactory(argument *ArgInterceptedDataFactory) (*interceptedMetaHeaderDataFactory, error) {
+func NewInterceptedMetaHeaderDataFactory(argument *ArgInterceptedMetaHeaderFactory) (*interceptedMetaHeaderDataFactory, error) {
 	if argument == nil {
 		return nil, process.ErrNilArgumentStruct
 	}
@@ -58,27 +68,31 @@ func NewInterceptedMetaHeaderDataFactory(argument *ArgInterceptedDataFactory) (*
 	}
 
 	return &interceptedMetaHeaderDataFactory{
-		marshalizer:             argument.CoreComponents.InternalMarshalizer(),
-		hasher:                  argument.CoreComponents.Hasher(),
-		shardCoordinator:        argument.ShardCoordinator,
-		headerSigVerifier:       argument.HeaderSigVerifier,
-		headerIntegrityVerifier: argument.HeaderIntegrityVerifier,
-		validityAttester:        argument.ValidityAttester,
-		epochStartTrigger:       argument.EpochStartTrigger,
+		marshalizer:                   argument.CoreComponents.InternalMarshalizer(),
+		hasher:                        argument.CoreComponents.Hasher(),
+		shardCoordinator:              argument.ShardCoordinator,
+		headerSigVerifier:             argument.HeaderSigVerifier,
+		headerIntegrityVerifier:       argument.HeaderIntegrityVerifier,
+		validityAttester:              argument.ValidityAttester,
+		epochStartTrigger:             argument.EpochStartTrigger,
+		enableEpochsHandler:           argument.CoreComponents.EnableEpochsHandler(),
+		epochChangeGracePeriodHandler: argument.CoreComponents.EpochChangeGracePeriodHandler(),
 	}, nil
 }
 
 // Create creates instances of InterceptedData by unmarshalling provided buffer
-func (imhdf *interceptedMetaHeaderDataFactory) Create(buff []byte) (process.InterceptedData, error) {
+func (imhdf *interceptedMetaHeaderDataFactory) Create(buff []byte, _ core.PeerID) (process.InterceptedData, error) {
 	arg := &interceptedBlocks.ArgInterceptedBlockHeader{
-		HdrBuff:                 buff,
-		Marshalizer:             imhdf.marshalizer,
-		Hasher:                  imhdf.hasher,
-		ShardCoordinator:        imhdf.shardCoordinator,
-		HeaderSigVerifier:       imhdf.headerSigVerifier,
-		HeaderIntegrityVerifier: imhdf.headerIntegrityVerifier,
-		ValidityAttester:        imhdf.validityAttester,
-		EpochStartTrigger:       imhdf.epochStartTrigger,
+		HdrBuff:                       buff,
+		Marshalizer:                   imhdf.marshalizer,
+		Hasher:                        imhdf.hasher,
+		ShardCoordinator:              imhdf.shardCoordinator,
+		HeaderSigVerifier:             imhdf.headerSigVerifier,
+		HeaderIntegrityVerifier:       imhdf.headerIntegrityVerifier,
+		ValidityAttester:              imhdf.validityAttester,
+		EpochStartTrigger:             imhdf.epochStartTrigger,
+		EnableEpochsHandler:           imhdf.enableEpochsHandler,
+		EpochChangeGracePeriodHandler: imhdf.epochChangeGracePeriodHandler,
 	}
 
 	return interceptedBlocks.NewInterceptedMetaHeader(arg)

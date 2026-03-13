@@ -14,6 +14,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
 	"github.com/TerraDharitri/drt-go-chain/state/accounts"
 	"github.com/TerraDharitri/drt-go-chain/storage"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/chainParameters"
 	nodesSetupMock "github.com/TerraDharitri/drt-go-chain/testscommon/genesisMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/stakingcommon"
 )
@@ -39,10 +40,6 @@ func createNodesCoordinator(
 	maxNodesConfig []config.MaxNodesChangeConfig,
 ) nodesCoordinator.NodesCoordinator {
 	shufflerArgs := &nodesCoordinator.NodesShufflerArgs{
-		NodesShard:           numOfEligibleNodesPerShard,
-		NodesMeta:            numOfMetaNodes,
-		Hysteresis:           hysteresis,
-		Adaptivity:           adaptivity,
 		ShuffleBetweenShards: shuffleBetweenShards,
 		MaxNodesEnableConfig: maxNodesConfig,
 		EnableEpochs: config.EnableEpochs{
@@ -51,11 +48,23 @@ func createNodesCoordinator(
 		},
 		EnableEpochsHandler: coreComponents.EnableEpochsHandler(),
 	}
+
 	nodeShuffler, _ := nodesCoordinator.NewHashValidatorsShuffler(shufflerArgs)
 	cache, _ := lrucache.NewCache(10000)
 	argumentsNodesCoordinator := nodesCoordinator.ArgNodesCoordinator{
-		ShardConsensusGroupSize:         shardConsensusGroupSize,
-		MetaConsensusGroupSize:          metaConsensusGroupSize,
+		ChainParametersHandler: &chainParameters.ChainParametersHandlerStub{
+			ChainParametersForEpochCalled: func(epoch uint32) (config.ChainParametersByEpochConfig, error) {
+				return config.ChainParametersByEpochConfig{
+					RoundDuration:               0,
+					Hysteresis:                  hysteresis,
+					ShardConsensusGroupSize:     uint32(shardConsensusGroupSize),
+					ShardMinNumNodes:            numOfEligibleNodesPerShard,
+					MetachainConsensusGroupSize: uint32(metaConsensusGroupSize),
+					MetachainMinNumNodes:        numOfMetaNodes,
+					Adaptivity:                  adaptivity,
+				}, nil
+			},
+		},
 		Marshalizer:                     coreComponents.InternalMarshalizer(),
 		Hasher:                          coreComponents.Hasher(),
 		ShardIDAsObserver:               core.MetachainShardId,

@@ -3,12 +3,13 @@ package interceptedBlocks_test
 import (
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain/process"
-	"github.com/TerraDharitri/drt-go-chain/process/block/interceptedBlocks"
-	"github.com/TerraDharitri/drt-go-chain/process/mock"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain/process/block/interceptedBlocks"
+	"github.com/TerraDharitri/drt-go-chain/process/mock"
 )
 
 func createDefaultMiniblockArgument() *interceptedBlocks.ArgInterceptedMiniblock {
@@ -69,7 +70,7 @@ func TestNewInterceptedMiniblock_ShouldWork(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-//------- CheckValidity
+//------- Verify
 
 func TestInterceptedMiniblock_InvalidReceiverShardIdShouldErr(t *testing.T) {
 	t.Parallel()

@@ -5,8 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain-communication/websocket/data"
 	indexerFactory "github.com/TerraDharitri/drt-go-chain-es-indexer/process/factory"
+
+	"github.com/TerraDharitri/drt-go-chain-communication/websocket/data"
 	"github.com/TerraDharitri/drt-go-chain-storage/testscommon"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/outport"

@@ -1,11 +1,11 @@
 package blockchain
 
 import (
-	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/TerraDharitri/drt-go-chain/common"
 )
 
 var _ data.ChainHandler = (*metaChain)(nil)
@@ -72,6 +72,7 @@ func (mc *metaChain) SetCurrentBlockHeaderAndRootHash(header data.HeaderHandler,
 	mc.appStatusHandler.SetUInt64Value(common.MetricNonce, currHead.Nonce)
 	mc.appStatusHandler.SetUInt64Value(common.MetricSynchronizedRound, currHead.Round)
 	mc.appStatusHandler.SetUInt64Value(common.MetricBlockTimestamp, currHead.GetTimeStamp())
+	mc.appStatusHandler.SetUInt64Value(common.MetricBlockTimestampMs, common.ConvertTimeStampSecToMs(currHead.GetTimeStamp()))
 
 	mc.mut.Lock()
 	mc.currentBlockHeader = currHead.ShallowClone()

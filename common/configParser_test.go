@@ -147,7 +147,7 @@ func TestLoadEconomicsConfig(t *testing.T) {
 
 		testString := `
 [GlobalSettings]
-    GenesisTotalSupply = "20000000000000000000000000" #20MIL rEWA
+    GenesisTotalSupply = "20000000000000000000000000" #20MIL REWA
 `
 
 		filePath := path.Join(t.TempDir(), "testFile02")
@@ -182,7 +182,7 @@ func TestLoadSystemSmartContractsConfig(t *testing.T) {
 
 		testString := `
 [StakingSystemSCConfig]
-    GenesisNodePrice = "2500000000000000000000" #2.5K rEWA
+    GenesisNodePrice = "2500000000000000000000" #2.5K REWA
 `
 
 		filePath := path.Join(t.TempDir(), "testFile02")

@@ -8,6 +8,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/outport/process/transactionsfee"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	commonMocks "github.com/TerraDharitri/drt-go-chain/testscommon/common"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/economicsmocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/genericMocks"
@@ -34,6 +35,7 @@ func createArgOutportDataProviderFactory() ArgOutportDataProviderFactory {
 		MbsStorer:              &genericMocks.StorerMock{},
 		EnableEpochsHandler:    &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
 		ExecutionOrderGetter:   &commonMocks.TxExecutionOrderHandlerStub{},
+		ProofsPool:             &dataRetriever.ProofsPoolMock{},
 	}
 }
 
@@ -83,6 +85,10 @@ func TestCheckArgCreateOutportDataProvider(t *testing.T) {
 	arg = createArgOutportDataProviderFactory()
 	arg.Hasher = nil
 	require.Equal(t, process.ErrNilHasher, checkArgOutportDataProviderFactory(arg))
+
+	arg = createArgOutportDataProviderFactory()
+	arg.ProofsPool = nil
+	require.Equal(t, process.ErrNilProofsPool, checkArgOutportDataProviderFactory(arg))
 
 	arg = createArgOutportDataProviderFactory()
 	require.Nil(t, checkArgOutportDataProviderFactory(arg))

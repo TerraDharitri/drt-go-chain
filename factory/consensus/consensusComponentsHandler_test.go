@@ -3,7 +3,7 @@ package consensus_test
 import (
 	"testing"
 
-	errorsDrt "github.com/TerraDharitri/drt-go-chain/errors"
+	errorsMx "github.com/TerraDharitri/drt-go-chain/errors"
 	"github.com/TerraDharitri/drt-go-chain/factory"
 	consensusComp "github.com/TerraDharitri/drt-go-chain/factory/consensus"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
@@ -19,7 +19,7 @@ func TestNewManagedConsensusComponents(t *testing.T) {
 		t.Parallel()
 
 		managedConsensusComponents, err := consensusComp.NewManagedConsensusComponents(nil)
-		require.Equal(t, errorsDrt.ErrNilConsensusComponentsFactory, err)
+		require.Equal(t, errorsMx.ErrNilConsensusComponentsFactory, err)
 		require.Nil(t, managedConsensusComponents)
 	})
 	t.Run("should work", func(t *testing.T) {
@@ -74,24 +74,6 @@ func TestManagedConsensusComponents_Create(t *testing.T) {
 	})
 }
 
-func TestManagedConsensusComponents_ConsensusGroupSize(t *testing.T) {
-	t.Parallel()
-
-	consensusComponentsFactory, _ := consensusComp.NewConsensusComponentsFactory(createMockConsensusComponentsFactoryArgs())
-	managedConsensusComponents, _ := consensusComp.NewManagedConsensusComponents(consensusComponentsFactory)
-	require.NotNil(t, managedConsensusComponents)
-
-	size, err := managedConsensusComponents.ConsensusGroupSize()
-	require.Equal(t, errorsDrt.ErrNilConsensusComponentsHolder, err)
-	require.Zero(t, size)
-
-	err = managedConsensusComponents.Create()
-	require.NoError(t, err)
-	size, err = managedConsensusComponents.ConsensusGroupSize()
-	require.NoError(t, err)
-	require.Equal(t, 2, size)
-}
-
 func TestManagedConsensusComponents_CheckSubcomponents(t *testing.T) {
 	t.Parallel()
 
@@ -99,7 +81,7 @@ func TestManagedConsensusComponents_CheckSubcomponents(t *testing.T) {
 	managedConsensusComponents, _ := consensusComp.NewManagedConsensusComponents(consensusComponentsFactory)
 	require.NotNil(t, managedConsensusComponents)
 
-	require.Equal(t, errorsDrt.ErrNilConsensusComponentsHolder, managedConsensusComponents.CheckSubcomponents())
+	require.Equal(t, errorsMx.ErrNilConsensusComponentsHolder, managedConsensusComponents.CheckSubcomponents())
 
 	err := managedConsensusComponents.Create()
 	require.NoError(t, err)

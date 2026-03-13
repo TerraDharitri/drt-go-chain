@@ -3,15 +3,20 @@ package rewardTransaction
 import (
 	"math/big"
 
-	"github.com/TerraDharitri/drt-go-chain/process"
-	"github.com/TerraDharitri/drt-go-chain/sharding"
-	"github.com/TerraDharitri/drt-go-chain/state"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data/rewardTx"
+	"github.com/TerraDharitri/drt-go-chain-core/hashing"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
+	logger "github.com/TerraDharitri/drt-go-chain-logger"
+	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain/sharding"
+	"github.com/TerraDharitri/drt-go-chain/state"
 )
 
 var _ process.RewardTransactionProcessor = (*rewardTxProcessor)(nil)
+
+var log = logger.GetOrCreate("process/reward")
 
 const rewardKey = "reward"
 
@@ -19,6 +24,8 @@ type rewardTxProcessor struct {
 	accounts         state.AccountsAdapter
 	pubkeyConv       core.PubkeyConverter
 	shardCoordinator sharding.Coordinator
+	marshaller       marshal.Marshalizer
+	hasher           hashing.Hasher
 }
 
 // NewRewardTxProcessor creates a rewardTxProcessor instance
@@ -26,6 +33,8 @@ func NewRewardTxProcessor(
 	accountsDB state.AccountsAdapter,
 	pubkeyConv core.PubkeyConverter,
 	coordinator sharding.Coordinator,
+	marshaller marshal.Marshalizer,
+	hasher hashing.Hasher,
 ) (*rewardTxProcessor, error) {
 	if check.IfNil(accountsDB) {
 		return nil, process.ErrNilAccountsAdapter
@@ -36,11 +45,19 @@ func NewRewardTxProcessor(
 	if check.IfNil(coordinator) {
 		return nil, process.ErrNilShardCoordinator
 	}
+	if check.IfNil(marshaller) {
+		return nil, process.ErrNilMarshalizer
+	}
+	if check.IfNil(hasher) {
+		return nil, process.ErrNilHasher
+	}
 
 	return &rewardTxProcessor{
 		accounts:         accountsDB,
 		pubkeyConv:       pubkeyConv,
 		shardCoordinator: coordinator,
+		marshaller:       marshaller,
+		hasher:           hasher,
 	}, nil
 }
 
@@ -90,6 +107,18 @@ func (rtp *rewardTxProcessor) ProcessRewardTransaction(rTx *rewardTx.RewardTx) e
 		nil,
 		rtp.pubkeyConv,
 	)
+
+	txHash, err := core.CalculateHash(rtp.marshaller, rtp.hasher, rTx)
+	if err != nil {
+		log.Debug("CalculateHash error", "error", err)
+		return err
+	}
+
+	// TODO refactor to set the tx hash for the following state accesses before the processing occurs
+	defer func() {
+		rtp.accounts.SetTxHashForLatestStateAccesses(txHash)
+		log.Trace("SetTxHashForLatestStateAccesses", "txHash", txHash)
+	}()
 
 	err = accHandler.AddToBalance(rTx.Value)
 	if err != nil {

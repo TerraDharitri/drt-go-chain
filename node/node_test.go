@@ -46,11 +46,13 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/state"
 	"github.com/TerraDharitri/drt-go-chain/state/accounts"
+	"github.com/TerraDharitri/drt-go-chain/state/disabled"
 	"github.com/TerraDharitri/drt-go-chain/state/parsers"
 	"github.com/TerraDharitri/drt-go-chain/state/trackableDataTrie"
 	"github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/bootstrapMocks"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/consensus"
 	dataRetrieverMock "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/dblookupext"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/economicsmocks"
@@ -100,7 +102,7 @@ func createMockPubkeyConverter() *testscommon.PubkeyConverterMock {
 
 func createAcc(address []byte) state.UserAccountHandler {
 	dtlp, _ := parsers.NewDataTrieLeafParser(address, &marshallerMock.MarshalizerMock{}, &enableEpochsHandlerMock.EnableEpochsHandlerStub{})
-	dtt, _ := trackableDataTrie.NewTrackableDataTrie(address, &testscommon.HasherStub{}, &marshallerMock.MarshalizerMock{}, &enableEpochsHandlerMock.EnableEpochsHandlerStub{})
+	dtt, _ := trackableDataTrie.NewTrackableDataTrie(address, &testscommon.HasherStub{}, &marshallerMock.MarshalizerMock{}, &enableEpochsHandlerMock.EnableEpochsHandlerStub{}, disabled.NewDisabledStateAccessesCollector())
 	acc, _ := accounts.NewUserAccount(address, dtt, dtlp)
 
 	return acc
@@ -1079,6 +1081,21 @@ func TestNode_GetAllDCDTTokensShouldReturnDcdtAndFormattedNft(t *testing.T) {
 	nftData := &dcdt.DCDigitalToken{Type: uint32(core.NonFungible), Value: big.NewInt(10), TokenMetaData: nftMetaData}
 	marshalledNftData, _ := getMarshalizer().Marshal(nftData)
 
+	dynamicNft := "TCKR-abcdef"
+	dynamicNftNonce := big.NewInt(100)
+	dynamicNftKey := []byte(core.ProtectedKeyPrefix + core.DCDTKeyIdentifier + dynamicNft)
+	dynamicNftKeyWithBytes := append(dynamicNftKey, dynamicNftNonce.Bytes()...)
+	dynamicNftSuffix := append(dynamicNftKeyWithBytes, acc.AddressBytes()...)
+	dynamicNftData := &dcdt.DCDigitalToken{
+		Type:  uint32(core.DynamicNFT),
+		Value: big.NewInt(0),
+		TokenMetaData: &dcdt.MetaData{
+			Nonce: dynamicNftNonce.Uint64(),
+			URIs:  [][]byte{[]byte("https://example.com/dynamic-nft")},
+		},
+	}
+	marshalledDynamicNftData, _ := getMarshalizer().Marshal(dynamicNftData)
+
 	dcdtStorageStub := &testscommon.DcdtStorageHandlerStub{
 		GetDCDTNFTTokenOnDestinationWithCustomSystemAccountCalled: func(acnt vmcommon.UserAccountHandler, dcdtTokenKey []byte, nonce uint64, _ vmcommon.UserAccountHandler) (*dcdt.DCDigitalToken, bool, error) {
 			switch string(dcdtTokenKey) {
@@ -1086,6 +1103,8 @@ func TestNode_GetAllDCDTTokensShouldReturnDcdtAndFormattedNft(t *testing.T) {
 				return dcdtData, false, nil
 			case string(nftKey):
 				return nftData, false, nil
+			case string(dynamicNftKey):
+				return dynamicNftData, false, nil
 			default:
 				return nil, false, nil
 			}
@@ -1102,6 +1121,10 @@ func TestNode_GetAllDCDTTokensShouldReturnDcdtAndFormattedNft(t *testing.T) {
 
 					trieLeaf = keyValStorage.NewKeyValStorage(nftKey, append(marshalledNftData, nftSuffix...))
 					leavesChannels.LeavesChan <- trieLeaf
+
+					trieLeaf = keyValStorage.NewKeyValStorage(dynamicNftKey, append(marshalledDynamicNftData, dynamicNftSuffix...))
+					leavesChannels.LeavesChan <- trieLeaf
+
 					wg.Done()
 					close(leavesChannels.LeavesChan)
 					leavesChannels.ErrChan.Close()
@@ -4678,7 +4701,6 @@ func TestNode_Getters(t *testing.T) {
 	heartbeatComponents := &factoryMock.HeartbeatV2ComponentsStub{}
 	networkComponents := getDefaultNetworkComponents()
 	processComponents := getDefaultProcessComponents()
-	consensusGroupSize := 10
 
 	n, err := node.NewNode(
 		node.WithCoreComponents(coreComponents),
@@ -4690,7 +4712,6 @@ func TestNode_Getters(t *testing.T) {
 		node.WithHeartbeatV2Components(heartbeatComponents),
 		node.WithNetworkComponents(networkComponents),
 		node.WithProcessComponents(processComponents),
-		node.WithConsensusGroupSize(consensusGroupSize),
 		node.WithImportMode(true),
 	)
 	require.Nil(t, err)
@@ -4705,7 +4726,6 @@ func TestNode_Getters(t *testing.T) {
 	assert.True(t, n.GetHeartbeatV2Components() == heartbeatComponents)
 	assert.True(t, n.GetNetworkComponents() == networkComponents)
 	assert.True(t, n.GetProcessComponents() == processComponents)
-	assert.Equal(t, consensusGroupSize, n.GetConsensusGroupSize())
 	assert.True(t, n.IsInImportMode())
 }
 
@@ -4719,7 +4739,10 @@ func TestNode_GetEpochStartDataAPI(t *testing.T) {
 
 	dataComponents := getDefaultDataComponents()
 	blockchain := dataComponents.BlockChain.(*testscommon.ChainHandlerStub)
+
 	timestamp := uint64(778899)
+	expTimeStampMs := common.ConvertTimeStampSecToMs(timestamp)
+
 	shardID := uint32(2)
 	blockchain.GetGenesisHeaderCalled = func() data.HeaderHandler {
 		return &block.Header{
@@ -4753,6 +4776,7 @@ func TestNode_GetEpochStartDataAPI(t *testing.T) {
 			Nonce:             0,
 			Round:             0,
 			Timestamp:         int64(timestamp),
+			TimestampMs:       int64(expTimeStampMs),
 			Epoch:             0,
 			Shard:             shardID,
 			PrevBlockHash:     hex.EncodeToString(prevHash),
@@ -4802,6 +4826,7 @@ func TestNode_GetEpochStartDataAPI(t *testing.T) {
 			Nonce:             nonce,
 			Round:             round,
 			Timestamp:         int64(timestamp),
+			TimestampMs:       int64(expTimeStampMs),
 			Epoch:             epoch,
 			Shard:             core.MetachainShardId,
 			PrevBlockHash:     hex.EncodeToString(prevHash),
@@ -4852,6 +4877,7 @@ func TestNode_GetEpochStartDataAPI(t *testing.T) {
 			Nonce:             nonce,
 			Round:             round,
 			Timestamp:         int64(timestamp),
+			TimestampMs:       int64(expTimeStampMs),
 			Epoch:             epoch,
 			Shard:             shardID,
 			PrevBlockHash:     hex.EncodeToString(prevHash),
@@ -5343,6 +5369,7 @@ func getDefaultCoreComponents() *nodeMockFactory.CoreComponentsMock {
 		EpochChangeNotifier:      &epochNotifier.EpochNotifierStub{},
 		TxVersionCheckHandler:    versioning.NewTxVersionChecker(0),
 		EnableEpochsHandlerField: enableEpochsHandlerMock.NewEnableEpochsHandlerStub(common.RelayedTransactionsV3Flag),
+		FieldsSizeCheckerField:   &testscommon.FieldsSizeCheckerMock{},
 	}
 }
 
@@ -5362,7 +5389,7 @@ func getDefaultProcessComponents() *factoryMock.ProcessComponentsMock {
 		BlockProcess:                         &testscommon.BlockProcessorStub{},
 		BlackListHdl:                         &testscommon.TimeCacheStub{},
 		BootSore:                             &mock.BootstrapStorerMock{},
-		HeaderSigVerif:                       &mock.HeaderSigVerifierStub{},
+		HeaderSigVerif:                       &consensus.HeaderSigVerifierMock{},
 		HeaderIntegrVerif:                    &mock.HeaderIntegrityVerifierStub{},
 		ValidatorStatistics:                  &testscommon.ValidatorStatisticsProcessorStub{},
 		ValidatorProvider:                    &stakingcommon.ValidatorsProviderStub{},
@@ -5378,6 +5405,7 @@ func getDefaultProcessComponents() *factoryMock.ProcessComponentsMock {
 		TxsSenderHandlerField:                &txsSenderMock.TxsSenderHandlerMock{},
 		ScheduledTxsExecutionHandlerInternal: &testscommon.ScheduledTxsExecutionStub{},
 		HistoryRepositoryInternal:            &dblookupext.HistoryRepositoryStub{},
+		BlockchainHookField:                  &testscommon.BlockChainHookStub{},
 	}
 }
 

@@ -17,6 +17,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/blockchain"
+	epochStart "github.com/TerraDharitri/drt-go-chain/epochStart/bootstrap/disabled"
 	factoryBlock "github.com/TerraDharitri/drt-go-chain/factory/block"
 	"github.com/TerraDharitri/drt-go-chain/genesis"
 	"github.com/TerraDharitri/drt-go-chain/genesis/process/disabled"
@@ -25,6 +26,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/process/smartContract/hooks"
 	"github.com/TerraDharitri/drt-go-chain/process/smartContract/hooks/counters"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
+	disabledState "github.com/TerraDharitri/drt-go-chain/state/disabled"
 	factoryState "github.com/TerraDharitri/drt-go-chain/state/factory"
 	"github.com/TerraDharitri/drt-go-chain/state/syncer"
 	"github.com/TerraDharitri/drt-go-chain/statusHandler"
@@ -447,6 +449,8 @@ func (gbc *genesisBlockCreator) computeDNSAddresses(enableEpochsConfig config.En
 		GasSchedule:              gbc.arg.GasSchedule,
 		Counter:                  counters.NewDisabledCounter(),
 		MissingTrieNodesNotifier: syncer.NewMissingTrieNodesNotifier(),
+		EpochStartTrigger:        epochStart.NewEpochStartTrigger(),
+		RoundHandler:             &disabled.RoundHandler{},
 	}
 	blockChainHook, err := hooks.NewBlockChainHookImpl(argsHook)
 	if err != nil {
@@ -493,9 +497,10 @@ func (gbc *genesisBlockCreator) getNewArgForShard(shardID uint32) (ArgsGenesisBl
 	}
 
 	argsAccCreator := factoryState.ArgsAccountCreator{
-		Hasher:              newArgument.Core.Hasher(),
-		Marshaller:          newArgument.Core.InternalMarshalizer(),
-		EnableEpochsHandler: newArgument.Core.EnableEpochsHandler(),
+		Hasher:                 newArgument.Core.Hasher(),
+		Marshaller:             newArgument.Core.InternalMarshalizer(),
+		EnableEpochsHandler:    newArgument.Core.EnableEpochsHandler(),
+		StateAccessesCollector: disabledState.NewDisabledStateAccessesCollector(),
 	}
 	accCreator, err := factoryState.NewAccountCreator(argsAccCreator)
 	if err != nil {

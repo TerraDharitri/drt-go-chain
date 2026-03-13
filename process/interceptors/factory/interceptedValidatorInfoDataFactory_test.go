@@ -3,11 +3,11 @@ package factory
 import (
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/state"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -79,7 +79,7 @@ func TestInterceptedValidatorInfoDataFactory_Create(t *testing.T) {
 		ividf, _ := NewInterceptedValidatorInfoDataFactory(*createMockArgument(createMockComponentHolders()))
 		require.False(t, check.IfNil(ividf))
 
-		ivi, err := ividf.Create(nil)
+		ivi, err := ividf.Create(nil, "")
 		assert.NotNil(t, err)
 		assert.True(t, check.IfNil(ivi))
 	})
@@ -88,7 +88,7 @@ func TestInterceptedValidatorInfoDataFactory_Create(t *testing.T) {
 		ividf, _ := NewInterceptedValidatorInfoDataFactory(*createMockArgument(createMockComponentHolders()))
 		require.False(t, check.IfNil(ividf))
 
-		ivi, err := ividf.Create(createMockValidatorInfoBuff())
+		ivi, err := ividf.Create(createMockValidatorInfoBuff(), "")
 		assert.Nil(t, err)
 		assert.False(t, check.IfNil(ivi))
 	})

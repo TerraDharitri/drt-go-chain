@@ -3,6 +3,9 @@ name: Build & push keygenerator docker image
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build-docker-image:
     strategy:
@@ -31,4 +34,4 @@ jobs:
           file: ./docker/keygenerator/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: dharitri/chain-keygenerator:latest
+          tags: TerraDharitri/chain-keygenerator:latest

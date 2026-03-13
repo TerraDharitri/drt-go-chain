@@ -28,6 +28,9 @@ var ErrGetValueForKey = errors.New("get value for key error")
 // ErrGetKeyValuePairs signals an error in getting the key-value pairs of a key for an account
 var ErrGetKeyValuePairs = errors.New("get key-value pairs error")
 
+// ErrIterateKeys signals an error in iterating over the keys of an account
+var ErrIterateKeys = errors.New("iterate keys error")
+
 // ErrGetDCDTBalance signals an error in getting dcdt balance for given address
 var ErrGetDCDTBalance = errors.New("get dcdt balance for account error")
 
@@ -42,6 +45,12 @@ var ErrGetDCDTNFTData = errors.New("get dcdt nft data for account error")
 
 // ErrEmptyAddress signals that an empty address was provided
 var ErrEmptyAddress = errors.New("address is empty")
+
+// ErrEmptyNumKeys signals that an empty numKeys was provided
+var ErrEmptyNumKeys = errors.New("numKeys is empty")
+
+// ErrEmptyCheckpointId signals that an empty checkpointId was provided
+var ErrEmptyCheckpointId = errors.New("checkpointId is empty")
 
 // ErrEmptyKey signals that an empty key was provided
 var ErrEmptyKey = errors.New("key is empty")

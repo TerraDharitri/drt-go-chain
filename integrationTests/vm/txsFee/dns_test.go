@@ -56,13 +56,13 @@ func TestDeployDNSContract_TestRegisterAndResolveAndSendTxWithSndAndRcvUserName(
 	require.Equal(t, vmcommon.Ok, retCode)
 	require.Nil(t, err)
 
-	vm.TestAccount(t, testContext.Accounts, sndAddr, 1, big.NewInt(9263230))
+	vm.TestAccount(t, testContext.Accounts, sndAddr, 1, big.NewInt(9269260))
 	// check accumulated fees
 	accumulatedFees := testContext.TxFeeHandler.GetAccumulatedFees()
-	require.Equal(t, big.NewInt(736770), accumulatedFees)
+	require.Equal(t, big.NewInt(730740), accumulatedFees)
 
 	developerFees := testContext.TxFeeHandler.GetDeveloperFees()
-	require.Equal(t, big.NewInt(73633), developerFees)
+	require.Equal(t, big.NewInt(73030), developerFees)
 
 	utils.CleanAccumulatedIntermediateTransactions(t, testContext)
 
@@ -77,13 +77,13 @@ func TestDeployDNSContract_TestRegisterAndResolveAndSendTxWithSndAndRcvUserName(
 	_, err = testContext.Accounts.Commit()
 	require.Nil(t, err)
 
-	vm.TestAccount(t, testContext.Accounts, rcvAddr, 1, big.NewInt(9263230))
+	vm.TestAccount(t, testContext.Accounts, rcvAddr, 1, big.NewInt(9269260))
 	// check accumulated fees
 	accumulatedFees = testContext.TxFeeHandler.GetAccumulatedFees()
-	require.Equal(t, big.NewInt(1473540), accumulatedFees)
+	require.Equal(t, big.NewInt(1461480), accumulatedFees)
 
 	developerFees = testContext.TxFeeHandler.GetDeveloperFees()
-	require.Equal(t, big.NewInt(147266), developerFees)
+	require.Equal(t, big.NewInt(146060), developerFees)
 
 	ret := vm.GetVmOutput(nil, testContext.Accounts, scAddress, "resolve", userName)
 	dnsUserNameAddr := ret.ReturnData[0]
@@ -121,8 +121,9 @@ func TestDeployDNSContract_TestGasWhenSaveUsernameFailsCrossShardBackwardsCompat
 	}
 
 	enableEpochs := config.EnableEpochs{
-		ChangeUsernameEnableEpoch: 1000, // flag disabled, backwards compatibility
-		SCProcessorV2EnableEpoch:  1000,
+		ChangeUsernameEnableEpoch:           1000, // flag disabled, backwards compatibility
+		SCProcessorV2EnableEpoch:            1000,
+		RelayedTransactionsV1V2DisableEpoch: 1000,
 	}
 
 	vmConfig := vm.CreateVMConfigWithVersion("v1.4")
@@ -203,12 +204,15 @@ func TestDeployDNSContract_TestGasWhenSaveUsernameAfterDNSv2IsActivated(t *testi
 	}
 
 	testContextForDNSContract, err := vm.CreatePreparedTxProcessorWithVMsMultiShard(1, config.EnableEpochs{
-		FixRelayedBaseCostEnableEpoch: integrationTests.UnreachableEpoch,
+		FixRelayedBaseCostEnableEpoch:       integrationTests.UnreachableEpoch,
+		RelayedTransactionsV1V2DisableEpoch: integrationTests.UnreachableEpoch,
 	}, 1)
 	require.Nil(t, err)
 	defer testContextForDNSContract.Close()
 
-	testContextForRelayerAndUser, err := vm.CreatePreparedTxProcessorWithVMsMultiShard(2, config.EnableEpochs{}, 1)
+	testContextForRelayerAndUser, err := vm.CreatePreparedTxProcessorWithVMsMultiShard(2, config.EnableEpochs{
+		RelayedTransactionsV1V2DisableEpoch: integrationTests.UnreachableEpoch,
+	}, 1)
 	require.Nil(t, err)
 	defer testContextForRelayerAndUser.Close()
 	scAddress, _ := utils.DoDeployDNS(t, testContextForDNSContract, "../../multiShard/smartContract/dns/dns.wasm")

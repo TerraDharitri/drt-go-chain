@@ -1,8 +1,10 @@
 package state
 
 import (
+	data "github.com/TerraDharitri/drt-go-chain-core/data/stateChange"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 )
 
@@ -24,6 +26,14 @@ func (adb *AccountsDB) GetAccount(address []byte) (vmcommon.AccountHandler, erro
 // GetObsoleteHashes -
 func (adb *AccountsDB) GetObsoleteHashes() map[string][][]byte {
 	return adb.obsoleteDataTrieHashes
+}
+
+// ResetStateAccessesCollector -
+func (adb *AccountsDB) ResetStateAccessesCollector() (map[string]*data.StateAccesses, error) {
+	stateChanges := adb.stateAccessesCollector.GetCollectedAccesses()
+	adb.stateAccessesCollector.Reset()
+
+	return stateChanges, nil
 }
 
 // GetCode -

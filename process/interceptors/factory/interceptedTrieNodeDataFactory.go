@@ -1,10 +1,11 @@
 package factory
 
 import (
-	"github.com/TerraDharitri/drt-go-chain/process"
-	"github.com/TerraDharitri/drt-go-chain/trie"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/hashing"
+	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain/trie"
 )
 
 var _ process.InterceptedDataFactory = (*interceptedTrieNodeDataFactory)(nil)
@@ -34,7 +35,7 @@ func NewInterceptedTrieNodeDataFactory(
 }
 
 // Create creates instances of InterceptedData by unmarshalling provided buffer
-func (sidf *interceptedTrieNodeDataFactory) Create(buff []byte) (process.InterceptedData, error) {
+func (sidf *interceptedTrieNodeDataFactory) Create(buff []byte, _ core.PeerID) (process.InterceptedData, error) {
 	return trie.NewInterceptedTrieNode(buff, sidf.hasher)
 }
 

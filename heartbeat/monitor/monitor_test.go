@@ -9,19 +9,21 @@ import (
 
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/heartbeat"
 	"github.com/TerraDharitri/drt-go-chain/heartbeat/data"
 	"github.com/TerraDharitri/drt-go-chain/heartbeat/mock"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
-	"github.com/stretchr/testify/assert"
 )
 
 func createMockHeartbeatV2MonitorArgs() ArgHeartbeatV2Monitor {
 	return ArgHeartbeatV2Monitor{
-		Cache:                         testscommon.NewCacherMock(),
+		Cache:                         cache.NewCacherMock(),
 		PubKeyConverter:               &testscommon.PubkeyConverterMock{},
 		Marshaller:                    &marshallerMock.MarshalizerMock{},
 		MaxDurationPeerUnresponsive:   time.Second * 3,

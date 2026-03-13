@@ -4,7 +4,7 @@ import (
 	"sync"
 
 	"github.com/TerraDharitri/drt-go-chain-core/core"
-	logger "github.com/TerraDharitri/drt-go-chain-logger"
+	"github.com/TerraDharitri/drt-go-chain-logger"
 	"github.com/TerraDharitri/drt-go-chain/process"
 )
 

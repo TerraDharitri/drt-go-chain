@@ -28,6 +28,8 @@
         Type = "default autoscale" #available options "default autoscale", "infinite", "default with manual scale".
         ManualSystemMemoryInMB = 0 # not taken into account if the type is not "default with manual scale"
         ManualMaximumFD = 0 # not taken into account if the type is not "default with manual scale"
+        # Ipv4ConnLimit = [] default values will be used
+        # Ipv6ConnLimit = [] default values will be used
 
 # P2P peer discovery section
 
@@ -53,12 +55,12 @@
     # To connect to other nodes, those nodes should have at least one common protocol string
     ProtocolIDs = [
         "/drt/kad/1.0.0",
-        "drt-main",
+        "drt-full-archive",
     ]
 
     # InitialPeerList represents the list of strings of some known nodes that will bootstrap this node
     # The address will be in a self-describing addressing format.
-    # More can be found here: https://github.com/libp2p/specs/blob/main/3-requirements.md#34-transport-agnostic
+    # More can be found here: https://github.com/libp2p/specs/blob/master/3-requirements.md#34-transport-agnostic
     # Example:
     #    /ip6/fe80::8823:6dff:fee7:f172/tcp/4001/p2p/QmYJyUMAcXEw1b5bFfbBbzYu5wyyjLMRHXGUkCXpag74Fu
     #    /ip4/162.246.145.218/udp/4001/utp/ipfs/QmYJyUMAcXEw1b5bFfbBbzYu5wyyjLMRHXGUkCXpag74Fu

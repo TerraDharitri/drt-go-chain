@@ -3,6 +3,8 @@ package chronology
 import (
 	"context"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+
 	"github.com/TerraDharitri/drt-go-chain/consensus"
 )
 
@@ -36,4 +38,19 @@ func (chr *chronology) UpdateRound() {
 
 func (chr *chronology) InitRound() {
 	chr.initRound()
+}
+
+// StartRoundsTest calls the unexported startRounds function
+func (chr *chronology) StartRoundsTest(ctx context.Context) {
+	chr.startRounds(ctx)
+}
+
+// SetWatchdog sets the watchdog for chronology object
+func (chr *chronology) SetWatchdog(watchdog core.WatchdogTimer) {
+	chr.watchdog = watchdog
+}
+
+// SetCancelFunc sets cancelFunc for chronology object
+func (chr *chronology) SetCancelFunc(cancelFunc func()) {
+	chr.cancelFunc = cancelFunc
 }

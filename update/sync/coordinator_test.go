@@ -11,18 +11,20 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	dataTransaction "github.com/TerraDharitri/drt-go-chain-core/data/transaction"
+	"github.com/stretchr/testify/require"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/state"
 	"github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	stateMock "github.com/TerraDharitri/drt-go-chain/testscommon/state"
 	storageStubs "github.com/TerraDharitri/drt-go-chain/testscommon/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/syncer"
 	trieMock "github.com/TerraDharitri/drt-go-chain/testscommon/trie"
 	"github.com/TerraDharitri/drt-go-chain/update"
 	"github.com/TerraDharitri/drt-go-chain/update/mock"
-	"github.com/stretchr/testify/require"
 )
 
 func createHeaderSyncHandler(retErr bool) update.HeaderSyncHandler {
@@ -71,7 +73,7 @@ func createPendingMiniBlocksSyncHandler() update.EpochStartPendingMiniBlocksSync
 	mb := &block.MiniBlock{TxHashes: [][]byte{txHash}}
 	args := ArgsNewPendingMiniBlocksSyncer{
 		Storage: &storageStubs.StorerStub{},
-		Cache: &testscommon.CacherStub{
+		Cache: &cache.CacherStub{
 			RegisterHandlerCalled: func(f func(key []byte, val interface{})) {},
 			PeekCalled: func(key []byte) (value interface{}, ok bool) {
 				return mb, true

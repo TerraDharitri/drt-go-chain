@@ -3,12 +3,11 @@ package chainSimulator
 import (
 	"math/big"
 
-	"github.com/TerraDharitri/drt-go-chain/node/chainSimulator/dtos"
-	"github.com/TerraDharitri/drt-go-chain/node/chainSimulator/process"
-
 	"github.com/TerraDharitri/drt-go-chain-core/data/api"
 	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
+	"github.com/TerraDharitri/drt-go-chain/node/chainSimulator/dtos"
+	"github.com/TerraDharitri/drt-go-chain/node/chainSimulator/process"
 )
 
 // ChainSimulator defines the operations for an entity that can simulate operations of a chain

@@ -4,11 +4,11 @@ set -eux
 
 export DOCKERTESTNETDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-DHARITRITESTNETSCRIPTSDIR="$(dirname "$DOCKERTESTNETDIR")/testnet"
+TerraDharitriTESTNETSCRIPTSDIR="$(dirname "$DOCKERTESTNETDIR")/testnet"
 
 source "$DOCKERTESTNETDIR/variables.sh"
 
-cd ${DHARITRIDIR}
+cd ${TerraDharitriDIR}
 
 docker build -f docker/seednode/Dockerfile . -t seednode:dev
 

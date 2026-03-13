@@ -4,10 +4,10 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/factory/requestersContainer"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/mock"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -223,8 +223,10 @@ func TestMetaRequestersContainerFactory_With4ShardsShouldWork(t *testing.T) {
 	numRequestersTrieNodes := 2
 	numRequestersPeerAuth := 1
 	numRequesterValidatorInfo := 1
+	numRequesterEquivalentProofs := noOfShards + 1
 	totalRequesters := numRequestersShardHeadersForMetachain + numRequesterMetablocks + numRequestersMiniBlocks +
-		numRequestersUnsigned + numRequestersTxs + numRequestersTrieNodes + numRequestersRewards + numRequestersPeerAuth + numRequesterValidatorInfo
+		numRequestersUnsigned + numRequestersTxs + numRequestersTrieNodes + numRequestersRewards + numRequestersPeerAuth +
+		numRequesterValidatorInfo + numRequesterEquivalentProofs
 
 	assert.Equal(t, totalRequesters, container.Len())
 

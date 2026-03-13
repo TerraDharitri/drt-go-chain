@@ -12,6 +12,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/core/throttler"
 	logger "github.com/TerraDharitri/drt-go-chain-logger"
 	wasmConfig "github.com/TerraDharitri/drt-go-chain-vm/config"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/common/errChan"
 	"github.com/TerraDharitri/drt-go-chain/common/holders"
@@ -30,8 +33,6 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/trie/statistics"
 	"github.com/TerraDharitri/drt-go-chain/trie/storageMarker"
 	"github.com/TerraDharitri/drt-go-chain/vm/systemSmartContracts/defaults"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 var log = logger.GetOrCreate("integrationtests/state/statetriesync")
@@ -427,7 +428,6 @@ func testSyncMissingSnapshotNodes(t *testing.T, version int) {
 		t.Skip("this is not a short test")
 	}
 
-	numSystemAccounts := 1
 	numAccounts := 1000
 	numDataTrieLeaves := 50
 	valSize := 32
@@ -449,11 +449,11 @@ func testSyncMissingSnapshotNodes(t *testing.T, version int) {
 		node.EpochStartTrigger.SetRoundsPerEpoch(roundsPerEpoch)
 	}
 
-	idxProposers := make([]int, numOfShards+1)
+	leaders := make([]*integrationTests.TestProcessorNode, numOfShards+1)
 	for i := 0; i < numOfShards; i++ {
-		idxProposers[i] = i * nodesPerShard
+		leaders[i] = nodes[i*nodesPerShard]
 	}
-	idxProposers[numOfShards] = numOfShards * nodesPerShard
+	leaders[numOfShards] = nodes[numOfShards*nodesPerShard]
 
 	integrationTests.DisplayAndStartNodes(nodes)
 
@@ -476,7 +476,7 @@ func testSyncMissingSnapshotNodes(t *testing.T, version int) {
 	nonce++
 	numDelayRounds := uint32(10)
 	for i := uint64(0); i < uint64(numDelayRounds); i++ {
-		round, nonce = integrationTests.ProposeAndSyncOneBlock(t, nodes, idxProposers, round, nonce)
+		round, nonce = integrationTests.ProposeAndSyncOneBlock(t, nodes, leaders, round, nonce)
 		time.Sleep(integrationTests.StepDelay)
 	}
 
@@ -485,7 +485,7 @@ func testSyncMissingSnapshotNodes(t *testing.T, version int) {
 	dataTrieRootHashes := addAccountsToState(t, numAccounts, numDataTrieLeaves, accState, valSize)
 	rootHash, _ := accState.RootHash()
 	numLeaves := getNumLeaves(t, resolverTrie, rootHash)
-	require.Equal(t, numAccounts+numSystemAccounts, numLeaves)
+	require.Equal(t, numAccounts, numLeaves)
 
 	requesterTrie := nRequester.TrieContainer.Get([]byte(dataRetriever.UserAccountsUnit.String()))
 	nilRootHash, _ := requesterTrie.RootHash()
@@ -517,7 +517,7 @@ func testSyncMissingSnapshotNodes(t *testing.T, version int) {
 	assert.Equal(t, rootHash, newRootHash)
 
 	numLeaves = getNumLeaves(t, requesterTrie, rootHash)
-	assert.Equal(t, numAccounts+numSystemAccounts, numLeaves)
+	assert.Equal(t, numAccounts, numLeaves)
 	checkAllDataTriesAreSynced(t, numDataTrieLeaves, requesterTrie, dataTrieRootHashes)
 }
 

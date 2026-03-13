@@ -76,9 +76,9 @@ func GetGeneralConfig() config.Config {
 						{StartEpoch: 0, Version: "v0.3"},
 					},
 					TransferAndExecuteByUserAddresses: []string{
-						"drt1he8wwxn4az3j82p7wwqsdk794dm7hcrwny6f8dfegkfla34udx7q74f938", //shard 0
-						"drt1fpkcgel4gcmh8zqqdt043yfcn5tyx8373kg6q2qmkxzu4dqamc0snh8ehx", //shard 1
-						"drt1najnxxweyw6plhg8efql330nttrj6l5cf87wqsuym85s9ha0hmdqwul6sl", //shard 2
+						"drt1he8wwxn4az3j82p7wwqsdk794dm7hcrwny6f8dfegkfla34udx7q74f938", // shard 0
+						"drt1fpkcgel4gcmh8zqqdt043yfcn5tyx8373kg6q2qmkxzu4dqamc0snh8ehx", // shard 1
+						"drt1najnxxweyw6plhg8efql330nttrj6l5cf87wqsuym85s9ha0hmdqwul6sl", // shard 2
 					},
 				},
 			},
@@ -87,9 +87,9 @@ func GetGeneralConfig() config.Config {
 					{StartEpoch: 0, Version: "v0.3"},
 				},
 				TransferAndExecuteByUserAddresses: []string{
-					"drt1he8wwxn4az3j82p7wwqsdk794dm7hcrwny6f8dfegkfla34udx7q74f938", //shard 0
-					"drt1fpkcgel4gcmh8zqqdt043yfcn5tyx8373kg6q2qmkxzu4dqamc0snh8ehx", //shard 1
-					"drt1najnxxweyw6plhg8efql330nttrj6l5cf87wqsuym85s9ha0hmdqwul6sl", //shard 2
+					"drt1he8wwxn4az3j82p7wwqsdk794dm7hcrwny6f8dfegkfla34udx7q74f938", // shard 0
+					"drt1fpkcgel4gcmh8zqqdt043yfcn5tyx8373kg6q2qmkxzu4dqamc0snh8ehx", // shard 1
+					"drt1najnxxweyw6plhg8efql330nttrj6l5cf87wqsuym85s9ha0hmdqwul6sl", // shard 2
 				},
 			},
 			GasConfig: config.VirtualMachineGasConfig{
@@ -119,14 +119,14 @@ func GetGeneralConfig() config.Config {
 		},
 		BuiltInFunctions: config.BuiltInFunctionsConfig{
 			AutomaticCrawlerAddresses: []string{
-				"drt1he8wwxn4az3j82p7wwqsdk794dm7hcrwny6f8dfegkfla34udx7q74f938", //shard 0
-				"drt1fpkcgel4gcmh8zqqdt043yfcn5tyx8373kg6q2qmkxzu4dqamc0snh8ehx", //shard 1
-				"drt1najnxxweyw6plhg8efql330nttrj6l5cf87wqsuym85s9ha0hmdqwul6sl", //shard 2
+				"drt1he8wwxn4az3j82p7wwqsdk794dm7hcrwny6f8dfegkfla34udx7q74f938", // shard 0
+				"drt1fpkcgel4gcmh8zqqdt043yfcn5tyx8373kg6q2qmkxzu4dqamc0snh8ehx", // shard 1
+				"drt1najnxxweyw6plhg8efql330nttrj6l5cf87wqsuym85s9ha0hmdqwul6sl", // shard 2
 			},
 			DNSV2Addresses: []string{
-				"drt1he8wwxn4az3j82p7wwqsdk794dm7hcrwny6f8dfegkfla34udx7q74f938", //shard 0
-				"drt1fpkcgel4gcmh8zqqdt043yfcn5tyx8373kg6q2qmkxzu4dqamc0snh8ehx", //shard 1
-				"drt1najnxxweyw6plhg8efql330nttrj6l5cf87wqsuym85s9ha0hmdqwul6sl", //shard 2
+				"drt1he8wwxn4az3j82p7wwqsdk794dm7hcrwny6f8dfegkfla34udx7q74f938", // shard 0
+				"drt1fpkcgel4gcmh8zqqdt043yfcn5tyx8373kg6q2qmkxzu4dqamc0snh8ehx", // shard 1
+				"drt1najnxxweyw6plhg8efql330nttrj6l5cf87wqsuym85s9ha0hmdqwul6sl", // shard 2
 			},
 			MaxNumAddressesInTransferRole: 100,
 		},
@@ -156,6 +156,19 @@ func GetGeneralConfig() config.Config {
 			MinTransactionVersion:    1,
 			GenesisMaxNumberOfShards: 3,
 			SetGuardianEpochsDelay:   20,
+			ChainParametersByEpoch: []config.ChainParametersByEpochConfig{
+				{
+					EnableEpoch:                 0,
+					RoundDuration:               4000,
+					ShardConsensusGroupSize:     1,
+					ShardMinNumNodes:            1,
+					MetachainConsensusGroupSize: 1,
+					MetachainMinNumNodes:        1,
+					Hysteresis:                  0,
+					Adaptivity:                  false,
+				},
+			},
+			EpochChangeGracePeriodByEpoch: []config.EpochChangeGracePeriodByEpoch{{EnableEpoch: 0, GracePeriodInRounds: 1}},
 		},
 		Marshalizer: config.MarshalizerConfig{
 			Type:           TestMarshalizer,
@@ -200,6 +213,20 @@ func GetGeneralConfig() config.Config {
 		ResourceStats: config.ResourceStatsConfig{
 			RefreshIntervalInSec: 1,
 		},
+		ProofsStorage: config.StorageConfig{
+			Cache: config.CacheConfig{
+				Capacity: 10000,
+				Type:     "LRU",
+				Shards:   1,
+			},
+			DB: config.DBConfig{
+				FilePath:          "ProofsStorage",
+				Type:              "MemoryDB",
+				BatchDelaySeconds: 30,
+				MaxBatchSize:      6,
+				MaxOpenFiles:      10,
+			},
+		},
 	}
 }
 
@@ -236,6 +263,10 @@ func CreateDummyEconomicsConfig() config.EconomicsConfig {
 					ProtocolSustainabilityAddress:    "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l",
 					TopUpFactor:                      0.25,
 					TopUpGradientPoint:               "3000000000000000000000000",
+					EcosystemGrowthPercentage:        0.0,
+					EcosystemGrowthAddress:           "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l",
+					GrowthDividendPercentage:         0.0,
+					GrowthDividendAddress:            "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l",
 				},
 			},
 		},
@@ -249,6 +280,7 @@ func CreateDummyEconomicsConfig() config.EconomicsConfig {
 					MaxGasLimitPerTx:            "1500000000",
 					MinGasLimit:                 "50000",
 					ExtraGasLimitGuardedTx:      "50000",
+					MaxGasHigherFactorAccepted:  "10",
 				},
 			},
 			MinGasPrice:            "1000000000",
@@ -275,21 +307,27 @@ func CreateDummyRatingsConfig() config.RatingsConfig {
 			},
 		},
 		ShardChain: config.ShardChain{
-			RatingSteps: config.RatingSteps{
-				HoursToMaxRatingFromStartRating: 2,
-				ProposerValidatorImportance:     1,
-				ProposerDecreaseFactor:          -4,
-				ValidatorDecreaseFactor:         -4,
-				ConsecutiveMissedBlocksPenalty:  ConsecutiveMissedBlocksPenalty,
+			RatingStepsByEpoch: []config.RatingSteps{
+				{
+					HoursToMaxRatingFromStartRating: 2,
+					ProposerValidatorImportance:     1,
+					ProposerDecreaseFactor:          -4,
+					ValidatorDecreaseFactor:         -4,
+					ConsecutiveMissedBlocksPenalty:  ConsecutiveMissedBlocksPenalty,
+					EnableEpoch:                     0,
+				},
 			},
 		},
 		MetaChain: config.MetaChain{
-			RatingSteps: config.RatingSteps{
-				HoursToMaxRatingFromStartRating: 2,
-				ProposerValidatorImportance:     1,
-				ProposerDecreaseFactor:          -4,
-				ValidatorDecreaseFactor:         -4,
-				ConsecutiveMissedBlocksPenalty:  ConsecutiveMissedBlocksPenalty,
+			RatingStepsByEpoch: []config.RatingSteps{
+				{
+					HoursToMaxRatingFromStartRating: 2,
+					ProposerValidatorImportance:     1,
+					ProposerDecreaseFactor:          -4,
+					ValidatorDecreaseFactor:         -4,
+					ConsecutiveMissedBlocksPenalty:  ConsecutiveMissedBlocksPenalty,
+					EnableEpoch:                     0,
+				},
 			},
 		},
 	}

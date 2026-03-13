@@ -6,7 +6,9 @@ import (
 	"math/big"
 
 	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/data/stateChange"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/state"
 )
@@ -15,6 +17,7 @@ var _ state.UserAccountHandler = (*UserAccountStub)(nil)
 
 // UserAccountStub -
 type UserAccountStub struct {
+	Nonce            uint64
 	Balance          *big.Int
 	DeveloperRewards *big.Int
 	UserName         []byte
@@ -22,7 +25,6 @@ type UserAccountStub struct {
 	Address          []byte
 	CodeMetadata     []byte
 	CodeHash         []byte
-	Nonce            uint64
 
 	AddToBalanceCalled       func(value *big.Int) error
 	DataTrieTrackerCalled    func() state.DataTrieTracker
@@ -190,8 +192,8 @@ func (u *UserAccountStub) IsGuarded() bool {
 }
 
 // SaveDirtyData -
-func (u *UserAccountStub) SaveDirtyData(_ common.Trie) ([]core.TrieData, error) {
-	return nil, nil
+func (u *UserAccountStub) SaveDirtyData(_ common.Trie) ([]*stateChange.DataTrieChange, []core.TrieData, error) {
+	return nil, nil, nil
 }
 
 // IsInterfaceNil -

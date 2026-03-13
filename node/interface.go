@@ -2,11 +2,10 @@ package node
 
 import (
 	"io"
-	"time"
 
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
-	"github.com/TerraDharitri/drt-go-chain/p2p"
+
 	"github.com/TerraDharitri/drt-go-chain/update"
 )
 
@@ -16,18 +15,6 @@ type NetworkShardingCollector interface {
 	UpdatePeerIDInfo(pid core.PeerID, pk []byte, shardID uint32)
 	PutPeerIdSubType(pid core.PeerID, peerSubType core.P2PPeerSubType)
 	GetPeerInfo(pid core.PeerID) core.P2PPeerInfo
-	IsInterfaceNil() bool
-}
-
-// P2PAntifloodHandler defines the behavior of a component able to signal that the system is too busy (or flooded) processing
-// p2p messages
-type P2PAntifloodHandler interface {
-	CanProcessMessage(message p2p.MessageP2P, fromConnectedPeer core.PeerID) error
-	CanProcessMessagesOnTopic(peer core.PeerID, topic string, numMessages uint32, totalSize uint64, sequence []byte) error
-	ResetForTopic(topic string)
-	SetMaxMessagesForTopic(topic string, maxNum uint32)
-	ApplyConsensusSize(size int)
-	BlacklistPeer(peer core.PeerID, reason string, duration time.Duration)
 	IsInterfaceNil() bool
 }
 

@@ -4,15 +4,17 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/mock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/statusHandler"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/storageManager"
 	"github.com/TerraDharitri/drt-go-chain/trie"
-	"github.com/stretchr/testify/assert"
 )
 
 // TODO add more tests
@@ -24,7 +26,7 @@ func getDefaultBaseAccSyncerArgs() ArgsNewBaseAccountsSyncer {
 		TrieStorageManager:                &storageManager.StorageManagerStub{},
 		RequestHandler:                    &testscommon.RequestHandlerStub{},
 		Timeout:                           time.Second,
-		Cacher:                            testscommon.NewCacherMock(),
+		Cacher:                            cache.NewCacherMock(),
 		UserAccountsSyncStatisticsHandler: &testscommon.SizeSyncStatisticsHandlerStub{},
 		AppStatusHandler:                  &statusHandler.AppStatusHandlerStub{},
 		MaxTrieLevelInMemory:              0,
@@ -95,7 +97,7 @@ func TestUserAccountsSyncer_MissingDataTrieNodeFound(t *testing.T) {
 	rootHash, _ := tr.RootHash()
 	_ = tr.Commit()
 
-	args.Cacher = &testscommon.CacherStub{
+	args.Cacher = &cache.CacherStub{
 		GetCalled: func(key []byte) (value interface{}, ok bool) {
 			interceptedNode, _ := trie.NewInterceptedTrieNode(serializedLeafNode, args.Hasher)
 			return interceptedNode, true

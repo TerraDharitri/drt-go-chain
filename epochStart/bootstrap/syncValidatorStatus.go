@@ -4,6 +4,11 @@ import (
 	"context"
 	"time"
 
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
+	"github.com/TerraDharitri/drt-go-chain-core/hashing"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/epochStart"
@@ -15,11 +20,6 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/storage/cache"
 	"github.com/TerraDharitri/drt-go-chain/update"
 	"github.com/TerraDharitri/drt-go-chain/update/sync"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
-	"github.com/TerraDharitri/drt-go-chain-core/hashing"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 )
 
 const consensusGroupCacheSize = 50
@@ -44,6 +44,7 @@ type ArgsNewSyncValidatorStatus struct {
 	RequestHandler                  process.RequestHandler
 	ChanceComputer                  nodesCoordinator.ChanceComputer
 	GenesisNodesConfig              sharding.GenesisNodesSetupHandler
+	ChainParametersHandler          process.ChainParametersHandler
 	NodeShuffler                    nodesCoordinator.NodesShuffler
 	PubKey                          []byte
 	ShardIdAsObserver               uint32
@@ -112,8 +113,7 @@ func NewSyncValidatorStatus(args ArgsNewSyncValidatorStatus) (*syncValidatorStat
 	s.memDB = disabled.CreateMemUnit()
 
 	argsNodesCoordinator := nodesCoordinator.ArgNodesCoordinator{
-		ShardConsensusGroupSize:         int(args.GenesisNodesConfig.GetShardConsensusGroupSize()),
-		MetaConsensusGroupSize:          int(args.GenesisNodesConfig.GetMetaConsensusGroupSize()),
+		ChainParametersHandler:          args.ChainParametersHandler,
 		Marshalizer:                     args.Marshalizer,
 		Hasher:                          args.Hasher,
 		Shuffler:                        args.NodeShuffler,

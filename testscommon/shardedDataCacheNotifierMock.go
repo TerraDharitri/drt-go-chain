@@ -4,7 +4,9 @@ import (
 	"sync"
 
 	"github.com/TerraDharitri/drt-go-chain-core/core/counting"
+
 	"github.com/TerraDharitri/drt-go-chain/storage"
+	cacheMocks "github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 )
 
 // ShardedDataCacheNotifierMock -
@@ -31,7 +33,7 @@ func (mock *ShardedDataCacheNotifierMock) ShardDataStore(cacheId string) (c stor
 
 	cache, found := mock.caches[cacheId]
 	if !found {
-		cache = NewCacherMock()
+		cache = cacheMocks.NewCacherMock()
 		mock.caches[cacheId] = cache
 	}
 

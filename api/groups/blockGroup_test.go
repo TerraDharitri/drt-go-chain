@@ -10,13 +10,13 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain-core/data/alteredAccount"
+	"github.com/TerraDharitri/drt-go-chain-core/data/api"
 	apiErrors "github.com/TerraDharitri/drt-go-chain/api/errors"
 	"github.com/TerraDharitri/drt-go-chain/api/groups"
 	"github.com/TerraDharitri/drt-go-chain/api/mock"
 	"github.com/TerraDharitri/drt-go-chain/api/shared"
 	"github.com/TerraDharitri/drt-go-chain/config"
-	"github.com/TerraDharitri/drt-go-chain-core/data/alteredAccount"
-	"github.com/TerraDharitri/drt-go-chain-core/data/api"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

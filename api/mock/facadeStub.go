@@ -4,6 +4,8 @@ import (
 	"encoding/hex"
 	"math/big"
 
+	"github.com/TerraDharitri/drt-go-chain-core/data/smartContractResult"
+
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/data/alteredAccount"
 	"github.com/TerraDharitri/drt-go-chain-core/data/api"
@@ -49,6 +51,7 @@ type FacadeStub struct {
 	GetUsernameCalled                           func(address string, options api.AccountQueryOptions) (string, api.BlockInfo, error)
 	GetCodeHashCalled                           func(address string, options api.AccountQueryOptions) ([]byte, api.BlockInfo, error)
 	GetKeyValuePairsCalled                      func(address string, options api.AccountQueryOptions) (map[string]string, api.BlockInfo, error)
+	IterateKeysCalled                           func(address string, numKeys uint, iteratorState [][]byte, options api.AccountQueryOptions) (map[string]string, [][]byte, api.BlockInfo, error)
 	SimulateTransactionExecutionHandler         func(tx *transaction.Transaction) (*txSimData.SimulationResultsWithVMOutput, error)
 	GetDCDTDataCalled                           func(address string, key string, nonce uint64, options api.AccountQueryOptions) (*dcdt.DCDigitalToken, api.BlockInfo, error)
 	GetAllDCDTTokensCalled                      func(address string, options api.AccountQueryOptions) (map[string]*dcdt.DCDigitalToken, api.BlockInfo, error)
@@ -98,6 +101,16 @@ type FacadeStub struct {
 	P2PPrometheusMetricsEnabledCalled           func() bool
 	AuctionListHandler                          func() ([]*common.AuctionListValidatorAPIResponse, error)
 	GetSCRsByTxHashCalled                       func(txHash string, scrHash string) ([]*transaction.ApiSmartContractResult, error)
+	SimulateSCRExecutionCostCalled              func(scr *smartContractResult.SmartContractResult) (*transaction.CostResponse, error)
+}
+
+// SimulateSCRExecutionCost -
+func (f *FacadeStub) SimulateSCRExecutionCost(scr *smartContractResult.SmartContractResult) (*transaction.CostResponse, error) {
+	if f.SimulateSCRExecutionCostCalled != nil {
+		return f.SimulateSCRExecutionCostCalled(scr)
+	}
+
+	return nil, nil
 }
 
 // GetSCRsByTxHash -
@@ -239,6 +252,15 @@ func (f *FacadeStub) GetKeyValuePairs(address string, options api.AccountQueryOp
 	}
 
 	return nil, api.BlockInfo{}, nil
+}
+
+// IterateKeys -
+func (f *FacadeStub) IterateKeys(address string, numKeys uint, iteratorState [][]byte, options api.AccountQueryOptions) (map[string]string, [][]byte, api.BlockInfo, error) {
+	if f.IterateKeysCalled != nil {
+		return f.IterateKeysCalled(address, numKeys, iteratorState, options)
+	}
+
+	return nil, nil, api.BlockInfo{}, nil
 }
 
 // GetGuardianData -

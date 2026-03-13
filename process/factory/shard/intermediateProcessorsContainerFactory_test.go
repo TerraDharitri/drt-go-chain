@@ -3,6 +3,8 @@ package shard_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/process"
@@ -10,13 +12,13 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
 	"github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	txExecOrderStub "github.com/TerraDharitri/drt-go-chain/testscommon/common"
 	dataRetrieverMock "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/economicsmocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
 	storageStubs "github.com/TerraDharitri/drt-go-chain/testscommon/storage"
-	"github.com/stretchr/testify/assert"
 )
 
 func createDataPools() dataRetriever.PoolsHolder {
@@ -28,13 +30,13 @@ func createDataPools() dataRetriever.PoolsHolder {
 		return &mock.HeadersCacherStub{}
 	}
 	pools.MiniBlocksCalled = func() storage.Cacher {
-		return testscommon.NewCacherStub()
+		return cache.NewCacherStub()
 	}
 	pools.PeerChangesBlocksCalled = func() storage.Cacher {
-		return testscommon.NewCacherStub()
+		return cache.NewCacherStub()
 	}
 	pools.MetaBlocksCalled = func() storage.Cacher {
-		return testscommon.NewCacherStub()
+		return cache.NewCacherStub()
 	}
 	pools.UnsignedTransactionsCalled = func() dataRetriever.ShardedDataCacherNotifier {
 		return testscommon.NewShardedDataStub()
@@ -43,7 +45,7 @@ func createDataPools() dataRetriever.PoolsHolder {
 		return testscommon.NewShardedDataStub()
 	}
 	pools.TrieNodesCalled = func() storage.Cacher {
-		return testscommon.NewCacherStub()
+		return cache.NewCacherStub()
 	}
 	pools.CurrBlockTxsCalled = func() dataRetriever.TransactionCacher {
 		return &mock.TxForCurrentBlockStub{}

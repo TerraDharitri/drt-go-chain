@@ -1,11 +1,35 @@
 package chainSimulator
 
-import "github.com/TerraDharitri/drt-go-chain/node/chainSimulator/process"
+import (
+	"math/big"
+
+	"github.com/TerraDharitri/drt-go-chain/node/chainSimulator/dtos"
+	"github.com/TerraDharitri/drt-go-chain/node/chainSimulator/process"
+)
 
 // ChainSimulatorMock -
 type ChainSimulatorMock struct {
-	GenerateBlocksCalled func(numOfBlocks int) error
-	GetNodeHandlerCalled func(shardID uint32) process.NodeHandler
+	GenerateBlocksCalled               func(numOfBlocks int) error
+	GetNodeHandlerCalled               func(shardID uint32) process.NodeHandler
+	GenerateAddressInShardCalled       func(providedShardID uint32) dtos.WalletAddress
+	GenerateAndMintWalletAddressCalled func(targetShardID uint32, value *big.Int) (dtos.WalletAddress, error)
+}
+
+// GenerateAddressInShard -
+func (mock *ChainSimulatorMock) GenerateAddressInShard(providedShardID uint32) dtos.WalletAddress {
+	if mock.GenerateAddressInShardCalled != nil {
+		return mock.GenerateAddressInShardCalled(providedShardID)
+	}
+
+	return dtos.WalletAddress{}
+}
+
+// GenerateAndMintWalletAddress -
+func (mock *ChainSimulatorMock) GenerateAndMintWalletAddress(targetShardID uint32, value *big.Int) (dtos.WalletAddress, error) {
+	if mock.GenerateAndMintWalletAddressCalled != nil {
+		return mock.GenerateAndMintWalletAddressCalled(targetShardID, value)
+	}
+	return dtos.WalletAddress{}, nil
 }
 
 // GenerateBlocks -

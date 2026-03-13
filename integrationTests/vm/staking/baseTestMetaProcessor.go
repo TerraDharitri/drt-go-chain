@@ -14,7 +14,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/display"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
-	andesConfig "github.com/TerraDharitri/drt-go-chain-vm-v3/config"
+	andesConfig "github.com/TerraDharitri/drt-go-chain-vm-v1_4/config"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
@@ -263,7 +263,7 @@ func (tmp *TestMetaProcessor) createNewHeader(t *testing.T, round uint64) *block
 		round,
 		currentHash,
 		currentHeader.GetRandSeed(),
-		tmp.NodesCoordinator.ConsensusGroupSize(core.MetachainShardId),
+		tmp.NodesCoordinator.ConsensusGroupSizeForShardAndEpoch(core.MetachainShardId, 0),
 	)
 
 	return header

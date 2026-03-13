@@ -1,19 +1,19 @@
 <div style="text-align:center">
   <img
-  src="https://raw.githubusercontent.com/TerraDharitri/drt-go-chain/main/dharitri-logo.svg"
-  alt="Dharitri">
+  src="https://raw.githubusercontent.com/TerraDharitri/drt-go-chain/main/TerraDharitri-logo.svg"
+  alt="DharitrI">
 </div>
 <br>
 
-[![](https://img.shields.io/badge/made%20by-Dharitri-blue.svg)](http://dharitri.org/)
-[![](https://img.shields.io/badge/project-Dharitri%20Mainnet-blue.svg)](https://explorer.dharitri.org/)
+[![](https://img.shields.io/badge/made%20by-DharitrI-blue.svg)](http://TerraDharitri.com/)
+[![](https://img.shields.io/badge/project-DharitrI%20Mainnet-blue.svg)](https://explorer.dharitri.org/)
 [![Go Report Card](https://goreportcard.com/badge/github.com/TerraDharitri/drt-go-chain)](https://goreportcard.com/report/github.com/TerraDharitri/drt-go-chain)
 [![codecov](https://codecov.io/gh/TerraDharitri/drt-go-chain/branch/main/graph/badge.svg?token=MYS5EDASOJ)](https://codecov.io/gh/TerraDharitri/drt-go-chain)
 [![Contributors](https://img.shields.io/github/contributors/TerraDharitri/drt-go-chain)](https://github.com/TerraDharitri/drt-go-chain/graphs/contributors)
 
 # drt-go-chain
 
-The go implementation for the Dharitri protocol
+The go implementation for the DharitrI protocol
 
 ## Installation and running
 
@@ -23,7 +23,7 @@ In order to join the network as an observer or as a validator, the required step
 The installation of go should proceed as shown in official golang installation guide https://golang.org/doc/install . In order to run the node, minimum golang version should be 1.17.6.
 
 ### Step 2: clone the repository and build the binaries:
-The main branch that will be used is the main branch. Alternatively, an older release tag can be used.
+The main branch that will be used is the master branch. Alternatively, an older release tag can be used.
 
 ```
 # set $GOPATH if not set and export to ~/.profile along with Go binary path
@@ -37,7 +37,7 @@ $ cd cmd/node && go build
 The node depends on the Wasm Virtual Machine, which is automatically managed by the node.
 
 ### Step 3: creating the node’s identity:
-In order to be registered in the Dharitri Network, a node must possess 2 types of (secret key, public key) pairs. One is used to identify the node’s credential used to generate transactions (having the sender field its account address) and the other is used in the process of the block signing. Please note that this is a preliminary mechanism, in the next releases the first (private, public key) pair will be dropped when the staking mechanism will be fully implemented. To build and run the keygenerator, the following commands will need to be run:
+In order to be registered in the DharitrI Network, a node must possess 2 types of (secret key, public key) pairs. One is used to identify the node’s credential used to generate transactions (having the sender field its account address) and the other is used in the process of the block signing. Please note that this is a preliminary mechanism, in the next releases the first (private, public key) pair will be dropped when the staking mechanism will be fully implemented. To build and run the keygenerator, the following commands will need to be run:
 
 ```
 $ cd $GOPATH/src/github.com/TerraDharitri/drt-go-chain/cmd/keygenerator
@@ -46,7 +46,7 @@ $ ./keygenerator
 ```
 
 ### Start the node 
-#### Step 4a: Join Dharitri testnet:
+#### Step 4a: Join DharitrI testnet:
 Follow the steps outlined [here](https://docs.dharitri.org/validators/nodes-scripts/config-scripts/). This is because in order to join the testnet you need a specific node configuration.
 ______
 OR
@@ -66,7 +66,7 @@ The node binary has some flags defined (for a brief description, the user can us
 $ go test ./...	
 ```
 
-## Compiling new fields in .proto files (should be updated when required PR will be merged in gogo protobuf main branch):
+## Compiling new fields in .proto files (should be updated when required PR will be merged in gogo protobuf master branch):
 1. Download protoc compiler: https://github.com/protocolbuffers/protobuf/releases 
  (if you are running under linux on a x64 you might want to download protoc-3.11.4-linux-x86_64.zip)
 2. Expand archive, copy the /include/google folder in /usr/include using <br>
@@ -203,9 +203,9 @@ sudo docker compose -f docker-compose.base.yml -f docker-compose-linux.yml up --
 
 
 ## Contribution
-Thank you for considering to help out with the source code! We welcome contributions from anyone on the internet, and are grateful for even the smallest of fixes to Dharitri!
+Thank you for considering to help out with the source code! We welcome contributions from anyone on the internet, and are grateful for even the smallest of fixes to DharitrI!
 
-If you'd like to contribute to Dharitri, please fork, fix, commit and send a pull request for the maintainers to review and merge into the main code base. If you wish to submit more complex changes though, please check up with the core developers first here on GitHub, to ensure those changes are in line with the general philosophy of the project and/or get some early feedback which can make both your efforts much lighter as well as our review and merge procedures quick and simple.
+If you'd like to contribute to DharitrI, please fork, fix, commit and send a pull request for the maintainers to review and merge into the main code base. If you wish to submit more complex changes though, please check up with the core developers first here on GitHub, to ensure those changes are in line with the general philosophy of the project and/or get some early feedback which can make both your efforts much lighter as well as our review and merge procedures quick and simple.
 
 Please make sure your contributions adhere to our coding guidelines:
 
@@ -215,5 +215,5 @@ Please make sure your contributions adhere to our coding guidelines:
  - Commit messages should be prefixed with the package(s) they modify.
     - E.g. "outport/process: fixed a typo"
 
-Please see the [documentation](https://docs.dharitri.org/) for more details on the Dharitri protocol.
+Please see the [documentation](https://docs.dharitri.org/) for more details on the DharitrI protocol.
 

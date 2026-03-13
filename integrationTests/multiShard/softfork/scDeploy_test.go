@@ -11,12 +11,13 @@ import (
 
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain/integrationTests"
-	"github.com/TerraDharitri/drt-go-chain/process/factory"
-	"github.com/TerraDharitri/drt-go-chain/state"
 	logger "github.com/TerraDharitri/drt-go-chain-logger"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/TerraDharitri/drt-go-chain/integrationTests"
+	"github.com/TerraDharitri/drt-go-chain/process/factory"
+	"github.com/TerraDharitri/drt-go-chain/state"
 )
 
 var log = logger.GetOrCreate("integrationtests/singleshard/block/softfork")
@@ -67,7 +68,7 @@ func TestScDeploy(t *testing.T) {
 	}
 	integrationTests.ConnectNodes(connectableNodes)
 
-	idxProposers := []int{0, 1}
+	leaders := []*integrationTests.TestProcessorNode{nodes[0], nodes[1]}
 
 	defer func() {
 		for _, n := range nodes {
@@ -93,7 +94,7 @@ func TestScDeploy(t *testing.T) {
 
 	for i := uint64(0); i < numRounds; i++ {
 		integrationTests.UpdateRound(nodes, round)
-		integrationTests.ProposeBlock(nodes, idxProposers, round, nonce)
+		integrationTests.ProposeBlock(nodes, leaders, round, nonce)
 		round = integrationTests.IncrementAndPrintRound(round)
 		nonce++
 
@@ -108,7 +109,7 @@ func TestScDeploy(t *testing.T) {
 	deploySucceeded := deploySc(t, nodes)
 	for i := uint64(0); i < 5; i++ {
 		integrationTests.UpdateRound(nodes, round)
-		integrationTests.ProposeBlock(nodes, idxProposers, round, nonce)
+		integrationTests.ProposeBlock(nodes, leaders, round, nonce)
 		round = integrationTests.IncrementAndPrintRound(round)
 		nonce++
 

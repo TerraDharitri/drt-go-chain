@@ -5,6 +5,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/stretchr/testify/assert"
+
 	heartbeatMessages "github.com/TerraDharitri/drt-go-chain/heartbeat"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/heartbeat"
@@ -12,10 +15,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/process/interceptors/processor"
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/p2pmocks"
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/stretchr/testify/assert"
 )
 
 type interceptedDataHandler interface {
@@ -25,7 +27,7 @@ type interceptedDataHandler interface {
 
 func createPeerAuthenticationInterceptorProcessArg() processor.ArgPeerAuthenticationInterceptorProcessor {
 	return processor.ArgPeerAuthenticationInterceptorProcessor{
-		PeerAuthenticationCacher: testscommon.NewCacherStub(),
+		PeerAuthenticationCacher: cache.NewCacherStub(),
 		PeerShardMapper:          &p2pmocks.NetworkShardingCollectorStub{},
 		Marshaller:               marshallerMock.MarshalizerMock{},
 		HardforkTrigger:          &testscommon.HardforkTriggerStub{},
@@ -188,7 +190,7 @@ func TestPeerAuthenticationInterceptorProcessor_Save(t *testing.T) {
 		wasPutCalled := false
 		providedPid := core.PeerID("pid")
 		arg := createPeerAuthenticationInterceptorProcessArg()
-		arg.PeerAuthenticationCacher = &testscommon.CacherStub{
+		arg.PeerAuthenticationCacher = &cache.CacherStub{
 			PutCalled: func(key []byte, value interface{}, sizeInBytes int) (evicted bool) {
 				assert.Equal(t, providedIPAMessage.Pubkey, key)
 				ipa := value.(*heartbeatMessages.PeerAuthentication)

@@ -15,6 +15,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
 	"github.com/TerraDharitri/drt-go-chain/common"
+	"github.com/TerraDharitri/drt-go-chain/trie/leavesRetriever/trieNodeData"
 )
 
 var _ = node(&extensionNode{})
@@ -667,7 +668,7 @@ func (en *extensionNode) getAllLeavesOnChannel(
 		}
 
 		keyBuilder.BuildKey(en.Key)
-		err = en.child.getAllLeavesOnChannel(leavesChannel, keyBuilder.Clone(), trieLeafParser, db, marshalizer, chanClose, ctx)
+		err = en.child.getAllLeavesOnChannel(leavesChannel, keyBuilder.ShallowClone(), trieLeafParser, db, marshalizer, chanClose, ctx)
 		if err != nil {
 			return err
 		}
@@ -784,7 +785,25 @@ func (en *extensionNode) collectLeavesForMigration(
 	}
 
 	keyBuilder.BuildKey(en.Key)
-	return en.child.collectLeavesForMigration(migrationArgs, db, keyBuilder.Clone())
+	return en.child.collectLeavesForMigration(migrationArgs, db, keyBuilder.ShallowClone())
+}
+
+func (en *extensionNode) getNodeData(keyBuilder common.KeyBuilder) ([]common.TrieNodeData, error) {
+	err := en.isEmptyOrNil()
+	if err != nil {
+		return nil, fmt.Errorf("getNodeData error %w", err)
+	}
+
+	data := make([]common.TrieNodeData, 1)
+	clonedKeyBuilder := keyBuilder.DeepClone()
+	clonedKeyBuilder.BuildKey(en.Key)
+	childData, err := trieNodeData.NewIntermediaryNodeData(clonedKeyBuilder, en.EncodedChild)
+	if err != nil {
+		return nil, err
+	}
+
+	data[0] = childData
+	return data, nil
 }
 
 // IsInterfaceNil returns true if there is no value under the interface

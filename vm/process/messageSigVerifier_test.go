@@ -4,8 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
-
+	"github.com/TerraDharitri/drt-go-chain-crypto"
 	"github.com/TerraDharitri/drt-go-chain/vm"
 	"github.com/TerraDharitri/drt-go-chain/vm/mock"
 	"github.com/stretchr/testify/assert"

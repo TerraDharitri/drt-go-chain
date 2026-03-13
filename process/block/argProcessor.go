@@ -1,6 +1,12 @@
 package block
 
 import (
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/typeConverters"
+	"github.com/TerraDharitri/drt-go-chain-core/hashing"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
+
 	nodeFactory "github.com/TerraDharitri/drt-go-chain/cmd/node/factory"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/config"
@@ -13,11 +19,6 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/sharding"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
 	"github.com/TerraDharitri/drt-go-chain/state"
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/typeConverters"
-	"github.com/TerraDharitri/drt-go-chain-core/hashing"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 )
 
 type coreComponentsHolder interface {
@@ -28,6 +29,7 @@ type coreComponentsHolder interface {
 	EnableEpochsHandler() common.EnableEpochsHandler
 	RoundNotifier() process.RoundNotifier
 	EnableRoundsHandler() process.EnableRoundsHandler
+	EpochChangeGracePeriodHandler() common.EpochChangeGracePeriodHandler
 	RoundHandler() consensus.RoundHandler
 	EconomicsData() process.EconomicsDataHandler
 	ProcessStatusHandler() common.ProcessStatusHandler
@@ -94,6 +96,7 @@ type ArgBaseProcessor struct {
 	BlockProcessingCutoffHandler   cutoff.BlockProcessingCutoffHandler
 	ManagedPeersHolder             common.ManagedPeersHolder
 	SentSignaturesTracker          process.SentSignaturesTracker
+	StateAccessesCollector         state.StateAccessesCollector
 }
 
 // ArgShardProcessor holds all dependencies required by the process data factory in order to create

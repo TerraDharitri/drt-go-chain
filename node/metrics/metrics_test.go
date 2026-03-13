@@ -24,6 +24,7 @@ func TestInitBaseMetrics(t *testing.T) {
 		common.MetricSynchronizedRound,
 		common.MetricNonce,
 		common.MetricBlockTimestamp,
+		common.MetricBlockTimestampMs,
 		common.MetricCountConsensus,
 		common.MetricCountLeader,
 		common.MetricCountAcceptedBlocks,
@@ -213,6 +214,14 @@ func TestInitConfigMetrics(t *testing.T) {
 			FixRelayedMoveBalanceToNonPayableSCEnableEpoch:           106,
 			RelayedTransactionsV3EnableEpoch:                         107,
 			RelayedTransactionsV3FixDCDTTransferEnableEpoch:          108,
+			CheckBuiltInCallOnTransferValueAndFailEnableRound:        109,
+			MaskVMInternalDependenciesErrorsEnableEpoch:              110,
+			FixBackTransferOPCODEEnableEpoch:                         111,
+			ValidationOnGobDecodeEnableEpoch:                         112,
+			BarnardOpcodesEnableEpoch:                                113,
+			AutomaticActivationOfNodesDisableEpoch:                   114,
+			FixGetBalanceEnableEpoch:                                 115,
+			RelayedTransactionsV1V2DisableEpoch:                      116,
 			MaxNodesChangeEnableEpoch: []config.MaxNodesChangeConfig{
 				{
 					EpochEnable:            0,
@@ -336,6 +345,14 @@ func TestInitConfigMetrics(t *testing.T) {
 		"drt_fix_relayed_move_balance_to_non_payable_sc_enable_epoch":          uint32(106),
 		"drt_relayed_transactions_v3_enable_epoch":                             uint32(107),
 		"drt_relayed_transactions_v3_fix_dcdt_transfer_enable_epoch":           uint32(108),
+		"drt_checkbuiltincall_ontransfervalueandfail_enable_round":             uint32(109),
+		"drt_mask_vm_internal_dependencies_errors_enable_epoch":                uint32(110),
+		"drt_fix_back_transfer_opcode_enable_epoch":                            uint32(111),
+		"drt_validation_on_gobdecode_enable_epoch":                             uint32(112),
+		"drt_barnard_opcodes_enable_epoch":                                     uint32(113),
+		"drt_automatic_activation_of_nodes_disable_epoch":                      uint32(114),
+		"drt_fix_get_balance_enable_epoch":                                     uint32(115),
+		"drt_relayed_transactions_v1_v2_disable_epoch":                         uint32(116),
 		"drt_max_nodes_change_enable_epoch":                                    nil,
 		"drt_total_supply":                                                     "12345",
 		"drt_hysteresis":                                                       "0.100000",
@@ -418,21 +435,25 @@ func TestInitRatingsMetrics(t *testing.T) {
 			},
 		},
 		ShardChain: config.ShardChain{
-			RatingSteps: config.RatingSteps{
-				HoursToMaxRatingFromStartRating: 10,
-				ProposerValidatorImportance:     0.1,
-				ProposerDecreaseFactor:          0.1,
-				ValidatorDecreaseFactor:         0.1,
-				ConsecutiveMissedBlocksPenalty:  0.1,
+			RatingStepsByEpoch: []config.RatingSteps{
+				{
+					HoursToMaxRatingFromStartRating: 10,
+					ProposerValidatorImportance:     0.1,
+					ProposerDecreaseFactor:          0.1,
+					ValidatorDecreaseFactor:         0.1,
+					ConsecutiveMissedBlocksPenalty:  0.1,
+				},
 			},
 		},
 		MetaChain: config.MetaChain{
-			RatingSteps: config.RatingSteps{
-				HoursToMaxRatingFromStartRating: 10,
-				ProposerValidatorImportance:     0.1,
-				ProposerDecreaseFactor:          0.1,
-				ValidatorDecreaseFactor:         0.1,
-				ConsecutiveMissedBlocksPenalty:  0.1,
+			RatingStepsByEpoch: []config.RatingSteps{
+				{
+					HoursToMaxRatingFromStartRating: 10,
+					ProposerValidatorImportance:     0.1,
+					ProposerDecreaseFactor:          0.1,
+					ValidatorDecreaseFactor:         0.1,
+					ConsecutiveMissedBlocksPenalty:  0.1,
+				},
 			},
 		},
 		PeerHonesty: config.PeerHonestyConfig{

@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
-export DHARITRITESTNETSCRIPTSDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+export TerraDharitriTESTNETSCRIPTSDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 export TESTNETMODE=$1
 export EXTRA=$2
 
-source "$DHARITRITESTNETSCRIPTSDIR/variables.sh"
-source "$DHARITRITESTNETSCRIPTSDIR/include/config.sh"
-source "$DHARITRITESTNETSCRIPTSDIR/include/build.sh"
-source "$DHARITRITESTNETSCRIPTSDIR/include/validators.sh"
-source "$DHARITRITESTNETSCRIPTSDIR/include/observers.sh"
-source "$DHARITRITESTNETSCRIPTSDIR/include/tools.sh"
+source "$TerraDharitriTESTNETSCRIPTSDIR/variables.sh"
+source "$TerraDharitriTESTNETSCRIPTSDIR/include/config.sh"
+source "$TerraDharitriTESTNETSCRIPTSDIR/include/build.sh"
+source "$TerraDharitriTESTNETSCRIPTSDIR/include/validators.sh"
+source "$TerraDharitriTESTNETSCRIPTSDIR/include/observers.sh"
+source "$TerraDharitriTESTNETSCRIPTSDIR/include/tools.sh"
 
 prepareFolders
 
@@ -34,14 +34,14 @@ fi
 
 # Phase 3: start the Seednode
 startSeednode
-showTerminalSession "dharitri-tools"
-sleep $SEEDNODE_DELAY
+showTerminalSession "TerraDharitri-tools"
 echo "Waiting for the Seednode to start ($SEEDNODE_DELAY s)..."
+sleep $SEEDNODE_DELAY
 
 # Phase 4: start the Observer Nodes and Validator Nodes
 startObservers
-# startValidators
-showTerminalSession "dharitri-nodes"
+startValidators
+showTerminalSession "TerraDharitri-nodes"
 echo "Waiting for the Nodes to start ($NODE_DELAY s)..."
 sleep $NODE_DELAY
 
@@ -57,7 +57,6 @@ fi
 
 # Phase 6: start the Proxy
 if [ $USE_PROXY -eq 1 ]; then
-
   startProxy
   echo "Waiting for the Proxy to start ($PROXY_DELAY s)..."
   sleep $PROXY_DELAY

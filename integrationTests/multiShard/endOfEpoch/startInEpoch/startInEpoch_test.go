@@ -11,7 +11,12 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
 	"github.com/TerraDharitri/drt-go-chain-core/data/typeConverters/uint64ByteSlice"
+	dataRetrieverMocks "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
+	"github.com/TerraDharitri/drt-go-chain/common/enablers"
+	"github.com/TerraDharitri/drt-go-chain/common/forking"
 	"github.com/TerraDharitri/drt-go-chain/common/statistics/disabled"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
@@ -24,6 +29,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/block/bootstrapStorage"
 	"github.com/TerraDharitri/drt-go-chain/process/block/pendingMb"
+	interceptorsFactory "github.com/TerraDharitri/drt-go-chain/process/interceptors/factory"
 	"github.com/TerraDharitri/drt-go-chain/process/smartContract"
 	"github.com/TerraDharitri/drt-go-chain/process/sync/storageBootstrap"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
@@ -31,7 +37,8 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/storage/factory"
 	"github.com/TerraDharitri/drt-go-chain/storage/storageunit"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
-	epochNotifierMock "github.com/TerraDharitri/drt-go-chain/testscommon/epochNotifier"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/chainParameters"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/genericMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/genesisMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
@@ -40,7 +47,6 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/testscommon/scheduledDataSyncer"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/shardingMocks"
 	statusHandlerMock "github.com/TerraDharitri/drt-go-chain/testscommon/statusHandler"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestStartInEpochForAShardNodeInMultiShardedEnvironment(t *testing.T) {
@@ -72,6 +78,7 @@ func testNodeStartsInEpoch(t *testing.T, shardID uint32, expectedHighestRound ui
 		StakingV4Step1EnableEpoch:            integrationTests.UnreachableEpoch,
 		StakingV4Step2EnableEpoch:            integrationTests.UnreachableEpoch,
 		StakingV4Step3EnableEpoch:            integrationTests.UnreachableEpoch,
+		AndromedaEnableEpoch:                 integrationTests.UnreachableEpoch,
 	}
 
 	nodes := integrationTests.CreateNodesWithEnableEpochs(
@@ -86,11 +93,11 @@ func testNodeStartsInEpoch(t *testing.T, shardID uint32, expectedHighestRound ui
 		node.EpochStartTrigger.SetRoundsPerEpoch(roundsPerEpoch)
 	}
 
-	idxProposers := make([]int, numOfShards+1)
+	leaders := make([]*integrationTests.TestProcessorNode, numOfShards+1)
 	for i := 0; i < numOfShards; i++ {
-		idxProposers[i] = i * numNodesPerShard
+		leaders[i] = nodes[i*numNodesPerShard]
 	}
-	idxProposers[numOfShards] = numOfShards * numNodesPerShard
+	leaders[numOfShards] = nodes[numOfShards*numNodesPerShard]
 
 	integrationTests.DisplayAndStartNodes(nodes)
 
@@ -117,8 +124,8 @@ func testNodeStartsInEpoch(t *testing.T, shardID uint32, expectedHighestRound ui
 	nrRoundsToPropagateMultiShard := uint64(5)
 	for i := uint64(0); i <= (uint64(epoch)*roundsPerEpoch)+nrRoundsToPropagateMultiShard; i++ {
 		integrationTests.UpdateRound(nodes, round)
-		integrationTests.ProposeBlock(nodes, idxProposers, round, nonce)
-		integrationTests.SyncBlock(t, nodes, idxProposers, round)
+		integrationTests.ProposeBlock(nodes, leaders, round, nonce)
+		integrationTests.SyncBlock(t, nodes, leaders, round)
 		round = integrationTests.IncrementAndPrintRound(round)
 		nonce++
 
@@ -221,7 +228,9 @@ func testNodeStartsInEpoch(t *testing.T, shardID uint32, expectedHighestRound ui
 	cryptoComponents.BlKeyGen = &mock.KeyGenMock{}
 	cryptoComponents.TxKeyGen = &mock.KeyGenMock{}
 
-	coreComponents := integrationTests.GetDefaultCoreComponents(integrationTests.CreateEnableEpochsConfig())
+	genericEpochNotifier := forking.NewGenericEpochNotifier()
+	enableEpochsHandler, _ := enablers.NewEnableEpochsHandler(enableEpochsConfig, genericEpochNotifier)
+	coreComponents := integrationTests.GetDefaultCoreComponents(enableEpochsHandler, genericEpochNotifier)
 	coreComponents.InternalMarshalizerField = integrationTests.TestMarshalizer
 	coreComponents.TxMarshalizerField = integrationTests.TestMarshalizer
 	coreComponents.HasherField = integrationTests.TestHasher
@@ -234,11 +243,16 @@ func testNodeStartsInEpoch(t *testing.T, shardID uint32, expectedHighestRound ui
 	coreComponents.NodeTypeProviderField = &nodeTypeProviderMock.NodeTypeProviderStub{}
 	coreComponents.ChanStopNodeProcessField = endProcess.GetDummyEndProcessChannel()
 	coreComponents.HardforkTriggerPubKeyField = []byte("provided hardfork pub key")
+	coreComponents.ChainParametersHandlerField = &chainParameters.ChainParametersHandlerStub{}
 
 	nodesCoordinatorRegistryFactory, _ := nodesCoordinator.NewNodesCoordinatorRegistryFactory(
 		&marshallerMock.MarshalizerMock{},
 		444,
 	)
+	interceptorDataVerifierArgs := interceptorsFactory.InterceptedDataVerifierFactoryArgs{
+		CacheSpan:   time.Second * 5,
+		CacheExpiry: time.Second * 10,
+	}
 	argsBootstrapHandler := bootstrap.ArgsEpochStartBootstrap{
 		NodesCoordinatorRegistryFactory: nodesCoordinatorRegistryFactory,
 		CryptoComponentsHolder:          cryptoComponents,
@@ -277,8 +291,10 @@ func testNodeStartsInEpoch(t *testing.T, shardID uint32, expectedHighestRound ui
 		FlagsConfig: config.ContextFlagsConfig{
 			ForceStartFromNetwork: false,
 		},
-		TrieSyncStatisticsProvider: &testscommon.SizeSyncStatisticsHandlerStub{},
-		StateStatsHandler:          disabled.NewStateStatistics(),
+		TrieSyncStatisticsProvider:     &testscommon.SizeSyncStatisticsHandlerStub{},
+		StateStatsHandler:              disabled.NewStateStatistics(),
+		EnableEpochsHandler:            &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
+		InterceptedDataVerifierFactory: interceptorsFactory.NewInterceptedDataVerifierFactory(interceptorDataVerifierArgs),
 	}
 
 	epochStartBootstrap, err := bootstrap.NewEpochStartBootstrap(argsBootstrapHandler)
@@ -345,9 +361,11 @@ func testNodeStartsInEpoch(t *testing.T, shardID uint32, expectedHighestRound ui
 		ChainID:                      string(integrationTests.ChainID),
 		ScheduledTxsExecutionHandler: &testscommon.ScheduledTxsExecutionStub{},
 		MiniblocksProvider:           &mock.MiniBlocksProviderStub{},
-		EpochNotifier:                &epochNotifierMock.EpochNotifierStub{},
+		EpochNotifier:                genericEpochNotifier,
 		ProcessedMiniBlocksTracker:   &testscommon.ProcessedMiniBlocksTrackerStub{},
 		AppStatusHandler:             &statusHandlerMock.AppStatusHandlerMock{},
+		EnableEpochsHandler:          enableEpochsHandler,
+		ProofsPool:                   &dataRetrieverMocks.ProofsPoolMock{},
 	}
 
 	bootstrapper, err := getBootstrapper(shardID, argsBaseBootstrapper)

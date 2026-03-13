@@ -4,6 +4,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
 	"github.com/TerraDharitri/drt-go-chain/common/statistics"
 	"github.com/TerraDharitri/drt-go-chain/common/statistics/disabled"
 	"github.com/TerraDharitri/drt-go-chain/config"
@@ -16,8 +18,6 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/p2pmocks"
 	storageStubs "github.com/TerraDharitri/drt-go-chain/testscommon/storage"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -181,9 +181,10 @@ func TestMetaRequestersContainerFactory_With4ShardsShouldWork(t *testing.T) {
 	numRequestersTxs := noOfShards + 1
 	numPeerAuthentication := 1
 	numValidatorInfo := 1
+	numEquivalentProofs := noOfShards + 1
 	totalRequesters := numRequestersShardHeadersForMetachain + numRequesterMetablocks + numRequestersMiniBlocks +
 		numRequestersUnsigned + numRequestersTxs + numRequestersRewards + numPeerAuthentication +
-		numValidatorInfo
+		numValidatorInfo + numEquivalentProofs
 
 	assert.Equal(t, totalRequesters, container.Len())
 	assert.Equal(t, totalRequesters, container.Len())

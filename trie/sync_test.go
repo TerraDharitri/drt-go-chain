@@ -10,14 +10,16 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
 	trieMock "github.com/TerraDharitri/drt-go-chain/testscommon/trie"
 	"github.com/TerraDharitri/drt-go-chain/trie/statistics"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func createMockArgument(timeout time.Duration) ArgTrieSyncer {
@@ -32,7 +34,7 @@ func createMockArgument(timeout time.Duration) ArgTrieSyncer {
 
 	return ArgTrieSyncer{
 		RequestHandler:            &testscommon.RequestHandlerStub{},
-		InterceptedNodes:          testscommon.NewCacherMock(),
+		InterceptedNodes:          cache.NewCacherMock(),
 		DB:                        trieStorage,
 		Hasher:                    &hashingMocks.HasherMock{},
 		Marshalizer:               &marshallerMock.MarshalizerMock{},

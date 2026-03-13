@@ -5,13 +5,12 @@ import (
 	"math/big"
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 	chainSimulatorIntegrationTests "github.com/TerraDharitri/drt-go-chain/integrationTests/chainSimulator"
 	"github.com/TerraDharitri/drt-go-chain/node/chainSimulator/dtos"
 	chainSimulatorProcess "github.com/TerraDharitri/drt-go-chain/node/chainSimulator/process"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/vm"
-
-	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/stretchr/testify/require"
 )
 

@@ -5,12 +5,13 @@ import (
 
 	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
+	"github.com/stretchr/testify/require"
+
 	"github.com/TerraDharitri/drt-go-chain/errors"
 	stateComp "github.com/TerraDharitri/drt-go-chain/factory/state"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	componentsMock "github.com/TerraDharitri/drt-go-chain/testscommon/components"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/factory"
-	"github.com/stretchr/testify/require"
 )
 
 func TestNewStateComponentsFactory(t *testing.T) {

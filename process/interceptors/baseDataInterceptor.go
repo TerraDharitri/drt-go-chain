@@ -4,21 +4,23 @@ import (
 	"bytes"
 	"sync"
 
-	"github.com/TerraDharitri/drt-go-chain/p2p"
-	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+
+	"github.com/TerraDharitri/drt-go-chain/p2p"
+	"github.com/TerraDharitri/drt-go-chain/process"
 )
 
 type baseDataInterceptor struct {
-	throttler            process.InterceptorThrottler
-	antifloodHandler     process.P2PAntifloodHandler
-	topic                string
-	currentPeerId        core.PeerID
-	processor            process.InterceptorProcessor
-	mutDebugHandler      sync.RWMutex
-	debugHandler         process.InterceptedDebugger
-	preferredPeersHolder process.PreferredPeersHolderHandler
+	throttler               process.InterceptorThrottler
+	antifloodHandler        process.P2PAntifloodHandler
+	topic                   string
+	currentPeerId           core.PeerID
+	processor               process.InterceptorProcessor
+	mutDebugHandler         sync.RWMutex
+	debugHandler            process.InterceptedDebugger
+	preferredPeersHolder    process.PreferredPeersHolderHandler
+	interceptedDataVerifier process.InterceptedDataVerifier
 }
 
 func (bdi *baseDataInterceptor) preProcessMesage(message p2p.MessageP2P, fromConnectedPeer core.PeerID) error {

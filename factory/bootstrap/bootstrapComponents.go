@@ -3,10 +3,13 @@ package bootstrap
 import (
 	"fmt"
 	"path/filepath"
+	"time"
 
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	logger "github.com/TerraDharitri/drt-go-chain-logger"
+	interceptorFactory "github.com/TerraDharitri/drt-go-chain/process/interceptors/factory"
+
 	nodeFactory "github.com/TerraDharitri/drt-go-chain/cmd/node/factory"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/config"
@@ -31,16 +34,17 @@ var log = logger.GetOrCreate("factory")
 
 // BootstrapComponentsFactoryArgs holds the arguments needed to create a bootstrap components factory
 type BootstrapComponentsFactoryArgs struct {
-	Config               config.Config
-	RoundConfig          config.RoundConfig
-	PrefConfig           config.Preferences
-	ImportDbConfig       config.ImportDbConfig
-	FlagsConfig          config.ContextFlagsConfig
-	WorkingDir           string
-	CoreComponents       factory.CoreComponentsHolder
-	CryptoComponents     factory.CryptoComponentsHolder
-	NetworkComponents    factory.NetworkComponentsHolder
-	StatusCoreComponents factory.StatusCoreComponentsHolder
+	Config                         config.Config
+	RoundConfig                    config.RoundConfig
+	PrefConfig                     config.Preferences
+	ImportDbConfig                 config.ImportDbConfig
+	FlagsConfig                    config.ContextFlagsConfig
+	WorkingDir                     string
+	CoreComponents                 factory.CoreComponentsHolder
+	CryptoComponents               factory.CryptoComponentsHolder
+	NetworkComponents              factory.NetworkComponentsHolder
+	StatusCoreComponents           factory.StatusCoreComponentsHolder
+	InterceptedDataVerifierFactory process.InterceptedDataVerifierFactory
 }
 
 type bootstrapComponentsFactory struct {
@@ -198,6 +202,12 @@ func (bcf *bootstrapComponentsFactory) Create() (*bootstrapComponents, error) {
 		return nil, err
 	}
 
+	// create a new instance of interceptedDataVerifier which will be used for bootstrap only
+	interceptedDataVerifierFactory := interceptorFactory.NewInterceptedDataVerifierFactory(interceptorFactory.InterceptedDataVerifierFactoryArgs{
+		CacheSpan:   time.Duration(bcf.config.InterceptedDataVerifier.CacheSpanInSec) * time.Second,
+		CacheExpiry: time.Duration(bcf.config.InterceptedDataVerifier.CacheExpiryInSec) * time.Second,
+	})
+
 	epochStartBootstrapArgs := bootstrap.ArgsEpochStartBootstrap{
 		CoreComponentsHolder:            bcf.coreComponents,
 		CryptoComponentsHolder:          bcf.cryptoComponents,
@@ -224,6 +234,8 @@ func (bcf *bootstrapComponentsFactory) Create() (*bootstrapComponents, error) {
 		NodeProcessingMode:              common.GetNodeProcessingMode(&bcf.importDbConfig),
 		StateStatsHandler:               bcf.statusCoreComponents.StateStatsHandler(),
 		NodesCoordinatorRegistryFactory: nodesCoordinatorRegistryFactory,
+		EnableEpochsHandler:             bcf.coreComponents.EnableEpochsHandler(),
+		InterceptedDataVerifierFactory:  interceptedDataVerifierFactory,
 	}
 
 	var epochStartBootstrapper factory.EpochStartBootstrapper

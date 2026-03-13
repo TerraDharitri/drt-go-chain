@@ -4,6 +4,11 @@ import (
 	"math/big"
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/TerraDharitri/drt-go-chain-core/data/rewardTx"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/TerraDharitri/drt-go-chain/epochStart"
 	"github.com/TerraDharitri/drt-go-chain/epochStart/mock"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
@@ -12,11 +17,6 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/testscommon/shardingMocks"
 	storageStubs "github.com/TerraDharitri/drt-go-chain/testscommon/storage"
 	"github.com/TerraDharitri/drt-go-chain/vm"
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/TerraDharitri/drt-go-chain-core/data/rewardTx"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -241,15 +241,16 @@ func TestRewardsCreator_adjustProtocolSustainabilityRewardsPositiveValue(t *test
 
 	protRwShard := args.ShardCoordinator.ComputeId(protRwAddr)
 	mbSlice := createDefaultMiniBlocksSlice()
-	_ = rwd.addProtocolRewardToMiniBlocks(protRwTx, mbSlice, protRwShard)
+	_ = rwd.addAcceleratorRewardToMiniBlocks(protRwTx, mbSlice, protRwShard)
 
 	dust := big.NewInt(1000)
 	rwd1 := rewardsCreator{
-		baseRewardsCreator: rwd,
+		baseRewardsCreator:          rwd,
+		protocolSustainabilityValue: big.NewInt(0),
 	}
 	rwd1.adjustProtocolSustainabilityRewards(protRwTx, dust)
 	require.Zero(t, protRwTx.Value.Cmp(big.NewInt(0).Add(dust, initialProtRewardValue)))
-	setProtValue := rwd.GetProtocolSustainabilityRewards()
+	setProtValue := rwd1.GetAcceleratorRewards()
 	require.Zero(t, protRwTx.Value.Cmp(setProtValue))
 }
 
@@ -272,17 +273,18 @@ func TestRewardsCreator_adjustProtocolSustainabilityRewardsNegValueShouldWork(t 
 
 	protRwShard := args.ShardCoordinator.ComputeId(protRwAddr)
 	mbSlice := createDefaultMiniBlocksSlice()
-	_ = rwd.addProtocolRewardToMiniBlocks(protRwTx, mbSlice, protRwShard)
+	_ = rwd.addAcceleratorRewardToMiniBlocks(protRwTx, mbSlice, protRwShard)
 
 	rwd1 := rewardsCreator{
-		baseRewardsCreator: rwd,
+		baseRewardsCreator:          rwd,
+		protocolSustainabilityValue: big.NewInt(0),
 	}
 
 	dust := big.NewInt(-10)
 	rwd1.adjustProtocolSustainabilityRewards(protRwTx, dust)
 	expected := big.NewInt(0).Add(dust, initialProtRewardValue).String()
 	assert.Equal(t, expected, protRwTx.Value.String())
-	setProtValue := rwd.GetProtocolSustainabilityRewards()
+	setProtValue := rwd1.GetAcceleratorRewards()
 	require.Zero(t, protRwTx.Value.Cmp(setProtValue))
 }
 
@@ -305,16 +307,17 @@ func TestRewardsCreator_adjustProtocolSustainabilityRewardsInitialNegativeValue(
 
 	protRwShard := args.ShardCoordinator.ComputeId(protRwAddr)
 	mbSlice := createDefaultMiniBlocksSlice()
-	_ = rwd.addProtocolRewardToMiniBlocks(protRwTx, mbSlice, protRwShard)
+	_ = rwd.addAcceleratorRewardToMiniBlocks(protRwTx, mbSlice, protRwShard)
 
 	rwd1 := rewardsCreator{
-		baseRewardsCreator: rwd,
+		baseRewardsCreator:          rwd,
+		protocolSustainabilityValue: big.NewInt(0),
 	}
 
 	dust := big.NewInt(0)
 	rwd1.adjustProtocolSustainabilityRewards(protRwTx, dust)
 	require.Zero(t, protRwTx.Value.Cmp(big.NewInt(0)))
-	setProtValue := rwd.GetProtocolSustainabilityRewards()
+	setProtValue := rwd1.GetAcceleratorRewards()
 	require.Zero(t, protRwTx.Value.Cmp(setProtValue))
 }
 
@@ -585,7 +588,7 @@ func TestRewardsCreator_addValidatorRewardsToMiniBlocks(t *testing.T) {
 		LeaderSuccess:   1,
 	})
 
-	rwdc.fillBaseRewardsPerBlockPerNode(mb.EpochStart.Economics.RewardsPerBlock)
+	rwdc.fillBaseRewardsPerBlockPerNode(mb.EpochStart.Economics.RewardsPerBlock, 0)
 	err := rwdc.addValidatorRewardsToMiniBlocks(valInfo, mb, miniBlocks, &rewardTx.RewardTx{})
 	assert.Nil(t, err)
 	assert.Equal(t, cloneMb, miniBlocks[0])
@@ -596,7 +599,7 @@ func TestRewardsCreator_ProtocolRewardsForValidatorFromMultipleShards(t *testing
 
 	args := getRewardsArguments()
 	args.NodesConfigProvider = &shardingMocks.NodesCoordinatorStub{
-		ConsensusGroupSizeCalled: func(shardID uint32) int {
+		ConsensusGroupSizeCalled: func(shardID uint32, _ uint32) int {
 			if shardID == core.MetachainShardId {
 				return 400
 			}
@@ -626,15 +629,15 @@ func TestRewardsCreator_ProtocolRewardsForValidatorFromMultipleShards(t *testing
 		LeaderSuccess:              1,
 	})
 
-	rwdc.fillBaseRewardsPerBlockPerNode(mb.EpochStart.Economics.RewardsPerBlock)
+	rwdc.fillBaseRewardsPerBlockPerNode(mb.EpochStart.Economics.RewardsPerBlock, 0)
 	rwdInfoData := rwdc.computeValidatorInfoPerRewardAddress(valInfo, &rewardTx.RewardTx{}, 0)
 	assert.Equal(t, 1, len(rwdInfoData))
 	rwdInfo := rwdInfoData[pubkey]
 	assert.Equal(t, rwdInfo.address, pubkey)
 
 	assert.Equal(t, rwdInfo.accumulatedFees.Cmp(big.NewInt(200)), 0)
-	protocolRewards := uint64(valInfo.GetShardValidatorsInfoMap()[0][0].GetNumSelectedInSuccessBlocks()) * (mb.EpochStart.Economics.RewardsPerBlock.Uint64() / uint64(args.NodesConfigProvider.ConsensusGroupSize(0)))
-	protocolRewards += uint64(valInfo.GetShardValidatorsInfoMap()[core.MetachainShardId][0].GetNumSelectedInSuccessBlocks()) * (mb.EpochStart.Economics.RewardsPerBlock.Uint64() / uint64(args.NodesConfigProvider.ConsensusGroupSize(core.MetachainShardId)))
+	protocolRewards := uint64(valInfo.GetShardValidatorsInfoMap()[0][0].GetNumSelectedInSuccessBlocks()) * (mb.EpochStart.Economics.RewardsPerBlock.Uint64() / uint64(args.NodesConfigProvider.ConsensusGroupSizeForShardAndEpoch(0, 0)))
+	protocolRewards += uint64(valInfo.GetShardValidatorsInfoMap()[core.MetachainShardId][0].GetNumSelectedInSuccessBlocks()) * (mb.EpochStart.Economics.RewardsPerBlock.Uint64() / uint64(args.NodesConfigProvider.ConsensusGroupSizeForShardAndEpoch(core.MetachainShardId, 0)))
 	assert.Equal(t, rwdInfo.rewardsFromProtocol.Uint64(), protocolRewards)
 }
 
@@ -653,7 +656,7 @@ func TestRewardsCreator_CreateProtocolSustainabilityRewardTransaction(t *testing
 		Epoch:   0,
 	}
 
-	rwdTx, _, err := rwdc.createProtocolSustainabilityRewardTransaction(mb, &mb.EpochStart.Economics)
+	rwdTx, _, err := rwdc.createProtocolSustainabilityRewardTransaction(mb, mb.EpochStart.Economics.RewardsForProtocolSustainability)
 	assert.Equal(t, expectedRewardTx, rwdTx)
 	assert.Nil(t, err)
 }

@@ -2,13 +2,14 @@ package smartContract
 
 import (
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"strings"
 
-	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/smartContractResult"
+	"github.com/TerraDharitri/drt-go-chain/common"
 )
 
 // TestScProcessor extends scProcessor and is used in tests as it exposes some functions
@@ -83,7 +84,7 @@ func (tsp *TestScProcessor) GetCompositeTestError() error {
 
 func wrapErrorIfNotContains(originalError error, msg string) error {
 	if originalError == nil {
-		return fmt.Errorf(msg)
+		return errors.New(msg)
 	}
 
 	alreadyContainsMessage := strings.Contains(originalError.Error(), msg)

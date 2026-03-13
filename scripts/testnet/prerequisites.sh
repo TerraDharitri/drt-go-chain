@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-export DHARITRITESTNETSCRIPTSDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-source "$DHARITRITESTNETSCRIPTSDIR/variables.sh"
+export TerraDharitriTESTNETSCRIPTSDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+source "$TerraDharitriTESTNETSCRIPTSDIR/variables.sh"
 
 export DISTRIBUTION=$(cat /etc/os-release | grep "^ID=" | sed 's/ID=//')
 
@@ -53,13 +53,13 @@ if [[ "$DISTRIBUTION" =~ ^(ubuntu|debian)$ ]]; then
 fi
 
 
-cd $(dirname $DHARITRIDIR)
-git clone git@github.com:dharitri/drt-go-chain-deploy.git
-git clone git@github.com:dharitri/drt-go-chain-proxy.git
+cd $(dirname $TerraDharitriDIR)
+git clone git@github.com:TerraDharitri/drt-go-chain-deploy.git
+git clone git@github.com:TerraDharitri/drt-go-chain-proxy.git
 
 
 if [[ $PRIVATE_REPOS -eq 1 ]]; then
-  git clone git@github.com:dharitri/drt-go-chain-txgen.git
+  git clone git@github.com:TerraDharitri/drt-go-chain-txgen.git
   cd drt-go-chain-txgen
   git checkout main
 fi

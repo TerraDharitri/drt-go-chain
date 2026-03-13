@@ -10,16 +10,18 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain-core/data/rewardTx"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
 	"github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/common"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
 	stateMock "github.com/TerraDharitri/drt-go-chain/testscommon/state"
 	storageStubs "github.com/TerraDharitri/drt-go-chain/testscommon/storage"
-	"github.com/stretchr/testify/assert"
 )
 
 const testTxHash = "tx1_hash"
@@ -904,7 +906,7 @@ func TestRewardTxPreprocessor_RestoreBlockDataIntoPools(t *testing.T) {
 
 	blockBody := &block.Body{}
 	blockBody.MiniBlocks = append(blockBody.MiniBlocks, &mb1)
-	miniBlockPool := testscommon.NewCacherMock()
+	miniBlockPool := cache.NewCacherMock()
 
 	numRestoredTxs, err := rtp.RestoreBlockDataIntoPools(blockBody, miniBlockPool)
 	assert.Equal(t, 1, numRestoredTxs)

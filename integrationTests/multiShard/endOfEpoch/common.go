@@ -6,9 +6,10 @@ import (
 
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests"
-	"github.com/stretchr/testify/assert"
 )
 
 // CreateAndPropagateBlocks -
@@ -18,12 +19,12 @@ func CreateAndPropagateBlocks(
 	currentRound uint64,
 	currentNonce uint64,
 	nodes []*integrationTests.TestProcessorNode,
-	idxProposers []int,
+	leaders []*integrationTests.TestProcessorNode,
 ) (uint64, uint64) {
 	for i := uint64(0); i <= nbRounds; i++ {
 		integrationTests.UpdateRound(nodes, currentRound)
-		integrationTests.ProposeBlock(nodes, idxProposers, currentRound, currentNonce)
-		integrationTests.SyncBlock(t, nodes, idxProposers, currentRound)
+		integrationTests.ProposeBlock(nodes, leaders, currentRound, currentNonce)
+		integrationTests.SyncBlock(t, nodes, leaders, currentRound)
 		currentRound = integrationTests.IncrementAndPrintRound(currentRound)
 		currentNonce++
 	}

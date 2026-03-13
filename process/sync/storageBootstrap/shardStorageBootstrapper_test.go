@@ -5,6 +5,13 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	dataRetrieverMocks "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/block/bootstrapStorage"
@@ -12,17 +19,13 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/process/sync"
 	"github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	epochNotifierMock "github.com/TerraDharitri/drt-go-chain/testscommon/epochNotifier"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/genericMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/shardingMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/statusHandler"
 	storageMock "github.com/TerraDharitri/drt-go-chain/testscommon/storage"
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestShardStorageBootstrapper_LoadFromStorageShouldWork(t *testing.T) {
@@ -136,6 +139,8 @@ func TestShardStorageBootstrapper_LoadFromStorageShouldWork(t *testing.T) {
 			},
 			ProcessedMiniBlocksTracker: &testscommon.ProcessedMiniBlocksTrackerStub{},
 			AppStatusHandler:           &statusHandler.AppStatusHandlerMock{},
+			EnableEpochsHandler:        &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
+			ProofsPool:                 &dataRetrieverMocks.ProofsPoolMock{},
 		},
 	}
 
@@ -153,7 +158,7 @@ func TestShardStorageBootstrapper_LoadFromStorageShouldWork(t *testing.T) {
 }
 
 func TestShardStorageBootstrapper_CleanupNotarizedStorageForHigherNoncesIfExist(t *testing.T) {
-	baseArgs := createMockShardStorageBoostrapperArgs()
+	baseArgs := createMockShardStorageBootstrapperArgs()
 
 	bForceError := true
 	numCalled := 0

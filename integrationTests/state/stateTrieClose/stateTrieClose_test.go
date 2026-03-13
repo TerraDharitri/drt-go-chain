@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/common/errChan"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests"
@@ -16,7 +17,6 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/testscommon/storage"
 	"github.com/TerraDharitri/drt-go-chain/trie"
 	"github.com/TerraDharitri/drt-go-chain/trie/keyBuilder"
-	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/stretchr/testify/assert"
 )
 

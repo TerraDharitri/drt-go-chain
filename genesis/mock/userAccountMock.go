@@ -5,8 +5,10 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/data/stateChange"
+
+	"github.com/TerraDharitri/drt-go-chain/common"
 )
 
 // ErrNegativeValue -
@@ -147,8 +149,8 @@ func (uam *UserAccountMock) GetUserName() []byte {
 }
 
 // SaveDirtyData -
-func (uam *UserAccountMock) SaveDirtyData(_ common.Trie) ([]core.TrieData, error) {
-	return nil, nil
+func (uam *UserAccountMock) SaveDirtyData(_ common.Trie) ([]*stateChange.DataTrieChange, []core.TrieData, error) {
+	return nil, nil, nil
 }
 
 // IsGuarded -

@@ -9,6 +9,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/data/batch"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	logger "github.com/TerraDharitri/drt-go-chain-logger"
+
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/p2p"
 	"github.com/TerraDharitri/drt-go-chain/storage"
@@ -89,10 +90,10 @@ func checkArgs(args ArgValidatorInfoResolver) error {
 
 // ProcessReceivedMessage represents the callback func from the p2p.Messenger that is called each time a new message is received
 // (for the topic this validator was registered to, usually a request topic)
-func (res *validatorInfoResolver) ProcessReceivedMessage(message p2p.MessageP2P, fromConnectedPeer core.PeerID, source p2p.MessageHandler) error {
+func (res *validatorInfoResolver) ProcessReceivedMessage(message p2p.MessageP2P, fromConnectedPeer core.PeerID, source p2p.MessageHandler) ([]byte, error) {
 	err := res.canProcessMessage(message, fromConnectedPeer)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	res.throttler.StartProcessing()
@@ -100,17 +101,22 @@ func (res *validatorInfoResolver) ProcessReceivedMessage(message p2p.MessageP2P,
 
 	rd, err := res.parseReceivedMessage(message, fromConnectedPeer)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	switch rd.Type {
 	case dataRetriever.HashType:
-		return res.resolveHashRequest(rd.Value, rd.Epoch, fromConnectedPeer, source)
+		err = res.resolveHashRequest(rd.Value, rd.Epoch, fromConnectedPeer, source)
 	case dataRetriever.HashArrayType:
-		return res.resolveMultipleHashesRequest(rd.Value, rd.Epoch, fromConnectedPeer, source)
+		err = res.resolveMultipleHashesRequest(rd.Value, rd.Epoch, fromConnectedPeer, source)
+	default:
+		err = fmt.Errorf("%w for value %s", dataRetriever.ErrRequestTypeNotImplemented, logger.DisplayByteSlice(rd.Value))
 	}
 
-	return fmt.Errorf("%w for value %s", dataRetriever.ErrRequestTypeNotImplemented, logger.DisplayByteSlice(rd.Value))
+	if err != nil {
+		return nil, err
+	}
+	return []byte{}, nil
 }
 
 // resolveHashRequest sends the response for a hash request
