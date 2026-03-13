@@ -2,7 +2,10 @@ name: Build and run short tests (on MacOS)
 
 on:
   pull_request:
-    branches: [main, rc/*, dev-divesh ]
+    branches: [main, rc/*, dev-divesh, dev ]
+  push:
+    branches:
+      - dev, dev-divesh  # Add push trigger for dev branch
   workflow_dispatch:
 
 permissions:

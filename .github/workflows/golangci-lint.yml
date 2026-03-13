@@ -2,7 +2,9 @@ name: golangci-lint
 on:
   push:
     branches:
-      - main, dev-divesh
+      - main
+      - dev-divesh
+      - dev  # Add your dev branch
   pull_request:
     branches: [ main, dev-divesh, feat/*, rc/* ]
   workflow_dispatch:

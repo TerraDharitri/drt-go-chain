@@ -6,6 +6,11 @@ on:
       - 'main'
       - 'rc/*'
       - 'dev-divesh'
+      - 'dev'  # Add your dev branch
+  push:
+    branches:
+      - 'dev'
+      - 'dev-divesh'  # Add push trigger for dev branch
   workflow_dispatch:
   issue_comment:
     types: [created]
