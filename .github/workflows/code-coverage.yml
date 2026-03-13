@@ -3,9 +3,7 @@ name: Code-coverage
 on:
   push:
     branches:
-      - main
-      - dev-divesh
-      - dev  # Add your dev branch
+      - main, dev-divesh
   pull_request:
     branches: [ main, dev-divesh, feat/*, rc/* ]
   workflow_dispatch:
