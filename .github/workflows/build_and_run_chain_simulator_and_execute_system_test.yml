@@ -108,7 +108,7 @@ jobs:
 
       - name: Print Target Branches
         run: |
-          echo "Current branch drt-go-chain: ${{ env.CURRENT_BRANCH }}"
+          echo "Current branch drt-go-chain: ${{ env.CURRENT_BRANCH || github.head_ref || github.ref_name }}"
           echo "drt-go-chain target branch: ${{ env.DRT_GO_CHAIN_TARGET_BRANCH }}"
           echo "drt-go-chain-simulator target branch: ${{ env.DRT_CHAIN_SIMULATOR_TARGET_BRANCH }}"
           echo "drt-chain-testing-suite target branch: ${{ env.DRT_CHAIN_TESTING_SUITE_TARGET_BRANCH }}"
@@ -435,7 +435,7 @@ jobs:
           DRT_CHAIN_SIMULATOR_TARGET_BRANCH: ${{ env.DRT_CHAIN_SIMULATOR_TARGET_BRANCH }}
           DRT_CHAIN_TESTING_SUITE_TARGET_BRANCH: ${{ env.DRT_CHAIN_TESTING_SUITE_TARGET_BRANCH }}
           LATEST_COMMIT_HASH: ${{ env.LATEST_COMMIT_HASH }}
-          PYTEST_EXIT_CODE: ${{ env.PYTEST_EXIT_CODE }}
+          PYTEST_EXIT_CODE: ${{ env.PYTEST_EXIT_CODE || '1' }}
           CURRENT_COMMIT_HASH:   ${{ env.CURRENT_COMMIT_HASH }}
           SIMULATOR_COMMIT_HASH: ${{ env.SIMULATOR_COMMIT_HASH }}
           SIMULATOR_REF:         ${{ env.SIMULATOR_REF }}
@@ -503,7 +503,7 @@ jobs:
           SIMULATOR_REF: ${{ env.SIMULATOR_REF }}
           SIMULATOR_COMMIT_HASH: ${{ env.SIMULATOR_COMMIT_HASH }}
           TS: ${{ env.TS }}
-          PYTEST_EXIT_CODE: ${{ env.PYTEST_EXIT_CODE }}
+          PYTEST_EXIT_CODE: ${{ env.PYTEST_EXIT_CODE || '1' }}
         run: |
           status="❌ FAILED"
           [ "${PYTEST_EXIT_CODE}" = "0" ] && status="✅ PASSED"
@@ -526,8 +526,9 @@ jobs:
       - name: Fail job if tests failed
         if: always()
         run: |
-          if [ "${{ env.PYTEST_EXIT_CODE }}" != "0" ]; then
-            echo "Tests failed with exit code ${{ env.PYTEST_EXIT_CODE }}"
+          EXIT_CODE="${{ env.PYTEST_EXIT_CODE || '1' }}"
+          if [ "$EXIT_CODE" != "0" ]; then
+            echo "Tests failed with exit code $EXIT_CODE"
             exit 1
           else
             echo "Tests passed successfully."
