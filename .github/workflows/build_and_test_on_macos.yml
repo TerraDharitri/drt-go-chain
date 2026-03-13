@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: [self-hosted, macOS, ARM64]
+    runs-on: macos-latest
     name: Build
     steps:
       - name: Set up Go 1.23.6

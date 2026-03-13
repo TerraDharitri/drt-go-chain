@@ -23,7 +23,7 @@ jobs:
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, 'Run Tests:')) ||
       github.event_name == 'workflow_dispatch'
 
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: ubuntu-latest
     env:
       BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
       TARGET_BRANCH: ""
@@ -173,7 +173,7 @@ jobs:
           path: 'drt-go-chain-simulator'
 
       - name: Set up Python 3.10
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
