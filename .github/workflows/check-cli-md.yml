@@ -2,7 +2,7 @@ name: Check CLI.md files
 
 on:
   pull_request:
-    branches: [ main, rc/*, feat/*, dev-divesh]
+    branches: [ main, rc/*, feat/*, dev-divesh ]
     types: [opened, ready_for_review]
   push:
   workflow_dispatch:

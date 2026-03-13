@@ -2,7 +2,7 @@ name: Build and run short tests (on MacOS)
 
 on:
   pull_request:
-    branches: [main, rc/*, dev-divesh]
+    branches: [main, rc/*, dev-divesh ]
   workflow_dispatch:
 
 permissions:
