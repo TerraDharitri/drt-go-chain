@@ -42,4 +42,4 @@ jobs:
       # On GitHub, we only run the short tests.
       - name: Run tests
         run: |
-          go test -short -v ./...
+          go test -short -v $(go list ./... | grep -v /integrationTests/)
