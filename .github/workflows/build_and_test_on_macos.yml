@@ -39,6 +39,11 @@ jobs:
           cd ${GITHUB_WORKSPACE}/cmd/logviewer && go build .
           cd ${GITHUB_WORKSPACE}/cmd/termui && go build .
 
+      - name: Set Wasmer library path
+        run: |
+          WASMER_LIB=$(find ~/go/pkg/mod/github.com/\!terra\!dharitri -name "libwasmer_darwin_amd64.dylib" -exec dirname {} \; | head -1)
+          echo "DYLD_LIBRARY_PATH=${WASMER_LIB}" >> $GITHUB_ENV
+
       # On GitHub, we only run the short tests.
       - name: Run tests
         run: |
