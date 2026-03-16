@@ -14,7 +14,7 @@ on:
 permissions:
   issues: write
   pull-requests: write
-  contents: write
+  contents: read
 
 jobs:
   build-and-test:
@@ -22,7 +22,6 @@ jobs:
       github.event_name == 'pull_request' ||
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, 'Run Tests:')) ||
       github.event_name == 'workflow_dispatch'
-
     runs-on: ubuntu-latest
     env:
       BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
@@ -45,7 +44,6 @@ jobs:
         id: target_branch
         run: |
           echo "CURRENT_BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}" >> $GITHUB_ENV
-
           # Default target branches based on the PR base branch
           if [[ "${{ github.event.pull_request.base.ref }}" == "main" ]]; then
             echo "DRT_CHAIN_SIMULATOR_TARGET_BRANCH=dev" >> $GITHUB_ENV
@@ -57,11 +55,8 @@ jobs:
             echo "DRT_CHAIN_SIMULATOR_TARGET_BRANCH=${{ github.event.pull_request.base.ref }}" >> $GITHUB_ENV
             echo "DRT_CHAIN_TESTING_SUITE_TARGET_BRANCH=${{ github.event.pull_request.base.ref }}" >> $GITHUB_ENV
           fi
-
           # Always set DRT_GO_CHAIN_TARGET_BRANCH based on the PR base branch
           echo "DRT_GO_CHAIN_TARGET_BRANCH=${{ github.event.pull_request.base.ref }}" >> $GITHUB_ENV
-
-
       - name: Fetch and Parse Last Comment for Branches
         uses: actions/github-script@v7
         id: fetch_and_parse_last_comment
@@ -74,7 +69,6 @@ jobs:
               repo: context.repo.repo,
               issue_number: context.issue.number,
             });
-
             // Find the last comment that contains 'Run Tests:'
             let lastTestComment = null;
             for (let i = comments.data.length - 1; i >= 0; i--) {
@@ -83,15 +77,12 @@ jobs:
                 break;
               }
             }
-
             if (lastTestComment) {
               const body = lastTestComment.body.trim();
               core.setOutput('latest_comment', body);
-
               // Parse the branches from the last test comment
               const simulatorBranchMatch = body.match(/drt-go-chain-simulator:\s*(\S+)/);
               const testingSuiteBranchMatch = body.match(/drt-chain-testing-suite:\s*(\S+)/);
-
               // Override the target branches if specified
               if (simulatorBranchMatch) {
                 core.exportVariable('DRT_CHAIN_SIMULATOR_TARGET_BRANCH', simulatorBranchMatch[1]);
@@ -99,7 +90,6 @@ jobs:
               if (testingSuiteBranchMatch) {
                 core.exportVariable('DRT_CHAIN_TESTING_SUITE_TARGET_BRANCH', testingSuiteBranchMatch[1]);
               }
-
               // Log which comment was used for configuration
               core.info(`Found 'Run Tests:' comment from ${lastTestComment.user.login} at ${lastTestComment.created_at}`);
             } else {
@@ -113,7 +103,6 @@ jobs:
           echo "drt-go-chain target branch: ${{ env.DRT_GO_CHAIN_TARGET_BRANCH }}"
           echo "drt-go-chain-simulator target branch: ${{ env.DRT_CHAIN_SIMULATOR_TARGET_BRANCH }}"
           echo "drt-chain-testing-suite target branch: ${{ env.DRT_CHAIN_TESTING_SUITE_TARGET_BRANCH }}"
-
       - name: Set up Go 1.23.6
         uses: actions/setup-go@v5
         with:
@@ -138,23 +127,18 @@ jobs:
           latest_commit_hash=$(git rev-parse origin/${current_branch})
           echo "LATEST_COMMIT_HASH=${latest_commit_hash}" >> $GITHUB_ENV
           echo "Latest commit hash: ${latest_commit_hash}"
-
       - name: Install rclone
         run: |
           TS=$(date +'%Y_%^B_%d__%H_%M_%S'); 
           echo "TS=$TS" >> "$GITHUB_ENV"
           echo "TIMESTAMP=$TS" >> "$GITHUB_ENV"
-
           # Fix any interrupted dpkg operations first
           sudo dpkg --configure -a || true
-
           # Clean up any partial packages
           sudo apt-get clean
           sudo apt-get autoclean
-
           # Update package lists and install rclone
           sudo apt-get update -y && sudo apt-get install -y rclone
-
           mkdir -p ~/.config/rclone
           cat > ~/.config/rclone/rclone.conf <<EOF
           [r2]
@@ -164,7 +148,6 @@ jobs:
           secret_access_key = ${CF_R2_SECRET_KEY}
           endpoint = ${CF_R2_ENDPOINT}
           EOF
-
       - name: Checkout drt-go-chain-simulator
         uses: actions/checkout@v4
         with:
@@ -184,13 +167,11 @@ jobs:
           echo "SIMULATOR_COMMIT_HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
           pip install -r scripts/update-go-mod/requirements.txt
           python scripts/update-go-mod/update-go-mod.py $LATEST_COMMIT_HASH
-
       - name: Run go build
         run: |
           cd drt-go-chain-simulator/cmd/chainsimulator
           go build
           echo "CHAIN_SIMULATOR_BUILD_PATH=$(pwd)" >> $GITHUB_ENV
-
       - name: Initialize Chain Simulator
         run: |
           cd drt-go-chain-simulator/cmd/chainsimulator
@@ -266,7 +247,6 @@ jobs:
           echo "Chain Simulator successfully initialized"
           
           echo "Initialization log stored at: $INIT_LOG_FILE"
-
       - name: Checkout drt-chain-testing-suite
         uses: actions/checkout@v4
         with:
@@ -274,7 +254,7 @@ jobs:
           path: 'drt-chain-testing-suite'
           fetch-depth: 0
           ref: ${{ env.DRT_CHAIN_TESTING_SUITE_TARGET_BRANCH || github.event.pull_request.base.ref }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.DRT_TESTER_GH_TOKEN }}
 
       - name: Install DRT-Chain-Testing-Suite Dependencies
         run: |
@@ -282,38 +262,29 @@ jobs:
           echo "PYTHONPATH=drt-chain-testing-suite" >> $GITHUB_ENV
           cd drt-chain-testing-suite
           echo "CURRENT_COMMIT_HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
-
-
       - name: Run tests and generate HTML report
         run: |
           set +e
           pytest drt-chain-testing-suite/scenarios/ --html=report.html --self-contained-html --continue-on-collection-errors
           INITIAL_PYTEST_EXIT_CODE=$?
           set -e
-
           echo "Initial pytest exit code: $INITIAL_PYTEST_EXIT_CODE"
-
           # Parse the HTML report to determine actual test status
           FINAL_PYTEST_EXIT_CODE=$INITIAL_PYTEST_EXIT_CODE
-
           if [ -f "report.html" ]; then
             echo "Report generated successfully."
-
             # Extract test summary from HTML report using multiple parsing approaches
             FAILED_TESTS=$(grep -E '[0-9]+ Failed|Failed.*[0-9]+' report.html | head -1 | grep -o '[0-9]\+' | head -1 || echo "0")
             ERROR_TESTS=$(grep -E '[0-9]+ Errors|Errors.*[0-9]+' report.html | head -1 | grep -o '[0-9]\+' | head -1 || echo "0")
             RERUN_TESTS=$(grep -E '[0-9]+ Reruns|Reruns.*[0-9]+' report.html | head -1 | grep -o '[0-9]\+' | head -1 || echo "0")
-
             # Fallback: check for "0 Failed" pattern directly
             if grep -q "0 Failed" report.html && [ "$INITIAL_PYTEST_EXIT_CODE" -ne 0 ]; then
               echo "Detected '0 Failed' pattern in report despite non-zero exit code - likely successful reruns"
               FAILED_TESTS=0
             fi
-
             echo "Failed tests: $FAILED_TESTS"
             echo "Error tests: $ERROR_TESTS" 
             echo "Rerun tests: $RERUN_TESTS"
-
             # Determine final status based on actual test results
             if [ "$FAILED_TESTS" -eq 0 ] && [ "$ERROR_TESTS" -eq 0 ]; then
               if [ "$RERUN_TESTS" -gt 0 ]; then
@@ -326,7 +297,6 @@ jobs:
               echo "❌ Tests have genuine failures: $FAILED_TESTS failed, $ERROR_TESTS errors"
               FINAL_PYTEST_EXIT_CODE=1
             fi
-
             # Move report to reports directory
             mkdir -p ./reports
             mv report.html ./reports/
@@ -334,7 +304,6 @@ jobs:
             echo "❌ Report not found - using original exit code"
             FINAL_PYTEST_EXIT_CODE=$INITIAL_PYTEST_EXIT_CODE
           fi
-
           echo "PYTEST_EXIT_CODE=$FINAL_PYTEST_EXIT_CODE" >> $GITHUB_ENV
           echo "Final pytest exit code: $FINAL_PYTEST_EXIT_CODE"
           
@@ -342,7 +311,6 @@ jobs:
         run: |
           mkdir -p r2_upload
           cp reports/report.html r2_upload/index.html  # correct source
-
       - name: Upload report to Cloudflare R2
         if: always()
         run: |
@@ -350,7 +318,6 @@ jobs:
           target="reports/chain-simulator/${branch}/${TS}"
           rclone copy r2_upload/ "r2:${REPORT_BUCKET}/${target}"
           echo "R2_REPORT_URL=${REPORT_BASE_URL}/${target}/index.html" >> $GITHUB_ENV          
-
       - name: Upload test report
         if: always()
         uses: actions/upload-artifact@v4
@@ -364,40 +331,31 @@ jobs:
         run: |
           # Navigate to the drt-chain-testing-suite directory
           cd drt-chain-testing-suite
-
           # Configure Git user
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
-
           # Check if the report exists
           if [ -f "../reports/report.html" ]; then
             # Ensure we're on the 'gh-pages' branch and up to date
             git fetch --all
             git checkout gh-pages || git checkout --orphan gh-pages
-
             # Create a new directory for the report based on the current timestamp
             TIMESTAMP=$(date +'%d%m%Y-%H%M%S')
             echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
             REPORT_DIR="reports/${BRANCH_NAME}/${TIMESTAMP}"
             mkdir -p $REPORT_DIR
-
             # Move the report into the new directory
             cp ../reports/report.html $REPORT_DIR/index.html
-
             # Add and commit only the new report
             git add $REPORT_DIR/index.html
             git commit -m "Deploy Test Report at $BRANCH_NAME/$TIMESTAMP"
-
             # Set remote URL with authentication token
-            git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/TerraDharitri/drt-chain-testing-suite.git
-
+            git remote set-url origin https://x-access-token:${{ secrets.DRT_TESTER_GH_TOKEN }}@github.com/TerraDharitri/drt-chain-testing-suite.git
             # Push changes to the remote 'gh-pages' branch
             git push --force origin gh-pages
           else
             echo "Report file not found, skipping deployment."
           fi
-
-
       - name: Update Index Page
         if: always()
         run: |
@@ -424,7 +382,6 @@ jobs:
             echo "</ul></body></html>" >> index.html
             echo "Docs directory was not found and has been created."
           fi
-
       - name: Comment PR with report link or error message
         if: always()
         uses: actions/github-script@v7
@@ -452,10 +409,8 @@ jobs:
             const testingSuiteTargetBranch  = process.env.DRT_CHAIN_TESTING_SUITE_TARGET_BRANCH;
             const commitHash                = process.env.LATEST_COMMIT_HASH;
             const exitCode                  = process.env.PYTEST_EXIT_CODE;
-
             const simulatorCommitHash = process.env.SIMULATOR_COMMIT_HASH || 'N/A';
             const r2Url            = process.env.R2_REPORT_URL || 'N/A';
-
             const issue_number = context.issue.number;
             const owner  = context.repo.owner;
             const repo   = context.repo.repo;
@@ -470,7 +425,6 @@ jobs:
               ${verdict}
             
               📊 **DharitrI Automated Test Report:** [View Report](${r2Url})
-
               🔄 **Build Details:**
               - **drt-go-chain Commit Hash:** \`${commitHash}\`
               - **Current Branch:** \`${currentBranch}\`
@@ -478,7 +432,6 @@ jobs:
               - **drt-go-chain-simulator Target Branch:** \`${simulatorTargetBranch}\`
               - **drt-chain-testing-suite Target Branch:** \`${testingSuiteTargetBranch}\`
               - **drt-go-chain-simulator Commit Hash:** \`${simulatorCommitHash}\`
-
               🚀 **Environment Variables:**
               - **TIMESTAMP:** \`${ts}\`
               - **PYTEST_EXIT_CODE:** \`${exitCode}\`
@@ -486,14 +439,12 @@ jobs:
             } else {
               message = "⚠️ No report was generated due to an error or cancellation of the process.\nPlease checkout GH-Action logs for details.";
             }
-
             github.rest.issues.createComment({
               issue_number: issue_number,
               owner: owner,
               repo: repo,
               body: message
             });
-
       - name: Notify Slack
         if: always()
         env:
@@ -523,7 +474,6 @@ jobs:
           curl -s -X POST -H 'Content-Type: application/json' \
                -d "{\"text\":\"${msg}\"}" \
                "$SLACK_WEBHOOK_URL"
-
       - name: Fail job if tests failed
         if: always()
         run: |
@@ -534,7 +484,6 @@ jobs:
             echo "Tests passed successfully."
           fi
           
-
       - name: Cleanup Workspace and Processes
         if: always()
         run: |
@@ -594,7 +543,6 @@ jobs:
           find "$WORKSPACE_DIR" -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
           find "$WORKSPACE_DIR" -type d -name "*.egg-info" -exec rm -rf {} + 2>/dev/null || true
           find "$WORKSPACE_DIR" -type f -name "*.pyc" -delete 2>/dev/null || true
-
           # 6. Check disk space (informational only)
           echo "Checking remaining disk space..."
           df -h "$WORKSPACE_DIR" || true
