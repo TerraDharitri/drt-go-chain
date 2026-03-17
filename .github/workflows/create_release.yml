@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - rc/*
+      - dev-laya
   workflow_dispatch:
 
 permissions:
