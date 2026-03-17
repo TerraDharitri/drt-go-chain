@@ -48,9 +48,8 @@ jobs:
           GOPATH=$(go env GOPATH)
           ARCHIVE="TerraDharitri_""$APP_VER_SHORT""_""$GOOS""_""$GOARCH"".zip"
           BUILD_DIR=${GITHUB_WORKSPACE}/build
-          VM_GO_VERSION=$(go list -m -f '{{.Dir}}' github.com/TerraDharitri/drt-go-chain-vm)
-          LEGACY_VM_VERSION=$(go list -m -f '{{.Dir}}' github.com/TerraDharitri/drt-go-chain-vm-v1_4)
-          
+          VM_GO_DIR=$(go list -m -f '{{.Dir}}' github.com/TerraDharitri/drt-go-chain-vm)
+          LEGACY_VM_DIR=$(go list -m -f '{{.Dir}}' github.com/TerraDharitri/drt-go-chain-vm-v1_4)
 
           echo "GOOS=${GOOS}" >> $GITHUB_ENV
           echo "GOARCH=${GOARCH}" >> $GITHUB_ENV
