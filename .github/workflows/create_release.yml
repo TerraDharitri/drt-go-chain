@@ -48,9 +48,9 @@ jobs:
           GOPATH=$(go env GOPATH)
           ARCHIVE="TerraDharitri_""$APP_VER_SHORT""_""$GOOS""_""$GOARCH"".zip"
           BUILD_DIR=${GITHUB_WORKSPACE}/build
-          VM_GO_VERSION=$(cat go.mod | grep drt-go-chain-vm | sort -n | tail -n -1| awk -F '/' '{print$3}'| sed 's/ /@/g')
+          VM_GO_VERSION=$(go list -m -f '{{.Dir}}' github.com/TerraDharitri/drt-go-chain-vm)
           VM_GO_DIR=${GOPATH}/pkg/mod/github.com/!terra!dharitri/${VM_GO_VERSION}
-          LEGACY_VM_VERSION=$(cat go.mod | grep drt-chain-vm-v | sort -n | tail -n -1| awk -F '/' '{print$3}'| sed 's/ /@/g')
+          LEGACY_VM_VERSION=$(go list -m -f '{{.Dir}}' github.com/TerraDharitri/drt-go-chain-vm-v1_4)
           LEGACY_VM_DIR=${GOPATH}/pkg/mod/github.com/!terra!dharitri/${LEGACY_VM_VERSION}
 
           echo "GOOS=${GOOS}" >> $GITHUB_ENV
@@ -60,6 +60,7 @@ jobs:
           echo "VM_GO_VERSION=${VM_GO_VERSION}" >> $GITHUB_ENV
           echo "VM_GO_DIR=${VM_GO_DIR}" >> $GITHUB_ENV
           echo "LEGACY_VM_DIR=${LEGACY_VM_DIR}" >> $GITHUB_ENV
+          echo "APP_VER=${APP_VER_SHORT}" >> $GITHUB_ENV
 
       - name: Build
         run: |
@@ -144,7 +145,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
         # https://docs.github.com/en/free-pro-team@latest/actions/guides/storing-workflow-data-as-artifacts#downloading-or-deleting-artifacts
         # A directory for each artifact is created using its name
