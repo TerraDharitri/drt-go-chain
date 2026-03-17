@@ -46,11 +46,11 @@ jobs:
           echo "CURRENT_BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}" >> $GITHUB_ENV
           # Default target branches based on the PR base branch
           if [[ "${{ github.event.pull_request.base.ref }}" == "main" ]]; then
-            echo "DRT_CHAIN_SIMULATOR_TARGET_BRANCH=dev" >> $GITHUB_ENV
-            echo "DRT_CHAIN_TESTING_SUITE_TARGET_BRANCH=dev" >> $GITHUB_ENV
-          elif [[ "${{ github.event.pull_request.base.ref }}" == "prem" ]]; then
             echo "DRT_CHAIN_SIMULATOR_TARGET_BRANCH=main" >> $GITHUB_ENV
             echo "DRT_CHAIN_TESTING_SUITE_TARGET_BRANCH=main" >> $GITHUB_ENV
+          elif [[ "${{ github.event.pull_request.base.ref }}" == "dev-laya" ]]; then
+            echo "DRT_CHAIN_SIMULATOR_TARGET_BRANCH=dev" >> $GITHUB_ENV
+            echo "DRT_CHAIN_TESTING_SUITE_TARGET_BRANCH=dev" >> $GITHUB_ENV
           else
             echo "DRT_CHAIN_SIMULATOR_TARGET_BRANCH=${{ github.event.pull_request.base.ref }}" >> $GITHUB_ENV
             echo "DRT_CHAIN_TESTING_SUITE_TARGET_BRANCH=${{ github.event.pull_request.base.ref }}" >> $GITHUB_ENV
