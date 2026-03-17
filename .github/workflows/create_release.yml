@@ -49,9 +49,8 @@ jobs:
           ARCHIVE="TerraDharitri_""$APP_VER_SHORT""_""$GOOS""_""$GOARCH"".zip"
           BUILD_DIR=${GITHUB_WORKSPACE}/build
           VM_GO_VERSION=$(go list -m -f '{{.Dir}}' github.com/TerraDharitri/drt-go-chain-vm)
-          VM_GO_DIR=${GOPATH}/pkg/mod/github.com/!terra!dharitri/${VM_GO_VERSION}
           LEGACY_VM_VERSION=$(go list -m -f '{{.Dir}}' github.com/TerraDharitri/drt-go-chain-vm-v1_4)
-          LEGACY_VM_DIR=${GOPATH}/pkg/mod/github.com/!terra!dharitri/${LEGACY_VM_VERSION}
+          
 
           echo "GOOS=${GOOS}" >> $GITHUB_ENV
           echo "GOARCH=${GOARCH}" >> $GITHUB_ENV
