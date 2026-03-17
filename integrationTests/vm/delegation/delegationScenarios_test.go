@@ -9,17 +9,19 @@ import (
 	"strings"
 	"testing"
 
-	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
-
 	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain-core/data/rewardTx"
 	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
+	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
+
 	"github.com/TerraDharitri/drt-go-chain-crypto/signing"
 	"github.com/TerraDharitri/drt-go-chain-crypto/signing/mcl"
 	mclsig "github.com/TerraDharitri/drt-go-chain-crypto/signing/mcl/singlesig"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
 	"github.com/TerraDharitri/drt-go-chain/config"
+	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/dataPool"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests"
 	"github.com/TerraDharitri/drt-go-chain/process"
@@ -46,7 +48,8 @@ func TestDelegationSystemNodesOperationsTestBackwardComp(t *testing.T) {
 	serviceFee := big.NewInt(1000)
 	value := big.NewInt(1000)
 
-	tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	err := tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	require.Nil(t, err)
 
 	tpn.EpochNotifier.CheckEpoch(&testscommon.HeaderHandlerStub{
 		EpochField: 3,
@@ -104,7 +107,8 @@ func TestDelegationSystemNodesOperations(t *testing.T) {
 		EpochField: integrationTests.UnreachableEpoch + 1,
 	})
 
-	tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	err := tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	require.Nil(t, err)
 
 	// create new delegation contract
 	delegationScAddress := deployNewSc(t, tpn, maxDelegationCap, serviceFee, big.NewInt(1000), tpn.OwnAccount.Address)
@@ -150,7 +154,9 @@ func TestDelegationSystemNodesOperations(t *testing.T) {
 	returnedCode, _ = processTransaction(tpn, tpn.OwnAccount.Address, delegationScAddress, txData, big.NewInt(0))
 	assert.Equal(t, vmcommon.UserError, returnedCode)
 
-	tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 10000000})
+	err = tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 10000000})
+	require.Nil(t, err)
+
 	// unBond nodes
 	txData = txDataForFunc("unBondNodes", blsKeys[:numNodesToStake])
 	returnedCode, err = processTransaction(tpn, tpn.OwnAccount.Address, delegationScAddress, txData, big.NewInt(0))
@@ -189,7 +195,8 @@ func TestDelegationSystemReStakeNodes(t *testing.T) {
 		EpochField: integrationTests.UnreachableEpoch + 1,
 	})
 
-	tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	err := tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	assert.Nil(t, err)
 
 	// create new delegation contract
 	delegationScAddress := deployNewSc(t, tpn, maxDelegationCap, serviceFee, big.NewInt(1000), tpn.OwnAccount.Address)
@@ -259,7 +266,8 @@ func TestDelegationChangeConfig(t *testing.T) {
 		EpochField: integrationTests.UnreachableEpoch + 1,
 	})
 
-	tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	err := tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	assert.Nil(t, err)
 
 	// create new delegation contract
 	delegationScAddress := deployNewSc(t, tpn, maxDelegationCap, serviceFee, big.NewInt(1000), tpn.OwnAccount.Address)
@@ -321,7 +329,8 @@ func TestDelegationSystemDelegateUnDelegateFromTopUpWithdraw(t *testing.T) {
 	tpn.EpochNotifier.CheckEpoch(&testscommon.HeaderHandlerStub{
 		EpochField: integrationTests.UnreachableEpoch + 1,
 	})
-	tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	err := tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	assert.Nil(t, err)
 
 	// create new delegation contract
 	delegationScAddress := deployNewSc(t, tpn, maxDelegationCap, serviceFee, big.NewInt(1000), tpn.OwnAccount.Address)
@@ -358,7 +367,9 @@ func TestDelegationSystemDelegateUnDelegateFromTopUpWithdraw(t *testing.T) {
 	verifyDelegatorsStake(t, tpn, "getUserActiveStake", delegators[:numDelegators-2], delegationScAddress, big.NewInt(0))
 	verifyDelegatorsStake(t, tpn, "getUserUnStakedValue", delegators[:numDelegators-2], delegationScAddress, big.NewInt(delegationVal))
 
-	tpn.BlockchainHook.SetCurrentHeader(&block.Header{Epoch: 1})
+	addEpochStartHeader(t, tpn, 1, 0)
+	err = tpn.BlockchainHook.SetCurrentHeader(&block.Header{Epoch: 1})
+	assert.Nil(t, err)
 
 	// withdraw unDelegated delegators should withdraw after unBond period has passed
 	processMultipleWithdraws(t, tpn, delegators[:numDelegators-2], delegationScAddress, vmcommon.Ok)
@@ -385,7 +396,8 @@ func TestDelegationSystemDelegateUnDelegateOnlyPartOfDelegation(t *testing.T) {
 	tpn.EpochNotifier.CheckEpoch(&testscommon.HeaderHandlerStub{
 		EpochField: integrationTests.UnreachableEpoch + 1,
 	})
-	tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	err := tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	assert.Nil(t, err)
 
 	// create new delegation contract
 	delegationScAddress := deployNewSc(t, tpn, maxDelegationCap, serviceFee, big.NewInt(1000), tpn.OwnAccount.Address)
@@ -422,7 +434,9 @@ func TestDelegationSystemDelegateUnDelegateOnlyPartOfDelegation(t *testing.T) {
 	verifyDelegatorsStake(t, tpn, "getUserActiveStake", delegators[:numDelegators-2], delegationScAddress, big.NewInt(delegationVal/2))
 	verifyDelegatorsStake(t, tpn, "getUserUnStakedValue", delegators[:numDelegators-2], delegationScAddress, big.NewInt(delegationVal/2))
 
-	tpn.BlockchainHook.SetCurrentHeader(&block.Header{Epoch: 1})
+	addEpochStartHeader(t, tpn, 1, 0)
+	err = tpn.BlockchainHook.SetCurrentHeader(&block.Header{Epoch: 1})
+	assert.Nil(t, err)
 
 	// withdraw unDelegated delegators should withdraw after unBond period has passed
 	processMultipleWithdraws(t, tpn, delegators[:numDelegators-2], delegationScAddress, vmcommon.Ok)
@@ -451,7 +465,8 @@ func TestDelegationSystemMultipleDelegationContractsAndSameBlsKeysShouldNotWork(
 	tpn.EpochNotifier.CheckEpoch(&testscommon.HeaderHandlerStub{
 		EpochField: integrationTests.UnreachableEpoch + 1,
 	})
-	tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	err := tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	assert.Nil(t, err)
 
 	ownerAddresses := getAddresses(numContracts)
 	for i := range ownerAddresses {
@@ -529,7 +544,8 @@ func TestDelegationSystemMultipleDelegationContractsAndSameDelegators(t *testing
 	tpn.EpochNotifier.CheckEpoch(&testscommon.HeaderHandlerStub{
 		EpochField: integrationTests.UnreachableEpoch + 1,
 	})
-	tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	err := tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	assert.Nil(t, err)
 
 	ownerAddresses := getAddresses(numContracts)
 	for i := range ownerAddresses {
@@ -570,7 +586,9 @@ func TestDelegationSystemMultipleDelegationContractsAndSameDelegators(t *testing
 		verifyDelegatorsStake(t, tpn, "getUserUnStakedValue", firstTwoDelegators, delegationScAddresses[i], big.NewInt(delegationVal))
 	}
 
-	tpn.BlockchainHook.SetCurrentHeader(&block.Header{Epoch: 1})
+	addEpochStartHeader(t, tpn, 1, 0)
+	err = tpn.BlockchainHook.SetCurrentHeader(&block.Header{Epoch: 1})
+	assert.Nil(t, err)
 
 	for i := range delegationScAddresses {
 		processMultipleTransactions(t, tpn, firstTwoDelegators, delegationScAddresses[i], "withdraw", big.NewInt(0))
@@ -599,7 +617,8 @@ func TestDelegationRewardsComputationAfterChangeServiceFee(t *testing.T) {
 	tpn.EpochNotifier.CheckEpoch(&testscommon.HeaderHandlerStub{
 		EpochField: integrationTests.UnreachableEpoch + 1,
 	})
-	tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	err := tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	assert.Nil(t, err)
 
 	// create new delegation contract
 	delegationScAddress := deployNewSc(t, tpn, maxDelegationCap, serviceFee, big.NewInt(1000), tpn.OwnAccount.Address)
@@ -629,23 +648,24 @@ func TestDelegationRewardsComputationAfterChangeServiceFee(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, vmcommon.Ok, returnedCode)
 
-	addRewardsToDelegation(tpn, delegationScAddress, big.NewInt(1000), 1, 1)
-	addRewardsToDelegation(tpn, delegationScAddress, big.NewInt(2000), 2, 1)
+	addRewardsToDelegation(t, tpn, delegationScAddress, big.NewInt(1000), 1, 1)
+	addRewardsToDelegation(t, tpn, delegationScAddress, big.NewInt(2000), 2, 1)
 
 	txData = "changeServiceFee@" + hex.EncodeToString(big.NewInt(20000).Bytes()) // 20%
 	returnedCode, err = processTransaction(tpn, tpn.OwnAccount.Address, delegationScAddress, txData, big.NewInt(0))
 	assert.Equal(t, vmcommon.Ok, returnedCode)
 	assert.Nil(t, err)
 
-	addRewardsToDelegation(tpn, delegationScAddress, big.NewInt(1000), 3, 1)
-	addRewardsToDelegation(tpn, delegationScAddress, big.NewInt(2000), 4, 1)
+	addRewardsToDelegation(t, tpn, delegationScAddress, big.NewInt(1000), 3, 1)
+	addRewardsToDelegation(t, tpn, delegationScAddress, big.NewInt(2000), 4, 1)
 
 	checkRewardData(t, tpn, delegationScAddress, 1, 1000, 5000, serviceFee)
 	checkRewardData(t, tpn, delegationScAddress, 2, 2000, 5000, serviceFee)
 	checkRewardData(t, tpn, delegationScAddress, 3, 1000, 5000, big.NewInt(20000))
 	checkRewardData(t, tpn, delegationScAddress, 4, 2000, 5000, big.NewInt(20000))
 
-	tpn.BlockchainHook.SetCurrentHeader(&block.Header{Nonce: 5, Epoch: 4})
+	err = tpn.BlockchainHook.SetCurrentHeader(&block.Header{Nonce: 5, Epoch: 4})
+	assert.Nil(t, err)
 
 	checkDelegatorReward(t, tpn, delegationScAddress, delegators[0], 1530)
 	checkDelegatorReward(t, tpn, delegationScAddress, delegators[1], 1530)
@@ -707,7 +727,8 @@ func TestDelegationUnJail(t *testing.T) {
 	tpn.EpochNotifier.CheckEpoch(&testscommon.HeaderHandlerStub{
 		EpochField: integrationTests.UnreachableEpoch + 1,
 	})
-	tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	err := tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	assert.Nil(t, err)
 
 	// create new delegation contract
 	delegationScAddress := deployNewSc(t, tpn, maxDelegationCap, serviceFee, big.NewInt(1000), tpn.OwnAccount.Address)
@@ -775,7 +796,9 @@ func TestDelegationSystemDelegateSameUsersAFewTimes(t *testing.T) {
 	tpn.EpochNotifier.CheckEpoch(&testscommon.HeaderHandlerStub{
 		EpochField: integrationTests.UnreachableEpoch + 1,
 	})
-	tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+
+	err := tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	assert.Nil(t, err)
 
 	validatorAcc := getAsUserAccount(tpn, vm.ValidatorSCAddress)
 	genesisBalance := validatorAcc.GetBalance()
@@ -794,9 +817,9 @@ func TestDelegationSystemDelegateSameUsersAFewTimes(t *testing.T) {
 	txData = "setAutomaticActivation@" + hex.EncodeToString([]byte("true"))
 	returnedCode, err = processTransaction(tpn, tpn.OwnAccount.Address, delegationScAddress, txData, big.NewInt(0))
 	assert.Nil(t, err)
-	assert.Equal(t, vmcommon.Ok, returnedCode)
+	assert.Equal(t, vmcommon.UserError, returnedCode)
 
-	// self delegate 1250 rEWA
+	// self delegate 1250 REWA
 	txData = "delegate"
 	returnedCode, err = processTransaction(tpn, tpn.OwnAccount.Address, delegationScAddress, txData, big.NewInt(1250))
 	assert.Nil(t, err)
@@ -841,7 +864,8 @@ func TestDelegationSystemMultipleDelegationContractsAndSameDelegatorsClaimReward
 	tpn.EpochNotifier.CheckEpoch(&testscommon.HeaderHandlerStub{
 		EpochField: integrationTests.UnreachableEpoch + 1,
 	})
-	tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	err := tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	assert.Nil(t, err)
 
 	ownerAddresses := getAddresses(numContracts)
 
@@ -876,11 +900,11 @@ func TestDelegationSystemMultipleDelegationContractsAndSameDelegatorsClaimReward
 	}
 
 	for i := range delegationScAddresses {
-		addRewardsToDelegation(tpn, delegationScAddresses[i], big.NewInt(1000), 1, 1)
-		addRewardsToDelegation(tpn, delegationScAddresses[i], big.NewInt(2000), 2, 1)
-		addRewardsToDelegation(tpn, delegationScAddresses[i], big.NewInt(3000), 3, 1)
-		addRewardsToDelegation(tpn, delegationScAddresses[i], big.NewInt(4000), 4, 1)
-		addRewardsToDelegation(tpn, delegationScAddresses[i], big.NewInt(5000), 5, 1)
+		addRewardsToDelegation(t, tpn, delegationScAddresses[i], big.NewInt(1000), 1, 1)
+		addRewardsToDelegation(t, tpn, delegationScAddresses[i], big.NewInt(2000), 2, 1)
+		addRewardsToDelegation(t, tpn, delegationScAddresses[i], big.NewInt(3000), 3, 1)
+		addRewardsToDelegation(t, tpn, delegationScAddresses[i], big.NewInt(4000), 4, 1)
+		addRewardsToDelegation(t, tpn, delegationScAddresses[i], big.NewInt(5000), 5, 1)
 	}
 
 	for i := range delegationScAddresses {
@@ -933,7 +957,8 @@ func TestDelegationSystemMultipleDelegationContractsAndSameDelegatorsClaimReward
 		verifyDelegatorsStake(t, tpn, "getUserUnStakedValue", lastTwoDelegators, delegationScAddresses[i], big.NewInt(0))
 	}
 
-	tpn.BlockchainHook.SetCurrentHeader(&block.Header{Epoch: 5, Nonce: 50})
+	err = tpn.BlockchainHook.SetCurrentHeader(&block.Header{Epoch: 5, Nonce: 50})
+	assert.Nil(t, err)
 
 	for i := range delegationScAddresses {
 		processMultipleWithdraws(t, tpn, firstTwoDelegators, delegationScAddresses[i], vmcommon.UserError)
@@ -967,7 +992,7 @@ func TestDelegationSystemMultipleDelegationContractsAndSameDelegatorsClaimReward
 	}
 
 	for i := range delegationScAddresses {
-		addRewardsToDelegation(tpn, delegationScAddresses[i], big.NewInt(100), 6, 50)
+		addRewardsToDelegation(t, tpn, delegationScAddresses[i], big.NewInt(100), 6, 50)
 	}
 
 	for i := range delegationScAddresses {
@@ -996,7 +1021,8 @@ func TestDelegationSystemDelegateUnDelegateReceiveRewardsWhenAllIsUndelegated(t 
 	tpn.EpochNotifier.CheckEpoch(&testscommon.HeaderHandlerStub{
 		EpochField: integrationTests.UnreachableEpoch + 1,
 	})
-	tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	err := tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	assert.Nil(t, err)
 
 	// create new delegation contract
 	delegationScAddress := deployNewSc(t, tpn, maxDelegationCap, serviceFee, big.NewInt(3000), tpn.OwnAccount.Address)
@@ -1021,7 +1047,7 @@ func TestDelegationSystemDelegateUnDelegateReceiveRewardsWhenAllIsUndelegated(t 
 	assert.Nil(t, err)
 	assert.Equal(t, vmcommon.Ok, returnedCode)
 
-	addRewardsToDelegation(tpn, delegationScAddress, big.NewInt(200), 1, 1)
+	addRewardsToDelegation(t, tpn, delegationScAddress, big.NewInt(200), 1, 1)
 	checkRewardData(t, tpn, delegationScAddress, 1, 200, 5000, serviceFee)
 
 	checkDelegatorReward(t, tpn, delegationScAddress, delegators[0], 36)
@@ -1032,7 +1058,7 @@ func TestDelegationSystemDelegateUnDelegateReceiveRewardsWhenAllIsUndelegated(t 
 	txData = "unDelegate" + "@" + intToString(uint32(delegationVal))
 	processMultipleTransactions(t, tpn, delegators, delegationScAddress, txData, big.NewInt(0))
 
-	addRewardsToDelegation(tpn, delegationScAddress, big.NewInt(100), 2, 1)
+	addRewardsToDelegation(t, tpn, delegationScAddress, big.NewInt(100), 2, 1)
 	checkRewardData(t, tpn, delegationScAddress, 2, 100, 3000, serviceFee)
 
 	checkDelegatorReward(t, tpn, delegationScAddress, delegators[0], 36)
@@ -1044,7 +1070,8 @@ func TestDelegationSystemDelegateUnDelegateReceiveRewardsWhenAllIsUndelegated(t 
 	verifyDelegatorsStake(t, tpn, "getUserActiveStake", [][]byte{tpn.OwnAccount.Address}, delegationScAddress, big.NewInt(3000))
 	verifyDelegatorsStake(t, tpn, "getUserUnStakedValue", [][]byte{tpn.OwnAccount.Address}, delegationScAddress, big.NewInt(0))
 
-	tpn.BlockchainHook.SetCurrentHeader(&block.Header{Epoch: 2, Nonce: 50})
+	err = tpn.BlockchainHook.SetCurrentHeader(&block.Header{Epoch: 2, Nonce: 50})
+	assert.Nil(t, err)
 
 	// withdraw unDelegated delegators
 	processMultipleTransactions(t, tpn, delegators, delegationScAddress, "withdraw", big.NewInt(0))
@@ -1052,7 +1079,7 @@ func TestDelegationSystemDelegateUnDelegateReceiveRewardsWhenAllIsUndelegated(t 
 	verifyDelegatorsStake(t, tpn, "getUserActiveStake", delegators, delegationScAddress, big.NewInt(0))
 	verifyDelegatorsStake(t, tpn, "getUserUnStakedValue", delegators, delegationScAddress, big.NewInt(0))
 
-	addRewardsToDelegation(tpn, delegationScAddress, big.NewInt(300), 3, 50)
+	addRewardsToDelegation(t, tpn, delegationScAddress, big.NewInt(300), 3, 50)
 	checkRewardData(t, tpn, delegationScAddress, 3, 300, 3000, serviceFee)
 
 	txData = "claimRewards"
@@ -1071,7 +1098,8 @@ func TestDelegationSystemDelegateUnDelegateReceiveRewardsWhenAllIsUndelegated(t 
 	assert.Nil(t, err)
 	assert.Equal(t, vmcommon.Ok, returnedCode)
 
-	tpn.BlockchainHook.SetCurrentHeader(&block.Header{Epoch: 3, Nonce: 100})
+	err = tpn.BlockchainHook.SetCurrentHeader(&block.Header{Epoch: 3, Nonce: 100})
+	assert.Nil(t, err)
 
 	// unBond 2 nodes
 	txData = txDataForFunc("unBondNodes", blsKeys)
@@ -1079,7 +1107,7 @@ func TestDelegationSystemDelegateUnDelegateReceiveRewardsWhenAllIsUndelegated(t 
 	assert.Nil(t, err)
 	assert.Equal(t, vmcommon.Ok, returnedCode)
 
-	addRewardsToDelegation(tpn, delegationScAddress, big.NewInt(400), 4, 100)
+	addRewardsToDelegation(t, tpn, delegationScAddress, big.NewInt(400), 4, 100)
 	checkRewardData(t, tpn, delegationScAddress, 4, 400, 3000, serviceFee)
 
 	verifyDelegatorIsDeleted(t, tpn, delegators, delegationScAddress)
@@ -1092,13 +1120,14 @@ func TestDelegationSystemDelegateUnDelegateReceiveRewardsWhenAllIsUndelegated(t 
 	verifyDelegatorsStake(t, tpn, "getUserActiveStake", [][]byte{tpn.OwnAccount.Address}, delegationScAddress, big.NewInt(0))
 	verifyDelegatorsStake(t, tpn, "getUserUnStakedValue", [][]byte{tpn.OwnAccount.Address}, delegationScAddress, big.NewInt(3000))
 
-	addRewardsToDelegation(tpn, delegationScAddress, big.NewInt(500), 5, 100)
+	addRewardsToDelegation(t, tpn, delegationScAddress, big.NewInt(500), 5, 100)
 	checkRewardData(t, tpn, delegationScAddress, 5, 500, 0, serviceFee)
 
 	verifyDelegatorIsDeleted(t, tpn, delegators, delegationScAddress)
 	checkDelegatorReward(t, tpn, delegationScAddress, tpn.OwnAccount.Address, 928)
 
-	tpn.BlockchainHook.SetCurrentHeader(&block.Header{Epoch: 5, Nonce: 150})
+	err = tpn.BlockchainHook.SetCurrentHeader(&block.Header{Epoch: 5, Nonce: 150})
+	assert.Nil(t, err)
 
 	// withdraw unDelegated owner
 	processMultipleTransactions(t, tpn, [][]byte{tpn.OwnAccount.Address}, delegationScAddress, "withdraw", big.NewInt(0))
@@ -1113,7 +1142,7 @@ func TestDelegationSystemDelegateUnDelegateReceiveRewardsWhenAllIsUndelegated(t 
 
 	verifyDelegatorIsDeleted(t, tpn, delegators, delegationScAddress)
 
-	addRewardsToDelegation(tpn, delegationScAddress, big.NewInt(600), 6, 150)
+	addRewardsToDelegation(t, tpn, delegationScAddress, big.NewInt(600), 6, 150)
 	checkRewardData(t, tpn, delegationScAddress, 6, 600, 0, serviceFee)
 
 	verifyDelegatorIsDeleted(t, tpn, delegators, delegationScAddress)
@@ -1139,7 +1168,8 @@ func TestDelegationSystemCleanUpContract(t *testing.T) {
 	})
 	delegationVal := int64(1000)
 
-	tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	err := tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 1})
+	assert.Nil(t, err)
 
 	// create new delegation contract
 	delegationScAddress := deployNewSc(t, tpn, maxDelegationCap, serviceFee, big.NewInt(1000), tpn.OwnAccount.Address)
@@ -1185,7 +1215,9 @@ func TestDelegationSystemCleanUpContract(t *testing.T) {
 	returnedCode, _ = processTransaction(tpn, tpn.OwnAccount.Address, delegationScAddress, txData, big.NewInt(0))
 	assert.Equal(t, vmcommon.UserError, returnedCode)
 
-	tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 10000000})
+	err = tpn.BlockchainHook.SetCurrentHeader(&block.MetaBlock{Nonce: 10000000})
+	assert.Nil(t, err)
+
 	// unBond nodes
 	txData = txDataForFunc("unBondNodes", blsKeys[:numNodesToStake-3])
 	returnedCode, err = processTransaction(tpn, tpn.OwnAccount.Address, delegationScAddress, txData, big.NewInt(0))
@@ -1291,8 +1323,52 @@ func checkRewardData(
 	assert.Equal(t, expectedServiceFee.Bytes(), epoch0RewardData[2])
 }
 
-func addRewardsToDelegation(tpn *integrationTests.TestProcessorNode, recvAddr []byte, value *big.Int, epoch uint32, nonce uint64) {
-	tpn.BlockchainHook.SetCurrentHeader(&block.Header{Epoch: epoch, Nonce: nonce})
+func addEpochStartHeader(t *testing.T, tpn *integrationTests.TestProcessorNode, epoch uint32, nonce uint64) {
+	shard := tpn.ShardCoordinator.SelfId()
+
+	var unit dataRetriever.UnitType
+	if shard == core.MetachainShardId {
+		unit = dataRetriever.MetaBlockUnit
+	} else {
+		unit = dataRetriever.BlockHeaderUnit
+	}
+
+	storage, err := tpn.Storage.GetStorer(unit)
+	assert.Nil(t, err)
+
+	var header data.HeaderHandler
+	if shard == core.MetachainShardId {
+		header = &block.MetaBlock{
+			Nonce: nonce,
+			Epoch: epoch,
+			EpochStart: block.EpochStart{
+				LastFinalizedHeaders: []block.EpochStartShardData{
+					{
+						HeaderHash: []byte{0x01},
+					},
+				},
+			},
+		}
+	} else {
+		header = &block.Header{
+			Nonce:              nonce,
+			Epoch:              epoch,
+			EpochStartMetaHash: []byte{0x01},
+		}
+	}
+
+	dataBytes, err := integrationTests.TestMarshalizer.Marshal(header)
+	assert.Nil(t, err)
+
+	err = storage.Put([]byte(core.EpochStartIdentifier(epoch)), dataBytes)
+	assert.Nil(t, err)
+}
+
+func addRewardsToDelegation(t *testing.T, tpn *integrationTests.TestProcessorNode, recvAddr []byte, value *big.Int, epoch uint32, nonce uint64) {
+	addEpochStartHeader(t, tpn, epoch, 0)
+
+	err := tpn.BlockchainHook.SetCurrentHeader(&block.Header{Epoch: epoch, Nonce: nonce})
+	assert.Nil(t, err)
 
 	tx := &rewardTx.RewardTx{
 		Round:   0,

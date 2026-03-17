@@ -9,7 +9,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/common/statistics/disabled"
 	"github.com/TerraDharitri/drt-go-chain/common/statistics/machine"
 	"github.com/TerraDharitri/drt-go-chain/config"
-	errorsDrt "github.com/TerraDharitri/drt-go-chain/errors"
+	errorsMx "github.com/TerraDharitri/drt-go-chain/errors"
 	"github.com/TerraDharitri/drt-go-chain/factory"
 	"github.com/TerraDharitri/drt-go-chain/node/external"
 	"github.com/TerraDharitri/drt-go-chain/node/metrics"
@@ -70,10 +70,10 @@ func NewStatusCoreComponentsFactory(args StatusCoreComponentsFactoryArgs) (*stat
 
 func checkArgs(args StatusCoreComponentsFactoryArgs) error {
 	if check.IfNil(args.CoreComp) {
-		return errorsDrt.ErrNilCoreComponents
+		return errorsMx.ErrNilCoreComponents
 	}
 	if check.IfNil(args.CoreComp.EconomicsData()) {
-		return errorsDrt.ErrNilEconomicsData
+		return errorsMx.ErrNilEconomicsData
 	}
 
 	return nil
@@ -160,6 +160,12 @@ func (sccf *statusCoreComponentsFactory) createStatusHandler() (core.AppStatusHa
 	err = sccf.coreComp.EconomicsData().SetStatusHandler(handler)
 	if err != nil {
 		log.Debug("cannot set status handler to economicsData", "error", err)
+		return nil, nil, nil, err
+	}
+
+	err = sccf.coreComp.RatingsData().SetStatusHandler(handler)
+	if err != nil {
+		log.Debug("cannot set status handler to ratingsData", "error", err)
 		return nil, nil, nil, err
 	}
 

@@ -8,13 +8,13 @@ import (
 	"sync"
 	"time"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data/alteredAccount"
+	"github.com/TerraDharitri/drt-go-chain-core/data/api"
 	"github.com/TerraDharitri/drt-go-chain/api/errors"
 	"github.com/TerraDharitri/drt-go-chain/api/shared"
 	"github.com/TerraDharitri/drt-go-chain/api/shared/logging"
 	"github.com/gin-gonic/gin"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data/alteredAccount"
-	"github.com/TerraDharitri/drt-go-chain-core/data/api"
 )
 
 const (

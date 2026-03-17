@@ -1,11 +1,12 @@
 package factory
 
 import (
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/p2p"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 )
 
 type interceptedPeerShardFactory struct {
@@ -41,7 +42,7 @@ func checkInterceptedDirectConnectionInfoFactoryArgs(args ArgInterceptedDataFact
 }
 
 // Create creates instances of InterceptedData by unmarshalling provided buffer
-func (ipsf *interceptedPeerShardFactory) Create(buff []byte) (process.InterceptedData, error) {
+func (ipsf *interceptedPeerShardFactory) Create(buff []byte, _ core.PeerID) (process.InterceptedData, error) {
 	args := p2p.ArgInterceptedPeerShard{
 		Marshaller:  ipsf.marshaller,
 		DataBuff:    buff,

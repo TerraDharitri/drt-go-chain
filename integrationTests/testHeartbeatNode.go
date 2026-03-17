@@ -21,6 +21,8 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-crypto/signing/mcl"
 	"github.com/TerraDharitri/drt-go-chain-crypto/signing/mcl/singlesig"
 	"github.com/TerraDharitri/drt-go-chain-crypto/signing/secp256k1"
+	"github.com/stretchr/testify/require"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
@@ -48,6 +50,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/storage/cache"
 	"github.com/TerraDharitri/drt-go-chain/storage/storageunit"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/chainParameters"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/cryptoMocks"
 	dataRetrieverMock "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
@@ -58,7 +61,6 @@ import (
 	trieMock "github.com/TerraDharitri/drt-go-chain/testscommon/trie"
 	vic "github.com/TerraDharitri/drt-go-chain/testscommon/validatorInfoCacher"
 	"github.com/TerraDharitri/drt-go-chain/update"
-	"github.com/stretchr/testify/require"
 )
 
 // constants used for the hearbeat node & generated messages
@@ -349,8 +351,14 @@ func CreateNodesWithTestHeartbeatNode(
 	suCache, _ := storageunit.NewCache(cacherCfg)
 	for shardId, validatorList := range validatorsMap {
 		argumentsNodesCoordinator := nodesCoordinator.ArgNodesCoordinator{
-			ShardConsensusGroupSize:         shardConsensusGroupSize,
-			MetaConsensusGroupSize:          metaConsensusGroupSize,
+			ChainParametersHandler: &chainParameters.ChainParametersHandlerStub{
+				ChainParametersForEpochCalled: func(_ uint32) (config.ChainParametersByEpochConfig, error) {
+					return config.ChainParametersByEpochConfig{
+						ShardConsensusGroupSize:     uint32(shardConsensusGroupSize),
+						MetachainConsensusGroupSize: uint32(metaConsensusGroupSize),
+					}, nil
+				},
+			},
 			Marshalizer:                     TestMarshalizer,
 			Hasher:                          TestHasher,
 			ShardIDAsObserver:               shardId,
@@ -397,8 +405,14 @@ func CreateNodesWithTestHeartbeatNode(
 			}
 
 			argumentsNodesCoordinator := nodesCoordinator.ArgNodesCoordinator{
-				ShardConsensusGroupSize:         shardConsensusGroupSize,
-				MetaConsensusGroupSize:          metaConsensusGroupSize,
+				ChainParametersHandler: &chainParameters.ChainParametersHandlerStub{
+					ChainParametersForEpochCalled: func(_ uint32) (config.ChainParametersByEpochConfig, error) {
+						return config.ChainParametersByEpochConfig{
+							ShardConsensusGroupSize:     uint32(shardConsensusGroupSize),
+							MetachainConsensusGroupSize: uint32(metaConsensusGroupSize),
+						}, nil
+					},
+				},
 				Marshalizer:                     TestMarshalizer,
 				Hasher:                          TestHasher,
 				ShardIDAsObserver:               shardId,
@@ -554,6 +568,11 @@ func (thn *TestHeartbeatNode) initResolversAndRequesters() {
 		FullArchivePreferredPeersHolder: &p2pmocks.PeersHolderStub{},
 		PeersRatingHandler:              &p2pmocks.PeersRatingHandlerStub{},
 		SizeCheckDelta:                  0,
+		EnableEpochsHandler: &enableEpochsHandlerMock.EnableEpochsHandlerStub{
+			IsFlagEnabledInEpochCalled: func(flag core.EnableEpochFlag, epoch uint32) bool {
+				return true
+			},
+		},
 	}
 
 	if thn.ShardCoordinator.SelfId() == core.MetachainShardId {
@@ -694,6 +713,7 @@ func (thn *TestHeartbeatNode) initMultiDataInterceptor(topic string, dataFactory
 		interceptors.ArgMultiDataInterceptor{
 			Topic:            topic,
 			Marshalizer:      TestMarshalizer,
+			Hasher:           TestHasher,
 			DataFactory:      dataFactory,
 			Processor:        processor,
 			Throttler:        TestThrottler,
@@ -703,8 +723,9 @@ func (thn *TestHeartbeatNode) initMultiDataInterceptor(topic string, dataFactory
 					return true
 				},
 			},
-			PreferredPeersHolder: &p2pmocks.PeersHolderStub{},
-			CurrentPeerId:        thn.MainMessenger.ID(),
+			PreferredPeersHolder:    &p2pmocks.PeersHolderStub{},
+			CurrentPeerId:           thn.MainMessenger.ID(),
+			InterceptedDataVerifier: &processMock.InterceptedDataVerifierMock{},
 		},
 	)
 
@@ -726,8 +747,9 @@ func (thn *TestHeartbeatNode) initSingleDataInterceptor(topic string, dataFactor
 					return true
 				},
 			},
-			PreferredPeersHolder: &p2pmocks.PeersHolderStub{},
-			CurrentPeerId:        thn.MainMessenger.ID(),
+			PreferredPeersHolder:    &p2pmocks.PeersHolderStub{},
+			CurrentPeerId:           thn.MainMessenger.ID(),
+			InterceptedDataVerifier: &processMock.InterceptedDataVerifierMock{},
 		},
 	)
 

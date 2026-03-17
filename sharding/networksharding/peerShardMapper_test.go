@@ -9,23 +9,24 @@ import (
 
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/p2p"
 	"github.com/TerraDharitri/drt-go-chain/sharding/networksharding"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
-	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/p2pmocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/shardingMocks"
-	"github.com/stretchr/testify/assert"
 )
 
 // ------- NewPeerShardMapper
 
 func createMockArgumentForPeerShardMapper() networksharding.ArgPeerShardMapper {
 	return networksharding.ArgPeerShardMapper{
-		PeerIdPkCache:         testscommon.NewCacherMock(),
-		FallbackPkShardCache:  testscommon.NewCacherMock(),
-		FallbackPidShardCache: testscommon.NewCacherMock(),
+		PeerIdPkCache:         cache.NewCacherMock(),
+		FallbackPkShardCache:  cache.NewCacherMock(),
+		FallbackPidShardCache: cache.NewCacherMock(),
 		NodesCoordinator:      &shardingMocks.NodesCoordinatorMock{},
 		PreferredPeersHolder:  &p2pmocks.PeersHolderStub{},
 	}

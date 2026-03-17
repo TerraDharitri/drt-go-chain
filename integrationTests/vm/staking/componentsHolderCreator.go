@@ -11,9 +11,11 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/data/typeConverters/uint64ByteSlice"
 	"github.com/TerraDharitri/drt-go-chain-core/hashing/sha256"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/common/enablers"
 	"github.com/TerraDharitri/drt-go-chain/common/forking"
+	"github.com/TerraDharitri/drt-go-chain/common/graceperiod"
 	"github.com/TerraDharitri/drt-go-chain/common/statistics/disabled"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
@@ -27,6 +29,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/sharding"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
 	"github.com/TerraDharitri/drt-go-chain/state"
+	disabledState "github.com/TerraDharitri/drt-go-chain/state/disabled"
 	stateFactory "github.com/TerraDharitri/drt-go-chain/state/factory"
 	"github.com/TerraDharitri/drt-go-chain/state/storagePruningManager"
 	"github.com/TerraDharitri/drt-go-chain/state/storagePruningManager/evictionWaitingList"
@@ -69,10 +72,11 @@ func createCoreComponents() factory.CoreComponentsHolder {
 		StakingV4Step3EnableEpoch:          stakingV4Step3EnableEpoch,
 		GovernanceEnableEpoch:              integrationTests.UnreachableEpoch,
 		RefactorPeersMiniBlocksEnableEpoch: integrationTests.UnreachableEpoch,
+		AndromedaEnableEpoch:               integrationTests.UnreachableEpoch,
 	}
 
 	enableEpochsHandler, _ := enablers.NewEnableEpochsHandler(configEnableEpochs, epochNotifier)
-
+	gracePeriod, _ := graceperiod.NewEpochChangeGracePeriod([]config.EpochChangeGracePeriodByEpoch{{EnableEpoch: 0, GracePeriodInRounds: 1}})
 	return &integrationMocks.CoreComponentsStub{
 		InternalMarshalizerField:           &marshal.GogoProtoMarshalizer{},
 		HasherField:                        sha256.NewSha256(),
@@ -90,6 +94,7 @@ func createCoreComponents() factory.CoreComponentsHolder {
 		EnableEpochsHandlerField:           enableEpochsHandler,
 		EnableRoundsHandlerField:           &testscommon.EnableRoundsHandlerStub{},
 		RoundNotifierField:                 &notifierMocks.RoundNotifierStub{},
+		EpochChangeGracePeriodHandlerField: gracePeriod,
 	}
 }
 
@@ -157,9 +162,10 @@ func createStateComponents(coreComponents factory.CoreComponentsHolder) factory.
 	trieFactoryManager, _ := trie.NewTrieStorageManagerWithoutPruning(tsm)
 
 	argsAccCreator := stateFactory.ArgsAccountCreator{
-		Hasher:              coreComponents.Hasher(),
-		Marshaller:          coreComponents.InternalMarshalizer(),
-		EnableEpochsHandler: coreComponents.EnableEpochsHandler(),
+		Hasher:                 coreComponents.Hasher(),
+		Marshaller:             coreComponents.InternalMarshalizer(),
+		EnableEpochsHandler:    coreComponents.EnableEpochsHandler(),
+		StateAccessesCollector: disabledState.NewDisabledStateAccessesCollector(),
 	}
 
 	accCreator, _ := stateFactory.NewAccountCreator(argsAccCreator)
@@ -208,13 +214,14 @@ func createAccountsDB(
 	ewl, _ := evictionWaitingList.NewMemoryEvictionWaitingList(argsEvictionWaitingList)
 	spm, _ := storagePruningManager.NewStoragePruningManager(ewl, 10)
 	argsAccountsDb := state.ArgsAccountsDB{
-		Trie:                  tr,
-		Hasher:                coreComponents.Hasher(),
-		Marshaller:            coreComponents.InternalMarshalizer(),
-		AccountFactory:        accountFactory,
-		StoragePruningManager: spm,
-		AddressConverter:      coreComponents.AddressPubKeyConverter(),
-		SnapshotsManager:      &stateTests.SnapshotsManagerStub{},
+		Trie:                   tr,
+		Hasher:                 coreComponents.Hasher(),
+		Marshaller:             coreComponents.InternalMarshalizer(),
+		AccountFactory:         accountFactory,
+		StoragePruningManager:  spm,
+		AddressConverter:       coreComponents.AddressPubKeyConverter(),
+		SnapshotsManager:       &stateTests.SnapshotsManagerStub{},
+		StateAccessesCollector: disabledState.NewDisabledStateAccessesCollector(),
 	}
 	adb, _ := state.NewAccountsDB(argsAccountsDb)
 	return adb

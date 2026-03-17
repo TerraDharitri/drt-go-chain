@@ -6,11 +6,17 @@ import (
 	"testing"
 	"time"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/epochStart"
 	"github.com/TerraDharitri/drt-go-chain/epochStart/mock"
 	"github.com/TerraDharitri/drt-go-chain/process"
+	processMock "github.com/TerraDharitri/drt-go-chain/process/mock"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
 	"github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
@@ -18,11 +24,7 @@ import (
 	dataRetrieverMock "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/economicsmocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/genesisMocks"
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
+	updateMock "github.com/TerraDharitri/drt-go-chain/update/mock"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -127,6 +129,7 @@ func TestStorageEpochStartBootstrap_BootstrapMetablockNotFound(t *testing.T) {
 	}
 	args.GeneralConfig = testscommon.GetGeneralConfig()
 	args.GeneralConfig.EpochStartConfig.RoundsPerEpoch = roundsPerEpoch
+	args.InterceptedDataVerifierFactory = &processMock.InterceptedDataVerifierFactoryMock{}
 	sesb, _ := NewStorageEpochStartBootstrap(args)
 
 	params, err := sesb.Bootstrap()
@@ -216,6 +219,13 @@ func testRequestAndProcessFromStorageByShardId(t *testing.T, shardId uint32) {
 			}, nil
 		},
 	}
+
+	sesb.epochStartShardHeaderSyncer = &updateMock.PendingEpochStartShardHeaderStub{
+		GetEpochStartHeaderCalled: func() (data.HeaderHandler, []byte, error) {
+			return &block.HeaderV2{}, []byte("epoch-start-hash"), nil
+		},
+	}
+
 	sesb.miniBlocksSyncer = &epochStartMocks.PendingMiniBlockSyncHandlerStub{}
 
 	params, err := sesb.requestAndProcessFromStorage()

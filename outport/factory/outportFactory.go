@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"time"
 
-	outportcore "github.com/TerraDharitri/drt-go-chain-core/data/outport"
 	indexerFactory "github.com/TerraDharitri/drt-go-chain-es-indexer/process/factory"
+
+	outportcore "github.com/TerraDharitri/drt-go-chain-core/data/outport"
+
 	"github.com/TerraDharitri/drt-go-chain/outport"
 )
 

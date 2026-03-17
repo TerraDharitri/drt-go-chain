@@ -4,15 +4,17 @@ import (
 	"testing"
 	"time"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/block/interceptedBlocks"
 	"github.com/TerraDharitri/drt-go-chain/process/interceptors/processor"
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/stretchr/testify/assert"
 )
 
 var testMarshalizer = &mock.MarshalizerMock{}
@@ -20,7 +22,7 @@ var testHasher = &hashingMocks.HasherMock{}
 
 func createMockMiniblockArgument() *processor.ArgMiniblockInterceptorProcessor {
 	return &processor.ArgMiniblockInterceptorProcessor{
-		MiniblockCache:   testscommon.NewCacherStub(),
+		MiniblockCache:   cache.NewCacherStub(),
 		Marshalizer:      testMarshalizer,
 		Hasher:           testHasher,
 		ShardCoordinator: mock.NewOneShardCoordinatorMock(),
@@ -103,7 +105,7 @@ func TestNewMiniblockInterceptorProcessor_ShouldWork(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-//------- Validate
+// ------- Validate
 
 func TestMiniblockInterceptorProcessor_ValidateShouldWork(t *testing.T) {
 	t.Parallel()
@@ -113,7 +115,7 @@ func TestMiniblockInterceptorProcessor_ValidateShouldWork(t *testing.T) {
 	assert.Nil(t, mip.Validate(nil, ""))
 }
 
-//------- Save
+// ------- Save
 
 func TestMiniblockInterceptorProcessor_SaveWrongTypeAssertion(t *testing.T) {
 	t.Parallel()
@@ -129,7 +131,7 @@ func TestMiniblockInterceptorProcessor_NilMiniblockShouldNotAdd(t *testing.T) {
 	t.Parallel()
 
 	arg := createMockMiniblockArgument()
-	cacher := arg.MiniblockCache.(*testscommon.CacherStub)
+	cacher := arg.MiniblockCache.(*cache.CacherStub)
 	cacher.HasOrAddCalled = func(key []byte, value interface{}, sizeInBytes int) (has, added bool) {
 		assert.Fail(t, "hasOrAdd should have not been called")
 		return
@@ -152,7 +154,7 @@ func TestMiniblockInterceptorProcessor_SaveMiniblockNotForCurrentShardShouldNotA
 	}
 
 	arg := createMockMiniblockArgument()
-	cacher := arg.MiniblockCache.(*testscommon.CacherStub)
+	cacher := arg.MiniblockCache.(*cache.CacherStub)
 	cacher.HasOrAddCalled = func(key []byte, value interface{}, sizeInBytes int) (has, added bool) {
 		assert.Fail(t, "hasOrAdd should have not been called")
 		return
@@ -174,7 +176,7 @@ func TestMiniblockInterceptorProcessor_SaveMiniblockWithSenderInSameShardShouldA
 	}
 
 	arg := createMockMiniblockArgument()
-	cacher := arg.MiniblockCache.(*testscommon.CacherStub)
+	cacher := arg.MiniblockCache.(*cache.CacherStub)
 	cacher.HasOrAddCalled = func(key []byte, value interface{}, sizeInBytes int) (has, added bool) {
 		_, ok := value.(*block.MiniBlock)
 		if !ok {
@@ -204,7 +206,7 @@ func TestMiniblockInterceptorProcessor_SaveMiniblocksWithReceiverInSameShardShou
 	}
 
 	arg := createMockMiniblockArgument()
-	cacher := arg.MiniblockCache.(*testscommon.CacherStub)
+	cacher := arg.MiniblockCache.(*cache.CacherStub)
 	cacher.HasOrAddCalled = func(key []byte, value interface{}, sizeInBytes int) (has, added bool) {
 		_, ok := value.(*block.MiniBlock)
 		if !ok {
@@ -248,7 +250,7 @@ func TestMiniblockInterceptorProcessor_SaveMiniblockCrossShardForMeNotWhiteListe
 		return false
 	}
 
-	cacher := arg.MiniblockCache.(*testscommon.CacherStub)
+	cacher := arg.MiniblockCache.(*cache.CacherStub)
 	cacher.HasOrAddCalled = func(key []byte, value interface{}, sizeInBytes int) (has, added bool) {
 		assert.Fail(t, "hasOrAdd should have not been called")
 		return
@@ -277,7 +279,7 @@ func TestMiniblockInterceptorProcessor_SaveMiniblockCrossShardForMeWhiteListedSh
 	}
 
 	addedInPool := false
-	cacher := arg.MiniblockCache.(*testscommon.CacherStub)
+	cacher := arg.MiniblockCache.(*cache.CacherStub)
 	cacher.HasOrAddCalled = func(key []byte, value interface{}, sizeInBytes int) (has, added bool) {
 		addedInPool = true
 		return false, true

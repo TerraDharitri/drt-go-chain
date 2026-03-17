@@ -16,7 +16,7 @@
     #   "1" for Mainnet
     #   "D" for Devnet
     #   "T" for Testnet
-    ChainID = "D"
+    ChainID = "undefined"
 
     # MinTransactionVersion represents the minimum transaction version accepted
     MinTransactionVersion = 1
@@ -39,6 +39,18 @@
     # the activation of the configured guardian.
     # Make sure that this is greater than the unbonding period!
     SetGuardianEpochsDelay = 2 # TODO: for mainnet should be 20, 2 is just for testing
+
+    # ChainParametersByEpoch defines chain operation configurable values that can be modified based on epochs
+    ChainParametersByEpoch = [
+        { EnableEpoch = 0, RoundDuration = 6000, ShardConsensusGroupSize = 7, ShardMinNumNodes = 10, MetachainConsensusGroupSize = 10, MetachainMinNumNodes = 10, Hysteresis = 0.2, Adaptivity = false },
+        { EnableEpoch = 1, RoundDuration = 6000, ShardConsensusGroupSize = 10, ShardMinNumNodes = 10, MetachainConsensusGroupSize = 10, MetachainMinNumNodes = 10, Hysteresis = 0.2, Adaptivity = false }
+    ]
+
+    # EpochChangeGracePeriodEnableEpoch represents the configuration of different grace periods for epoch change with their activation epochs
+    EpochChangeGracePeriodByEpoch = [
+        {EnableEpoch = 0, GracePeriodInRounds = 1 },
+        {EnableEpoch = 1, GracePeriodInRounds = 10 }, # Andromeda epoch comes with a longer grace period
+    ]
 
 [HardwareRequirements]
     CPUFlags = ["SSE4", "SSE42"]
@@ -181,6 +193,19 @@
         SizeInBytes = 20971520 #20MB
     [MetaBlockStorage.DB]
         FilePath = "MetaBlock"
+        Type = "LvlDBSerial"
+        BatchDelaySeconds = 2
+        MaxBatchSize = 100
+        MaxOpenFiles = 10
+
+[ProofsStorage]
+    [ProofsStorage.Cache]
+        Name = "ProofsStorage"
+        Capacity = 1000
+        Type = "SizeLRU"
+        SizeInBytes = 20971520 #20MB
+    [ProofsStorage.DB]
+        FilePath = "Proofs"
         Type = "LvlDBSerial"
         BatchDelaySeconds = 2
         MaxBatchSize = 100
@@ -330,6 +355,19 @@
         ShardIDProviderType = "BinarySplit"
         NumShards = 4
 
+[StateAccessesStorage]
+    [StateAccessesStorage.Cache]
+        Name = "StateAccessesStorage"
+        Capacity = 5000
+        Type = "SizeLRU"
+        SizeInBytes = 10485760 #10MB
+    [StateAccessesStorage.DB]
+        FilePath = "StateAccesses"
+        Type = "LvlDBSerial"
+        BatchDelaySeconds = 2
+        MaxBatchSize = 100
+        MaxOpenFiles = 10
+
 [PeerAccountsTrieStorage]
     [PeerAccountsTrieStorage.Cache]
         Name = "PeerAccountsTrieStorage"
@@ -364,6 +402,10 @@
 [HeadersPoolConfig]
     MaxHeadersPerShard = 1000
     NumElementsToRemoveOnEviction = 200
+
+[ProofsPoolConfig]
+    CleanupNonceDelta = 3
+    BucketSize = 100
 
 [BadBlocksCache]
     Name = "BadBlocksCache"
@@ -434,7 +476,7 @@
     SizeInBytes = 31457280  #30MB
     Shards = 4
 
-#PublicKeyPeerId represents the main cache used to map Dharitri block signing public keys to their associated peer id's.
+#PublicKeyPeerId represents the main cache used to map DharitrI block signing public keys to their associated peer id's.
 [PublicKeyPeerId]
     Name = "PublicKeyPeerId"
     Capacity = 30000
@@ -497,7 +539,7 @@
         IntervalInSeconds = 1
         ReservedPercent   = 20.0
         [Antiflood.FastReacting.PeerMaxInput]
-            BaseMessagesPerInterval  = 140
+            BaseMessagesPerInterval  = 280
             TotalSizePerInterval = 4194304 #4MB/s
             [Antiflood.FastReacting.PeerMaxInput.IncreaseFactor]
                 Threshold = 10 #if consensus size will exceed this value, then
@@ -539,7 +581,7 @@
             PeerBanDurationInSeconds = 3600
 
     [Antiflood.PeerMaxOutput]
-        BaseMessagesPerInterval  = 75
+        BaseMessagesPerInterval  = 150
         TotalSizePerInterval     = 2097152 #2MB/s
 
     [Antiflood.Cache]
@@ -663,6 +705,15 @@
     MaxPeerTrieLevelInMemory = 5
     StateStatisticsEnabled = false
 
+[TrieLeavesRetrieverConfig]
+    Enabled = false
+    MaxSizeInBytes = 10485760 #10MB
+
+[StateAccessesCollectorConfig]
+    TypesToCollect = []          # These can be "READ","WRITE".
+    SaveToStorage = false
+    WithAccountChanges = false
+
 [BlockSizeThrottleConfig]
     MinSizeInBytes = 104857 # 104857 is 10% from 1MB
     MaxSizeInBytes = 943718 # 943718 is 90% from 1MB
@@ -672,8 +723,7 @@
         TimeOutForSCExecutionInMilliseconds = 10000 # 10 seconds = 10000 milliseconds
         WasmerSIGSEGVPassthrough            = false # must be false for release
         WasmVMVersions = [
-            { StartEpoch = 0, Version = "v1.4" },
-            { StartEpoch = 1, Version = "v1.5" }, # TODO: set also the RoundActivations.DisableAsyncCallV1 accordingly
+            { StartEpoch = 0, Version = "v1.5" },
         ]
         TransferAndExecuteByUserAddresses = [ # TODO: set real contract addresses for all shards
             "drt1qqqqqqqqqqqqqpgqr46jrxr6r2unaqh75ugd308dwx5vgnhwh47qkswz60", #shard 0
@@ -684,8 +734,7 @@
         TimeOutForSCExecutionInMilliseconds = 10000 # 10 seconds = 10000 milliseconds
         WasmerSIGSEGVPassthrough            = false # must be false for release
         WasmVMVersions = [
-            { StartEpoch = 0, Version = "v1.4" },
-            { StartEpoch = 1, Version = "v1.5" }, # TODO: set also the RoundActivations.DisableAsyncCallV1 accordingly
+            { StartEpoch = 0, Version = "v1.5" },
         ]
         TransferAndExecuteByUserAddresses = [ # TODO: set real contract addresses for all shards
             "drt1qqqqqqqqqqqqqpgqr46jrxr6r2unaqh75ugd308dwx5vgnhwh47qkswz60",
@@ -946,3 +995,7 @@
     # MaxRoundsOfInactivityAccepted defines the number of rounds missed by a main or higher level backup machine before
     # the current machine will take over and propose/sign blocks. Used in both single-key and multi-key modes.
     MaxRoundsOfInactivityAccepted = 3
+
+[InterceptedDataVerifier]
+    CacheSpanInSec = 30
+    CacheExpiryInSec = 30

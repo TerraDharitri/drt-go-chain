@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/epochStart"
 	"github.com/TerraDharitri/drt-go-chain/epochStart/bootstrap/disabled"
 	"github.com/TerraDharitri/drt-go-chain/process/block/bootstrapStorage"
 	"github.com/TerraDharitri/drt-go-chain/storage/factory"
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 )
 
 type metaStorageHandler struct {
@@ -61,6 +61,8 @@ func NewMetaStorageHandler(args StorageHandlerArgs) (*metaStorageHandler, error)
 		currentEpoch:                    args.CurrentEpoch,
 		uint64Converter:                 args.Uint64Converter,
 		nodesCoordinatorRegistryFactory: args.NodesCoordinatorRegistryFactory,
+		proofsPool:                      args.ProofsPool,
+		enableEpochsHandler:             args.EnableEpochsHandler,
 	}
 
 	return &metaStorageHandler{baseStorageHandler: base}, nil

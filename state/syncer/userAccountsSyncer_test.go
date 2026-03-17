@@ -6,6 +6,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/hashing"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/TerraDharitri/drt-go-chain/api/mock"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/common/errChan"
@@ -16,18 +23,13 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/state/parsers"
 	"github.com/TerraDharitri/drt-go-chain/state/syncer"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/storageManager"
 	trieMock "github.com/TerraDharitri/drt-go-chain/testscommon/trie"
 	"github.com/TerraDharitri/drt-go-chain/trie"
 	"github.com/TerraDharitri/drt-go-chain/trie/keyBuilder"
 	"github.com/TerraDharitri/drt-go-chain/trie/storageMarker"
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/hashing"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func getDefaultUserAccountsSyncerArgs() syncer.ArgsNewUserAccountsSyncer {
@@ -148,7 +150,7 @@ func TestUserAccountsSyncer_SyncAccounts(t *testing.T) {
 			},
 		}
 
-		cacher := testscommon.NewCacherMock()
+		cacher := cache.NewCacherMock()
 		cacher.Put(key, itn, 0)
 		args.Cacher = cacher
 
@@ -228,7 +230,7 @@ func TestUserAccountsSyncer_SyncAccountDataTries(t *testing.T) {
 			},
 		}
 
-		cacher := testscommon.NewCacherMock()
+		cacher := cache.NewCacherMock()
 		cacher.Put(key, itn, 0)
 		args.Cacher = cacher
 
@@ -285,7 +287,7 @@ func TestUserAccountsSyncer_SyncAccountDataTries(t *testing.T) {
 			},
 		}
 
-		cacher := testscommon.NewCacherMock()
+		cacher := cache.NewCacherMock()
 		cacher.Put(key, itn, 0)
 		args.Cacher = cacher
 
@@ -366,7 +368,7 @@ func TestUserAccountsSyncer_MissingDataTrieNodeFound(t *testing.T) {
 	rootHash, _ := tr.RootHash()
 	_ = tr.Commit()
 
-	args.Cacher = &testscommon.CacherStub{
+	args.Cacher = &cache.CacherStub{
 		GetCalled: func(key []byte) (value interface{}, ok bool) {
 			interceptedNode, _ := trie.NewInterceptedTrieNode(serializedLeafNode, args.Hasher)
 			return interceptedNode, true

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	logger "github.com/TerraDharitri/drt-go-chain-logger"
+
 	"github.com/TerraDharitri/drt-go-chain/integrationTests"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests/multiShard/endOfEpoch"
 	"github.com/TerraDharitri/drt-go-chain/process/rating"
@@ -68,16 +69,14 @@ func TestEpochChangeWithNodesShufflingAndRater(t *testing.T) {
 	nonce := uint64(1)
 	nbBlocksToProduce := uint64(20)
 	expectedLastEpoch := uint32(nbBlocksToProduce / roundsPerEpoch)
-	var consensusNodes map[uint32][]*integrationTests.TestProcessorNode
 
 	for i := uint64(0); i < nbBlocksToProduce; i++ {
 		for _, nodes := range nodesMap {
 			integrationTests.UpdateRound(nodes, round)
 		}
 
-		_, _, consensusNodes = integrationTests.AllShardsProposeBlock(round, nonce, nodesMap)
-		indexesProposers := endOfEpoch.GetBlockProposersIndexes(consensusNodes, nodesMap)
-		integrationTests.SyncAllShardsWithRoundBlock(t, nodesMap, indexesProposers, round)
+		proposeData := integrationTests.AllShardsProposeBlock(round, nonce, nodesMap)
+		integrationTests.SyncAllShardsWithRoundBlock(t, proposeData, nodesMap, round)
 		round++
 		nonce++
 

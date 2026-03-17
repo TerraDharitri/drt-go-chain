@@ -5,6 +5,7 @@ import (
 	"sync/atomic"
 
 	"github.com/TerraDharitri/drt-go-chain-core/core"
+
 	"github.com/TerraDharitri/drt-go-chain/integrationTests/mock"
 	"github.com/TerraDharitri/drt-go-chain/p2p"
 	"github.com/TerraDharitri/drt-go-chain/process"
@@ -30,7 +31,7 @@ func newMessageProcessor() *MessageProcessor {
 }
 
 // ProcessReceivedMessage is the callback function from the p2p side whenever a new message is received
-func (mp *MessageProcessor) ProcessReceivedMessage(message p2p.MessageP2P, fromConnectedPeer core.PeerID, _ p2p.MessageHandler) error {
+func (mp *MessageProcessor) ProcessReceivedMessage(message p2p.MessageP2P, fromConnectedPeer core.PeerID, _ p2p.MessageHandler) ([]byte, error) {
 	atomic.AddUint32(&mp.numMessagesReceived, 1)
 	atomic.AddUint64(&mp.sizeMessagesReceived, uint64(len(message.Data())))
 
@@ -38,7 +39,7 @@ func (mp *MessageProcessor) ProcessReceivedMessage(message p2p.MessageP2P, fromC
 		af, _ := antiflood2.NewP2PAntiflood(&mock.PeerBlackListCacherStub{}, &mock.TopicAntiFloodStub{}, mp.FloodPreventer)
 		err := af.CanProcessMessage(message, fromConnectedPeer)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
 
@@ -50,7 +51,7 @@ func (mp *MessageProcessor) ProcessReceivedMessage(message p2p.MessageP2P, fromC
 
 	mp.messages[fromConnectedPeer] = append(mp.messages[fromConnectedPeer], message)
 
-	return nil
+	return []byte{}, nil
 }
 
 // NumMessagesProcessed returns the number of processed messages

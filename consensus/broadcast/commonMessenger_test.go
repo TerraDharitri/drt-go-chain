@@ -2,12 +2,12 @@ package broadcast_test
 
 import (
 	"bytes"
+	
 	"sync"
 	"testing"
 	"time"
 
-	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
-
+	"github.com/TerraDharitri/drt-go-chain-crypto"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain/consensus"

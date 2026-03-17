@@ -143,9 +143,9 @@ func TestInitialAccount_AddressBytes(t *testing.T) {
 	ia := &InitialAccount{}
 	addrBytes := []byte("address bytes")
 	ia.SetAddressBytes(addrBytes)
-	recovdrtAddrBytes := ia.AddressBytes()
+	recoverdAddrBytes := ia.AddressBytes()
 
-	assert.Equal(t, addrBytes, recovdrtAddrBytes)
+	assert.Equal(t, addrBytes, recoverdAddrBytes)
 }
 
 func TestInitialAccount_Clone(t *testing.T) {

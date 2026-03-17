@@ -7,6 +7,7 @@ import (
 
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/common/holders"
 )
@@ -133,6 +134,10 @@ func (accountsDB *accountsDBApiWithHistory) GetTrie(_ []byte) (common.Trie, erro
 // GetStackDebugFirstEntry returns nil
 func (accountsDB *accountsDBApiWithHistory) GetStackDebugFirstEntry() []byte {
 	return nil
+}
+
+// SetTxHashForLatestStateAccesses returns nil
+func (accountsDB *accountsDBApiWithHistory) SetTxHashForLatestStateAccesses(_ []byte) {
 }
 
 // Close will handle the closing of the underlying components

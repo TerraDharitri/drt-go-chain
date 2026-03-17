@@ -3,25 +3,28 @@ package block
 import (
 	"bytes"
 
-	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
+
+	"github.com/TerraDharitri/drt-go-chain/process"
 )
 
 var _ process.HeaderConstructionValidator = (*headerValidator)(nil)
 
 // ArgsHeaderValidator are the arguments needed to create a new header validator
 type ArgsHeaderValidator struct {
-	Hasher      hashing.Hasher
-	Marshalizer marshal.Marshalizer
+	Hasher              hashing.Hasher
+	Marshalizer         marshal.Marshalizer
+	EnableEpochsHandler core.EnableEpochsHandler
 }
 
 type headerValidator struct {
-	hasher      hashing.Hasher
-	marshalizer marshal.Marshalizer
+	hasher              hashing.Hasher
+	marshalizer         marshal.Marshalizer
+	enableEpochsHandler core.EnableEpochsHandler
 }
 
 // NewHeaderValidator returns a new header validator
@@ -32,10 +35,14 @@ func NewHeaderValidator(args ArgsHeaderValidator) (*headerValidator, error) {
 	if check.IfNil(args.Marshalizer) {
 		return nil, process.ErrNilMarshalizer
 	}
+	if check.IfNil(args.EnableEpochsHandler) {
+		return nil, process.ErrNilEnableEpochsHandler
+	}
 
 	return &headerValidator{
-		hasher:      args.Hasher,
-		marshalizer: args.Marshalizer,
+		hasher:              args.Hasher,
+		marshalizer:         args.Marshalizer,
+		enableEpochsHandler: args.EnableEpochsHandler,
 	}, nil
 }
 

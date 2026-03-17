@@ -5,12 +5,16 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 	coreData "github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
 	"github.com/TerraDharitri/drt-go-chain-core/hashing/blake2b"
 	"github.com/TerraDharitri/drt-go-chain-core/hashing/keccak"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
+	"github.com/stretchr/testify/require"
+
 	commonFactory "github.com/TerraDharitri/drt-go-chain/common/factory"
+	"github.com/TerraDharitri/drt-go-chain/common/graceperiod"
 	disabledStatistics "github.com/TerraDharitri/drt-go-chain/common/statistics/disabled"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	retriever "github.com/TerraDharitri/drt-go-chain/dataRetriever"
@@ -20,6 +24,7 @@ import (
 	chainStorage "github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/bootstrapMocks"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/chainParameters"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/components"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/cryptoMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
@@ -37,7 +42,6 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/testscommon/statusHandler"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/storage"
 	updateMocks "github.com/TerraDharitri/drt-go-chain/update/mock"
-	"github.com/stretchr/testify/require"
 )
 
 const testingProtocolSustainabilityAddress = "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l"
@@ -57,8 +61,10 @@ var (
 )
 
 func createArgsProcessComponentsHolder() ArgsProcessComponentsHolder {
-	nodesSetup, _ := sharding.NewNodesSetup("../../../integrationTests/factory/testdata/nodesSetup.json", addrPubKeyConv, valPubKeyConv, 3)
-
+	var nodesConfig config.NodesConfig
+	_ = core.LoadJsonFile(&nodesConfig, "../../../integrationTests/factory/testdata/nodesSetup.json")
+	nodesSetup, _ := sharding.NewNodesSetup(nodesConfig, &chainParameters.ChainParametersHolderMock{}, addrPubKeyConv, valPubKeyConv, 3)
+	gracePeriod, _ := graceperiod.NewEpochChangeGracePeriod([]config.EpochChangeGracePeriodByEpoch{{EnableEpoch: 0, GracePeriodInRounds: 1}})
 	args := ArgsProcessComponentsHolder{
 		Config: testscommon.GetGeneralConfig(),
 		EpochConfig: config.EpochConfig{
@@ -154,22 +160,23 @@ func createArgsProcessComponentsHolder() ArgsProcessComponentsHolder {
 					return big.NewInt(0).Mul(big.NewInt(1000000000000000000), big.NewInt(20000000))
 				},
 			},
-			Hash:                         blake2b.NewBlake2b(),
-			TxVersionCheckHandler:        &testscommon.TxVersionCheckerStub{},
-			RatingHandler:                &testscommon.RaterMock{},
-			EnableEpochsHandlerField:     &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
-			EnableRoundsHandlerField:     &testscommon.EnableRoundsHandlerStub{},
-			EpochNotifierWithConfirm:     &updateMocks.EpochStartNotifierStub{},
-			RoundHandlerField:            &testscommon.RoundHandlerMock{},
-			RoundChangeNotifier:          &epochNotifier.RoundNotifierStub{},
-			ChanStopProcess:              make(chan endProcess.ArgEndProcess, 1),
-			TxSignHasherField:            keccak.NewKeccak(),
-			HardforkTriggerPubKeyField:   []byte("hardfork pub key"),
-			WasmVMChangeLockerInternal:   &sync.RWMutex{},
-			NodeTypeProviderField:        &nodeTypeProviderMock.NodeTypeProviderStub{},
-			RatingsConfig:                &testscommon.RatingsInfoMock{},
-			PathHdl:                      &testscommon.PathManagerStub{},
-			ProcessStatusHandlerInternal: &testscommon.ProcessStatusHandlerStub{},
+			Hash:                               blake2b.NewBlake2b(),
+			TxVersionCheckHandler:              &testscommon.TxVersionCheckerStub{},
+			RatingHandler:                      &testscommon.RaterMock{},
+			EnableEpochsHandlerField:           &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
+			EnableRoundsHandlerField:           &testscommon.EnableRoundsHandlerStub{},
+			EpochNotifierWithConfirm:           &updateMocks.EpochStartNotifierStub{},
+			RoundHandlerField:                  &testscommon.RoundHandlerMock{},
+			RoundChangeNotifier:                &epochNotifier.RoundNotifierStub{},
+			ChanStopProcess:                    make(chan endProcess.ArgEndProcess, 1),
+			TxSignHasherField:                  keccak.NewKeccak(),
+			HardforkTriggerPubKeyField:         []byte("hardfork pub key"),
+			WasmVMChangeLockerInternal:         &sync.RWMutex{},
+			NodeTypeProviderField:              &nodeTypeProviderMock.NodeTypeProviderStub{},
+			RatingsConfig:                      &testscommon.RatingsInfoMock{},
+			PathHdl:                            &testscommon.PathManagerStub{},
+			ProcessStatusHandlerInternal:       &testscommon.ProcessStatusHandlerStub{},
+			EpochChangeGracePeriodHandlerField: gracePeriod,
 		},
 		CryptoComponents: &mock.CryptoComponentsStub{
 			BlKeyGen: &cryptoMocks.KeyGenStub{},

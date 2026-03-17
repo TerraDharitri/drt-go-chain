@@ -7,6 +7,7 @@ import (
 
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/common/holders"
 )
@@ -230,6 +231,11 @@ func (accountsDB *accountsDBApi) GetTrie(rootHash []byte) (common.Trie, error) {
 // GetStackDebugFirstEntry will call the inner accountsAdapter method
 func (accountsDB *accountsDBApi) GetStackDebugFirstEntry() []byte {
 	return accountsDB.innerAccountsAdapter.GetStackDebugFirstEntry()
+}
+
+// SetTxHashForLatestStateAccesses will call the inner accountsAdapter method
+func (accountsDB *accountsDBApi) SetTxHashForLatestStateAccesses(txHash []byte) {
+	accountsDB.innerAccountsAdapter.SetTxHashForLatestStateAccesses(txHash)
 }
 
 // Close will handle the closing of the underlying components

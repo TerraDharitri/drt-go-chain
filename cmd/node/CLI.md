@@ -1,18 +1,18 @@
 
 # Node CLI
 
-The **Dharitri Node** exposes the following Command Line Interface:
+The **DharitrI Node** exposes the following Command Line Interface:
 
 ```
 $ node --help
 
 NAME:
-   Dharitri Node CLI App - This is the entry point for starting a new Dharitri node - the app will start after the genesis timestamp
+   DharitrI Node CLI App - This is the entry point for starting a new DharitrI node - the app will start after the genesis timestamp
 USAGE:
    node [global options]
    
 AUTHOR:
-   The Dharitri Team <contact@dharitri.org>
+   Team Dharitri <contact@dharitri.org>
    
 GLOBAL OPTIONS:
    --genesis-file [path]                     The [path] for the genesis file. This JSON file contains initial data to bootstrap from, such as initial balances for accounts. (default: "./config/genesis.json")
@@ -73,6 +73,7 @@ GLOBAL OPTIONS:
    --operation-mode operation mode           String flag for specifying the desired operation mode(s) of the node, resulting in altering some configuration values accordingly. Possible values are: snapshotless-observer, full-archive, db-lookup-extension, historical-balances or `""` (empty). Multiple values can be separated via ,
    --repopulate-tokens-supplies              Boolean flag for repopulating the tokens supplies database. It will delete the current data, iterate over the entire trie and add he new obtained supplies
    --p2p-prometheus-metrics                  Boolean option for enabling the /debug/metrics/prometheus route for p2p prometheus metrics
+   --state-accesses-types-to-collect value   String slice option for enabling collecting specified state accesses types. Can be (READ, WRITE)
    --help, -h                                show help
    --version, -v                             print the version
    

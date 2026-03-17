@@ -3,6 +3,7 @@ package factory
 import (
 	"fmt"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
@@ -71,7 +72,7 @@ func checkArgInterceptedDataFactory(args ArgInterceptedDataFactory) error {
 }
 
 // Create creates instances of InterceptedData by unmarshalling provided buffer
-func (ipadf *interceptedPeerAuthenticationDataFactory) Create(buff []byte) (process.InterceptedData, error) {
+func (ipadf *interceptedPeerAuthenticationDataFactory) Create(buff []byte, _ core.PeerID) (process.InterceptedData, error) {
 	arg := heartbeat.ArgInterceptedPeerAuthentication{
 		ArgBaseInterceptedHeartbeat: heartbeat.ArgBaseInterceptedHeartbeat{
 			DataBuff:   buff,

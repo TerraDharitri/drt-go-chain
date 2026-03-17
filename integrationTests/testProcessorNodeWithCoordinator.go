@@ -9,10 +9,12 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-crypto/signing"
 	"github.com/TerraDharitri/drt-go-chain-crypto/signing/ed25519"
 	"github.com/TerraDharitri/drt-go-chain-crypto/signing/mcl"
+	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests/mock"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
 	"github.com/TerraDharitri/drt-go-chain/storage/cache"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/chainParameters"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/genesisMocks"
 	vic "github.com/TerraDharitri/drt-go-chain/testscommon/validatorInfoCacher"
@@ -61,8 +63,14 @@ func CreateProcessorNodesWithNodesCoordinator(
 		for i, v := range validatorList {
 			lruCache, _ := cache.NewLRUCache(10000)
 			argumentsNodesCoordinator := nodesCoordinator.ArgNodesCoordinator{
-				ShardConsensusGroupSize:  shardConsensusGroupSize,
-				MetaConsensusGroupSize:   metaConsensusGroupSize,
+				ChainParametersHandler: &chainParameters.ChainParametersHandlerStub{
+					ChainParametersForEpochCalled: func(_ uint32) (config.ChainParametersByEpochConfig, error) {
+						return config.ChainParametersByEpochConfig{
+							ShardConsensusGroupSize:     uint32(shardConsensusGroupSize),
+							MetachainConsensusGroupSize: uint32(metaConsensusGroupSize),
+						}, nil
+					},
+				},
 				Marshalizer:              TestMarshalizer,
 				Hasher:                   TestHasher,
 				ShardIDAsObserver:        shardId,

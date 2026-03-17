@@ -3,7 +3,7 @@ package processedMb
 import (
 	"sync"
 
-	logger "github.com/TerraDharitri/drt-go-chain-logger"
+	"github.com/TerraDharitri/drt-go-chain-logger"
 	"github.com/TerraDharitri/drt-go-chain/process/block/bootstrapStorage"
 )
 

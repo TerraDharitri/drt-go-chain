@@ -5,14 +5,15 @@ import (
 	"testing"
 	"time"
 
+	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
+	"github.com/stretchr/testify/require"
+
 	"github.com/TerraDharitri/drt-go-chain/common/forking"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	bootstrapComp "github.com/TerraDharitri/drt-go-chain/factory/bootstrap"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests/factory"
 	"github.com/TerraDharitri/drt-go-chain/node"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/goroutines"
-	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
-	"github.com/stretchr/testify/require"
 )
 
 // ------------ Test TestConsensusComponents --------------------
@@ -78,6 +79,7 @@ func TestConsensusComponents_Close_ShouldWork(t *testing.T) {
 		managedCoreComponents.EnableEpochsHandler(),
 		managedDataComponents.Datapool().CurrentEpochValidatorInfo(),
 		managedBootstrapComponents.NodesCoordinatorRegistryFactory(),
+		managedCoreComponents.ChainParametersHandler(),
 	)
 	require.Nil(t, err)
 	managedStatusComponents, err := nr.CreateManagedStatusComponents(

@@ -2,6 +2,7 @@ package status
 
 import (
 	"github.com/TerraDharitri/drt-go-chain-core/core"
+
 	"github.com/TerraDharitri/drt-go-chain/epochStart"
 	outportDriverFactory "github.com/TerraDharitri/drt-go-chain/outport/factory"
 	"github.com/TerraDharitri/drt-go-chain/p2p"

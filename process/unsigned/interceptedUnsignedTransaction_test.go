@@ -12,12 +12,13 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data/smartContractResult"
 	logger "github.com/TerraDharitri/drt-go-chain-logger"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
 	"github.com/TerraDharitri/drt-go-chain/process/unsigned"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
-	"github.com/stretchr/testify/assert"
 )
 
 var senderShard = uint32(2)
@@ -170,7 +171,7 @@ func TestNewInterceptedUnsignedTransaction_ShouldWork(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-// ------- CheckValidity
+// ------- Verify
 
 func TestInterceptedUnsignedTransaction_CheckValidityNilTxHashShouldErr(t *testing.T) {
 	t.Parallel()

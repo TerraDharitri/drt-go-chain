@@ -10,6 +10,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
 	"github.com/TerraDharitri/drt-go-chain/config"
+	"github.com/TerraDharitri/drt-go-chain/integrationTests"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests/vm"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests/vm/txsFee/utils"
 	"github.com/stretchr/testify/require"
@@ -61,11 +62,22 @@ func TestMultiDCDTNFTTransferViaRelayedV2(t *testing.T) {
 
 	relayerSh0 := []byte("12345678901234567890123456789110")
 	relayerSh1 := []byte("12345678901234567890123456789111")
-	sh0Context, err := vm.CreatePreparedTxProcessorWithVMsMultiShard(0, config.EnableEpochs{}, 1)
+	sh0Context, err := vm.CreatePreparedTxProcessorWithVMsMultiShard(
+		0,
+		config.EnableEpochs{
+			RelayedTransactionsV1V2DisableEpoch: integrationTests.UnreachableEpoch,
+		},
+		1,
+	)
 	require.Nil(t, err)
 	defer sh0Context.Close()
 
-	sh1Context, err := vm.CreatePreparedTxProcessorWithVMsMultiShard(1, config.EnableEpochs{}, 1)
+	sh1Context, err := vm.CreatePreparedTxProcessorWithVMsMultiShard(1,
+		config.EnableEpochs{
+			RelayedTransactionsV1V2DisableEpoch: integrationTests.UnreachableEpoch,
+		},
+		1,
+	)
 	require.Nil(t, err)
 	defer sh1Context.Close()
 	_, _ = vm.CreateAccount(sh1Context.Accounts, sh1Addr, 0, big.NewInt(10000000000))

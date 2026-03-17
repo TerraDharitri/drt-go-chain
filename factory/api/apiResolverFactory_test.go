@@ -19,6 +19,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/sync/disabled"
 	"github.com/TerraDharitri/drt-go-chain/state"
+	stateDisabled "github.com/TerraDharitri/drt-go-chain/state/disabled"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	componentsMock "github.com/TerraDharitri/drt-go-chain/testscommon/components"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
@@ -343,6 +344,9 @@ func createMockSCQueryElementArgs() api.SCQueryElementArgs {
 			},
 			PeerAccountsCalled: func() state.AccountsAdapter {
 				return &stateMocks.AccountsStub{}
+			},
+			StateAccessesCollectorCalled: func() state.StateAccessesCollector {
+				return stateDisabled.NewDisabledStateAccessesCollector()
 			},
 		},
 		StatusCoreComponents: &factory.StatusCoreComponentsStub{

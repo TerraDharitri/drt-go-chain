@@ -9,6 +9,7 @@ import (
 	logger "github.com/TerraDharitri/drt-go-chain-logger"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
 	"github.com/TerraDharitri/drt-go-chain-vm-common/parsers"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
@@ -159,6 +160,7 @@ func (pcf *processComponentsFactory) newShardBlockProcessor(
 		pcf.config.SmartContractsStorage,
 		builtInFuncFactory.NFTStorageHandler(),
 		builtInFuncFactory.DCDTGlobalSettingsHandler(),
+		epochStartTrigger,
 	)
 	if err != nil {
 		return nil, err
@@ -273,6 +275,8 @@ func (pcf *processComponentsFactory) newShardBlockProcessor(
 		pcf.state.AccountsAdapter(),
 		pcf.coreData.AddressPubKeyConverter(),
 		pcf.bootstrapComponents.ShardCoordinator(),
+		pcf.coreData.InternalMarshalizer(),
+		pcf.coreData.Hasher(),
 	)
 	if err != nil {
 		return nil, err
@@ -441,6 +445,7 @@ func (pcf *processComponentsFactory) newShardBlockProcessor(
 		BlockProcessingCutoffHandler: blockProcessingCutoffHandler,
 		ManagedPeersHolder:           pcf.crypto.ManagedPeersHolder(),
 		SentSignaturesTracker:        sentSignaturesTracker,
+		StateAccessesCollector:       pcf.state.StateAccessesCollector(),
 	}
 	arguments := block.ArgShardProcessor{
 		ArgBaseProcessor: argumentsBaseProcessor,
@@ -497,6 +502,7 @@ func (pcf *processComponentsFactory) newMetaBlockProcessor(
 		pcf.config.SmartContractsStorage,
 		builtInFuncFactory.NFTStorageHandler(),
 		builtInFuncFactory.DCDTGlobalSettingsHandler(),
+		epochStartTrigger,
 	)
 	if err != nil {
 		return nil, err
@@ -877,6 +883,7 @@ func (pcf *processComponentsFactory) newMetaBlockProcessor(
 		BlockProcessingCutoffHandler: blockProcessingCutoffhandler,
 		ManagedPeersHolder:           pcf.crypto.ManagedPeersHolder(),
 		SentSignaturesTracker:        sentSignaturesTracker,
+		StateAccessesCollector:       pcf.state.StateAccessesCollector(),
 	}
 
 	dcdtOwnerAddress, err := pcf.coreData.AddressPubKeyConverter().Decode(pcf.systemSCConfig.DCDTSystemSCConfig.OwnerAddress)
@@ -1022,7 +1029,7 @@ func (pcf *processComponentsFactory) createOutportDataProvider(
 	return factoryOutportProvider.CreateOutportDataProvider(factoryOutportProvider.ArgOutportDataProviderFactory{
 		HasDrivers:             pcf.statusComponents.OutportHandler().HasDrivers(),
 		AddressConverter:       pcf.coreData.AddressPubKeyConverter(),
-		AccountsDB:             pcf.state.AccountsAdapter(),
+		AccountsDB:             pcf.state.AccountsAdapterAPI(),
 		Marshaller:             pcf.coreData.InternalMarshalizer(),
 		DcdtDataStorageHandler: pcf.dcdtNftStorage,
 		TransactionsStorer:     txsStorer,
@@ -1036,6 +1043,8 @@ func (pcf *processComponentsFactory) createOutportDataProvider(
 		MbsStorer:              mbsStorer,
 		EnableEpochsHandler:    pcf.coreData.EnableEpochsHandler(),
 		ExecutionOrderGetter:   pcf.txExecutionOrderHandler,
+		ProofsPool:             pcf.data.Datapool().Proofs(),
+		StateAccessesCollector: pcf.state.StateAccessesCollector(),
 	})
 }
 
@@ -1048,6 +1057,7 @@ func (pcf *processComponentsFactory) createVMFactoryShard(
 	configSCStorage config.StorageConfig,
 	nftStorageHandler vmcommon.SimpleDCDTNFTStorageHandler,
 	globalSettingsHandler vmcommon.DCDTGlobalSettingsHandler,
+	epochStartTriggerHandler process.EpochStartTriggerHandler,
 ) (process.VirtualMachinesContainerFactory, error) {
 	counter, err := counters.NewUsageCounter(dcdtTransferParser)
 	if err != nil {
@@ -1075,6 +1085,8 @@ func (pcf *processComponentsFactory) createVMFactoryShard(
 		GasSchedule:              pcf.gasSchedule,
 		Counter:                  counter,
 		MissingTrieNodesNotifier: notifier,
+		EpochStartTrigger:        epochStartTriggerHandler,
+		RoundHandler:             pcf.coreData.RoundHandler(),
 	}
 
 	blockChainHookImpl, err := hooks.NewBlockChainHookImpl(argsHook)
@@ -1105,6 +1117,7 @@ func (pcf *processComponentsFactory) createVMFactoryMeta(
 	configSCStorage config.StorageConfig,
 	nftStorageHandler vmcommon.SimpleDCDTNFTStorageHandler,
 	globalSettingsHandler vmcommon.DCDTGlobalSettingsHandler,
+	epochStartTriggerHandler process.EpochStartTriggerHandler,
 ) (process.VirtualMachinesContainerFactory, error) {
 	argsHook := hooks.ArgBlockChainHook{
 		Accounts:                 accounts,
@@ -1127,6 +1140,8 @@ func (pcf *processComponentsFactory) createVMFactoryMeta(
 		GasSchedule:              pcf.gasSchedule,
 		Counter:                  counters.NewDisabledCounter(),
 		MissingTrieNodesNotifier: syncer.NewMissingTrieNodesNotifier(),
+		EpochStartTrigger:        epochStartTriggerHandler,
+		RoundHandler:             pcf.coreData.RoundHandler(), // TODO: @laurci - this needs to be replaced when changing the round duration
 	}
 
 	blockChainHookImpl, err := hooks.NewBlockChainHookImpl(argsHook)

@@ -20,6 +20,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/common/holders"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/blockchain"
+	epochStart "github.com/TerraDharitri/drt-go-chain/epochStart/bootstrap/disabled"
 	"github.com/TerraDharitri/drt-go-chain/genesis"
 	"github.com/TerraDharitri/drt-go-chain/genesis/process/disabled"
 	"github.com/TerraDharitri/drt-go-chain/genesis/process/intermediate"
@@ -399,6 +400,8 @@ func createProcessorsForShardGenesisBlock(arg ArgsGenesisBlockCreator, enableEpo
 		GasSchedule:              arg.GasSchedule,
 		Counter:                  counters.NewDisabledCounter(),
 		MissingTrieNodesNotifier: syncer.NewMissingTrieNodesNotifier(),
+		EpochStartTrigger:        epochStart.NewEpochStartTrigger(),
+		RoundHandler:             &disabled.RoundHandler{},
 	}
 	dcdtTransferParser, err := parsers.NewDCDTTransferParser(arg.Core.InternalMarshalizer())
 	if err != nil {
@@ -539,6 +542,8 @@ func createProcessorsForShardGenesisBlock(arg ArgsGenesisBlockCreator, enableEpo
 		arg.Accounts,
 		arg.Core.AddressPubKeyConverter(),
 		arg.ShardCoordinator,
+		arg.Core.InternalMarshalizer(),
+		arg.Core.Hasher(),
 	)
 	if err != nil {
 		return nil, err

@@ -3,10 +3,10 @@ package disabled
 import (
 	"time"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/p2p"
 	"github.com/TerraDharitri/drt-go-chain/process"
-	"github.com/TerraDharitri/drt-go-chain-core/core"
 )
 
 var _ dataRetriever.P2PAntifloodHandler = (*antiFloodHandler)(nil)
@@ -29,8 +29,8 @@ func (a *antiFloodHandler) CanProcessMessagesOnTopic(_ core.PeerID, _ string, _ 
 	return nil
 }
 
-// ApplyConsensusSize does nothing
-func (a *antiFloodHandler) ApplyConsensusSize(_ int) {
+// SetConsensusSizeNotifier does nothing
+func (a *antiFloodHandler) SetConsensusSizeNotifier(_ process.ChainParametersSubscriber, _ uint32) {
 }
 
 // SetDebugger returns nil

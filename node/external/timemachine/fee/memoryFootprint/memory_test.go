@@ -5,6 +5,8 @@ import (
 	"runtime"
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain/config"
+
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	"github.com/TerraDharitri/drt-go-chain/common"
@@ -29,8 +31,11 @@ func TestFeeComputer_MemoryFootprint(t *testing.T) {
 	journal.before = getMemStats()
 
 	economicsConfig := testscommon.GetEconomicsConfig()
+	cfg := &config.Config{EpochStartConfig: config.EpochStartConfig{RoundsPerEpoch: 14400}}
+	cfg.GeneralSettings.ChainParametersByEpoch = []config.ChainParametersByEpochConfig{{RoundDuration: 6000}}
 	economicsData, _ := economics.NewEconomicsData(economics.ArgsNewEconomicsData{
-		Economics: &economicsConfig,
+		GeneralConfig: cfg,
+		Economics:     &economicsConfig,
 		EnableEpochsHandler: &enableEpochsHandlerMock.EnableEpochsHandlerStub{
 			IsFlagEnabledInEpochCalled: func(flag core.EnableEpochFlag, epoch uint32) bool {
 				if flag == common.PenalizedTooMuchGasFlag {

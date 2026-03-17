@@ -15,8 +15,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/epochStart"
-	errDrt "github.com/TerraDharitri/drt-go-chain/errors"
+	errErd "github.com/TerraDharitri/drt-go-chain/errors"
 	"github.com/TerraDharitri/drt-go-chain/factory"
+	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
 	"github.com/TerraDharitri/drt-go-chain/storage"
@@ -31,13 +32,13 @@ func CreateShardCoordinator(
 	log logger.Logger,
 ) (sharding.Coordinator, core.NodeType, error) {
 	if check.IfNil(nodesConfig) {
-		return nil, "", errDrt.ErrNilGenesisNodesSetupHandler
+		return nil, "", errErd.ErrNilGenesisNodesSetupHandler
 	}
 	if check.IfNil(pubKey) {
-		return nil, "", errDrt.ErrNilPublicKey
+		return nil, "", errErd.ErrNilPublicKey
 	}
 	if check.IfNil(log) {
-		return nil, "", errDrt.ErrNilLogger
+		return nil, "", errErd.ErrNilLogger
 	}
 
 	selfShardId, err := getShardIdFromNodePubKey(pubKey, nodesConfig)
@@ -114,21 +115,22 @@ func CreateNodesCoordinator(
 	enableEpochsHandler common.EnableEpochsHandler,
 	validatorInfoCacher epochStart.ValidatorInfoCacher,
 	nodesCoordinatorRegistryFactory nodesCoordinator.NodesCoordinatorRegistryFactory,
+	chainParametersHandler process.ChainParametersHandler,
 ) (nodesCoordinator.NodesCoordinator, error) {
 	if check.IfNil(nodeShufflerOut) {
-		return nil, errDrt.ErrNilShuffleOutCloser
+		return nil, errErd.ErrNilShuffleOutCloser
 	}
 	if check.IfNil(nodesConfig) {
-		return nil, errDrt.ErrNilGenesisNodesSetupHandler
+		return nil, errErd.ErrNilGenesisNodesSetupHandler
 	}
 	if check.IfNil(epochStartNotifier) {
-		return nil, errDrt.ErrNilEpochStartNotifier
+		return nil, errErd.ErrNilEpochStartNotifier
 	}
 	if check.IfNil(pubKey) {
-		return nil, errDrt.ErrNilPublicKey
+		return nil, errErd.ErrNilPublicKey
 	}
 	if check.IfNil(bootstrapParameters) {
-		return nil, errDrt.ErrNilBootstrapParamsHandler
+		return nil, errErd.ErrNilBootstrapParamsHandler
 	}
 	if chanNodeStop == nil {
 		return nil, nodesCoordinator.ErrNilNodeStopChannel
@@ -148,8 +150,6 @@ func CreateNodesCoordinator(
 	}
 
 	nbShards := nodesConfig.NumberOfShards()
-	shardConsensusGroupSize := int(nodesConfig.GetShardConsensusGroupSize())
-	metaConsensusGroupSize := int(nodesConfig.GetMetaConsensusGroupSize())
 	eligibleNodesInfo, waitingNodesInfo := nodesConfig.InitialNodesInfo()
 
 	eligibleValidators, errEligibleValidators := nodesCoordinator.NodesInfoToValidators(eligibleNodesInfo)
@@ -198,8 +198,7 @@ func CreateNodesCoordinator(
 	}
 
 	argumentsNodesCoordinator := nodesCoordinator.ArgNodesCoordinator{
-		ShardConsensusGroupSize:         shardConsensusGroupSize,
-		MetaConsensusGroupSize:          metaConsensusGroupSize,
+		ChainParametersHandler:          chainParametersHandler,
 		Marshalizer:                     marshalizer,
 		Hasher:                          hasher,
 		Shuffler:                        nodeShuffler,
@@ -244,7 +243,7 @@ func CreateNodesShuffleOut(
 ) (factory.ShuffleOutCloser, error) {
 
 	if check.IfNil(nodesConfig) {
-		return nil, errDrt.ErrNilGenesisNodesSetupHandler
+		return nil, errErd.ErrNilGenesisNodesSetupHandler
 	}
 
 	maxThresholdEpochDuration := epochConfig.MaxShuffledOutRestartThreshold

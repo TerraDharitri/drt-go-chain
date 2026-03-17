@@ -17,7 +17,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/outport/process/alteredaccounts/shared"
 	"github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	dataRetrieverTestsCommon "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/dblookupext"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/genericMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/state"
@@ -33,6 +35,11 @@ func createMockShardAPIProcessor(
 	withHistory bool,
 	withKey bool,
 ) *shardAPIBlockProcessor {
+	chainHandler := &testscommon.ChainHandlerMock{}
+	_ = chainHandler.SetCurrentBlockHeaderAndRootHash(&block.Header{
+		Nonce: 123456,
+	}, []byte("root"))
+
 	return newShardApiBlockProcessor(&ArgAPIBlockProcessor{
 		APITransactionHandler: &mock.TransactionAPIHandlerStub{},
 		SelfShardID:           shardID,
@@ -62,6 +69,9 @@ func createMockShardAPIProcessor(
 		AlteredAccountsProvider:      &testscommon.AlteredAccountsProviderStub{},
 		AccountsRepository:           &state.AccountsRepositoryStub{},
 		ScheduledTxsExecutionHandler: &testscommon.ScheduledTxsExecutionStub{},
+		ProofsPool:                   &dataRetrieverTestsCommon.ProofsPoolMock{},
+		EnableEpochsHandler:          enableEpochsHandlerMock.NewEnableEpochsHandlerStubWithNoFlagsDefined(),
+		BlockChain:                   chainHandler,
 	}, nil)
 }
 
@@ -105,6 +115,31 @@ func TestShardAPIBlockProcessor_GetBlockByNonceInvalidNonceShouldErr(t *testing.
 	blk, err := shardAPIBlockProcessor.GetBlockByNonce(100, api.BlockQueryOptions{})
 	assert.Nil(t, blk)
 	assert.Error(t, err)
+}
+
+func TestShardAPIBlockProcessor_BlockByNonceNonceTooHighShouldErr(t *testing.T) {
+	t.Parallel()
+
+	epoch := uint32(0)
+	shardID := uint32(3)
+	headerHash := []byte("d08089f2ab739520598fd7aeed08c427460fe94f286383047f3f61951afc4e00")
+
+	storerMock := genericMocks.NewStorerMockWithEpoch(epoch)
+
+	blockProc := createMockShardAPIProcessor(
+		shardID,
+		headerHash,
+		storerMock,
+		true,
+		true,
+	)
+	blockProc.blockchain = &testscommon.ChainHandlerMock{}
+	err := blockProc.blockchain.SetCurrentBlockHeaderAndRootHash(&block.Header{Nonce: 10}, []byte("root"))
+	require.NoError(t, err)
+
+	res, err := blockProc.GetBlockByNonce(11, api.BlockQueryOptions{})
+	require.Nil(t, res)
+	require.Equal(t, errBlockNotFound, err)
 }
 
 func TestShardAPIBlockProcessor_GetBlockByRoundInvalidRoundShouldErr(t *testing.T) {
@@ -663,7 +698,7 @@ func TestShardAPIBlockProcessor_GetAlteredAccountsForBlock(t *testing.T) {
 		)
 
 		metaAPIBlockProc.apiTransactionHandler = &mock.TransactionAPIHandlerStub{
-			UnmarshalTransactionCalled: func(txBytes []byte, _ transaction.TxType) (*transaction.ApiTransactionResult, error) {
+			UnmarshalTransactionCalled: func(txBytes []byte, _ transaction.TxType, _ uint32) (*transaction.ApiTransactionResult, error) {
 				var tx transaction.Transaction
 				_ = marshaller.Unmarshal(&tx, txBytes)
 

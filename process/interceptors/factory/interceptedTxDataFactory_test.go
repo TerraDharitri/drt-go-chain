@@ -4,10 +4,10 @@ import (
 	"math/big"
 	"testing"
 
+	dataTransaction "github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
 	"github.com/TerraDharitri/drt-go-chain/process/transaction"
-	dataTransaction "github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -196,7 +196,7 @@ func TestInterceptedTxDataFactory_ShouldWorkAndCreate(t *testing.T) {
 		Value: big.NewInt(0),
 	}
 	emptyTxBuff, _ := marshalizer.Marshal(emptyTx)
-	interceptedData, err := imh.Create(emptyTxBuff)
+	interceptedData, err := imh.Create(emptyTxBuff, "")
 	assert.Nil(t, err)
 
 	_, ok := interceptedData.(*transaction.InterceptedTransaction)

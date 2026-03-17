@@ -4,7 +4,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-communication/websocket/data"
 	"github.com/TerraDharitri/drt-go-chain-communication/websocket/factory"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
+
 	logger "github.com/TerraDharitri/drt-go-chain-logger"
+
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/outport"
 	"github.com/TerraDharitri/drt-go-chain/outport/host"

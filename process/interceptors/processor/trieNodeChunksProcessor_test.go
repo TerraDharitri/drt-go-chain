@@ -7,10 +7,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain/process"
-	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data/batch"
+
+	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -31,7 +34,7 @@ func createMockTrieNodesChunksProcessorArgs() TrieNodesChunksProcessorArgs {
 				return 32
 			},
 		},
-		ChunksCacher:    testscommon.NewCacherMock(),
+		ChunksCacher:    cache.NewCacherMock(),
 		RequestInterval: time.Second,
 		RequestHandler:  &testscommon.RequestHandlerStub{},
 		Topic:           "topic",

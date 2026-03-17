@@ -1,8 +1,8 @@
 package helpers
 
 import (
-	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain/common"
 )
 
 // ComputeRandomnessForTxSorting returns the randomness for transactions sorting

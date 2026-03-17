@@ -6,14 +6,17 @@ import (
 
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/config"
-	errorsDrt "github.com/TerraDharitri/drt-go-chain/errors"
+	errorsMx "github.com/TerraDharitri/drt-go-chain/errors"
 	heartbeatComp "github.com/TerraDharitri/drt-go-chain/factory/heartbeat"
 	testsMocks "github.com/TerraDharitri/drt-go-chain/integrationTests/mock"
 	"github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/bootstrapMocks"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	componentsMock "github.com/TerraDharitri/drt-go-chain/testscommon/components"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/cryptoMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
@@ -23,7 +26,6 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/testscommon/p2pmocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/shardingMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/statusHandler"
-	"github.com/stretchr/testify/assert"
 )
 
 func createMockHeartbeatV2ComponentsFactoryArgs() heartbeatComp.ArgHeartbeatV2ComponentsFactory {
@@ -54,10 +56,10 @@ func createMockHeartbeatV2ComponentsFactoryArgs() heartbeatComp.ArgHeartbeatV2Co
 		DataComponents: &testsMocks.DataComponentsStub{
 			DataPool: &dataRetriever.PoolsHolderStub{
 				PeerAuthenticationsCalled: func() storage.Cacher {
-					return &testscommon.CacherStub{}
+					return &cache.CacherStub{}
 				},
 				HeartbeatsCalled: func() storage.Cacher {
-					return &testscommon.CacherStub{}
+					return &cache.CacherStub{}
 				},
 			},
 			BlockChain: &testscommon.ChainHandlerStub{},
@@ -140,7 +142,7 @@ func TestNewHeartbeatV2ComponentsFactory(t *testing.T) {
 		args.BootstrapComponents = nil
 		hcf, err := heartbeatComp.NewHeartbeatV2ComponentsFactory(args)
 		assert.Nil(t, hcf)
-		assert.Equal(t, errorsDrt.ErrNilBootstrapComponentsHolder, err)
+		assert.Equal(t, errorsMx.ErrNilBootstrapComponentsHolder, err)
 	})
 	t.Run("nil CoreComponents should error", func(t *testing.T) {
 		t.Parallel()
@@ -149,7 +151,7 @@ func TestNewHeartbeatV2ComponentsFactory(t *testing.T) {
 		args.CoreComponents = nil
 		hcf, err := heartbeatComp.NewHeartbeatV2ComponentsFactory(args)
 		assert.Nil(t, hcf)
-		assert.Equal(t, errorsDrt.ErrNilCoreComponentsHolder, err)
+		assert.Equal(t, errorsMx.ErrNilCoreComponentsHolder, err)
 	})
 	t.Run("nil DataComponents should error", func(t *testing.T) {
 		t.Parallel()
@@ -158,7 +160,7 @@ func TestNewHeartbeatV2ComponentsFactory(t *testing.T) {
 		args.DataComponents = nil
 		hcf, err := heartbeatComp.NewHeartbeatV2ComponentsFactory(args)
 		assert.Nil(t, hcf)
-		assert.Equal(t, errorsDrt.ErrNilDataComponentsHolder, err)
+		assert.Equal(t, errorsMx.ErrNilDataComponentsHolder, err)
 	})
 	t.Run("nil DataPool should error", func(t *testing.T) {
 		t.Parallel()
@@ -169,7 +171,7 @@ func TestNewHeartbeatV2ComponentsFactory(t *testing.T) {
 		}
 		hcf, err := heartbeatComp.NewHeartbeatV2ComponentsFactory(args)
 		assert.Nil(t, hcf)
-		assert.Equal(t, errorsDrt.ErrNilDataPoolsHolder, err)
+		assert.Equal(t, errorsMx.ErrNilDataPoolsHolder, err)
 	})
 	t.Run("nil NetworkComponents should error", func(t *testing.T) {
 		t.Parallel()
@@ -178,7 +180,7 @@ func TestNewHeartbeatV2ComponentsFactory(t *testing.T) {
 		args.NetworkComponents = nil
 		hcf, err := heartbeatComp.NewHeartbeatV2ComponentsFactory(args)
 		assert.Nil(t, hcf)
-		assert.Equal(t, errorsDrt.ErrNilNetworkComponentsHolder, err)
+		assert.Equal(t, errorsMx.ErrNilNetworkComponentsHolder, err)
 	})
 	t.Run("nil NetworkMessenger should error", func(t *testing.T) {
 		t.Parallel()
@@ -189,7 +191,7 @@ func TestNewHeartbeatV2ComponentsFactory(t *testing.T) {
 		}
 		hcf, err := heartbeatComp.NewHeartbeatV2ComponentsFactory(args)
 		assert.Nil(t, hcf)
-		assert.True(t, errors.Is(err, errorsDrt.ErrNilMessenger))
+		assert.True(t, errors.Is(err, errorsMx.ErrNilMessenger))
 	})
 	t.Run("nil FullArchiveNetworkMessenger should error", func(t *testing.T) {
 		t.Parallel()
@@ -201,7 +203,7 @@ func TestNewHeartbeatV2ComponentsFactory(t *testing.T) {
 		}
 		hcf, err := heartbeatComp.NewHeartbeatV2ComponentsFactory(args)
 		assert.Nil(t, hcf)
-		assert.True(t, errors.Is(err, errorsDrt.ErrNilMessenger))
+		assert.True(t, errors.Is(err, errorsMx.ErrNilMessenger))
 	})
 	t.Run("nil CryptoComponents should error", func(t *testing.T) {
 		t.Parallel()
@@ -210,7 +212,7 @@ func TestNewHeartbeatV2ComponentsFactory(t *testing.T) {
 		args.CryptoComponents = nil
 		hcf, err := heartbeatComp.NewHeartbeatV2ComponentsFactory(args)
 		assert.Nil(t, hcf)
-		assert.Equal(t, errorsDrt.ErrNilCryptoComponentsHolder, err)
+		assert.Equal(t, errorsMx.ErrNilCryptoComponentsHolder, err)
 	})
 	t.Run("nil ProcessComponents should error", func(t *testing.T) {
 		t.Parallel()
@@ -219,7 +221,7 @@ func TestNewHeartbeatV2ComponentsFactory(t *testing.T) {
 		args.ProcessComponents = nil
 		hcf, err := heartbeatComp.NewHeartbeatV2ComponentsFactory(args)
 		assert.Nil(t, hcf)
-		assert.Equal(t, errorsDrt.ErrNilProcessComponentsHolder, err)
+		assert.Equal(t, errorsMx.ErrNilProcessComponentsHolder, err)
 	})
 	t.Run("nil EpochStartTrigger should error", func(t *testing.T) {
 		t.Parallel()
@@ -230,7 +232,7 @@ func TestNewHeartbeatV2ComponentsFactory(t *testing.T) {
 		}
 		hcf, err := heartbeatComp.NewHeartbeatV2ComponentsFactory(args)
 		assert.Nil(t, hcf)
-		assert.Equal(t, errorsDrt.ErrNilEpochStartTrigger, err)
+		assert.Equal(t, errorsMx.ErrNilEpochStartTrigger, err)
 	})
 	t.Run("nil StatusCoreComponents should error", func(t *testing.T) {
 		t.Parallel()
@@ -239,7 +241,7 @@ func TestNewHeartbeatV2ComponentsFactory(t *testing.T) {
 		args.StatusCoreComponents = nil
 		hcf, err := heartbeatComp.NewHeartbeatV2ComponentsFactory(args)
 		assert.Nil(t, hcf)
-		assert.Equal(t, errorsDrt.ErrNilStatusCoreComponents, err)
+		assert.Equal(t, errorsMx.ErrNilStatusCoreComponents, err)
 	})
 }
 
@@ -374,7 +376,7 @@ func TestHeartbeatV2Components_Create(t *testing.T) {
 
 		hc, err := hcf.Create()
 		assert.Nil(t, hc)
-		assert.True(t, errors.Is(err, errorsDrt.ErrInvalidHeartbeatV2Config))
+		assert.True(t, errors.Is(err, errorsMx.ErrInvalidHeartbeatV2Config))
 	})
 	t.Run("NewPeerTypeProvider fails should error", func(t *testing.T) {
 		t.Parallel()

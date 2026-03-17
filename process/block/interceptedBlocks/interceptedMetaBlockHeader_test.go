@@ -5,22 +5,35 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain/process"
-	"github.com/TerraDharitri/drt-go-chain/process/block/interceptedBlocks"
-	"github.com/TerraDharitri/drt-go-chain/process/mock"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	dataBlock "github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/TerraDharitri/drt-go-chain/common/graceperiod"
+	"github.com/TerraDharitri/drt-go-chain/config"
+	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain/process/block/interceptedBlocks"
+	"github.com/TerraDharitri/drt-go-chain/process/mock"
+	"github.com/TerraDharitri/drt-go-chain/sharding"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/consensus"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 )
 
 func createDefaultMetaArgument() *interceptedBlocks.ArgInterceptedBlockHeader {
+	shardCoordinator := mock.NewOneShardCoordinatorMock()
+	return createMetaArgumentWithShardCoordinator(shardCoordinator)
+}
+
+func createMetaArgumentWithShardCoordinator(shardCoordinator sharding.Coordinator) *interceptedBlocks.ArgInterceptedBlockHeader {
+	gracePeriod, _ := graceperiod.NewEpochChangeGracePeriod([]config.EpochChangeGracePeriodByEpoch{{EnableEpoch: 0, GracePeriodInRounds: 1}})
 	arg := &interceptedBlocks.ArgInterceptedBlockHeader{
-		ShardCoordinator:        mock.NewOneShardCoordinatorMock(),
+		ShardCoordinator:        shardCoordinator,
 		Hasher:                  testHasher,
 		Marshalizer:             testMarshalizer,
-		HeaderSigVerifier:       &mock.HeaderSigVerifierStub{},
+		HeaderSigVerifier:       &consensus.HeaderSigVerifierMock{},
 		HeaderIntegrityVerifier: &mock.HeaderIntegrityVerifierStub{},
 		ValidityAttester:        &mock.ValidityAttesterStub{},
 		EpochStartTrigger: &mock.EpochStartTriggerStub{
@@ -28,6 +41,8 @@ func createDefaultMetaArgument() *interceptedBlocks.ArgInterceptedBlockHeader {
 				return hdrEpoch
 			},
 		},
+		EnableEpochsHandler:           &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
+		EpochChangeGracePeriodHandler: gracePeriod,
 	}
 
 	hdr := createMockMetaHeader()
@@ -60,7 +75,7 @@ func createMockMetaHeader() *dataBlock.MetaBlock {
 	}
 }
 
-//------- TestNewInterceptedHeader
+// ------- TestNewInterceptedHeader
 
 func TestNewInterceptedMetaHeader_NilArgumentShouldErr(t *testing.T) {
 	t.Parallel()
@@ -95,7 +110,7 @@ func TestNewInterceptedMetaHeader_ShouldWork(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-//------- CheckValidity
+// ------- CheckValidity
 
 func TestInterceptedMetaHeader_CheckValidityNilPubKeyBitmapShouldErr(t *testing.T) {
 	t.Parallel()
@@ -128,7 +143,10 @@ func TestInterceptedMetaHeader_ErrorInMiniBlockShouldErr(t *testing.T) {
 	}
 	buff, _ := testMarshalizer.Marshal(hdr)
 
-	arg := createDefaultMetaArgument()
+	shardCoordinator := mock.NewOneShardCoordinatorMock()
+	_ = shardCoordinator.SetSelfId(core.MetachainShardId)
+
+	arg := createMetaArgumentWithShardCoordinator(shardCoordinator)
 	arg.HdrBuff = buff
 	inHdr, _ := interceptedBlocks.NewInterceptedMetaHeader(arg)
 
@@ -182,7 +200,7 @@ func TestInterceptedMetaHeader_CheckAgainstFinalHeaderAttesterFailsShouldErr(t *
 	assert.Equal(t, expectedErr, err)
 }
 
-//------- getters
+// ------- getters
 
 func TestInterceptedMetaHeader_Getters(t *testing.T) {
 	t.Parallel()
@@ -204,7 +222,7 @@ func TestInterceptedMetaHeader_CheckValidityLeaderSignatureNotCorrectShouldErr(t
 	buff, _ := testMarshalizer.Marshal(hdr)
 
 	arg := createDefaultMetaArgument()
-	arg.HeaderSigVerifier = &mock.HeaderSigVerifierStub{
+	arg.HeaderSigVerifier = &consensus.HeaderSigVerifierMock{
 		VerifyRandSeedAndLeaderSignatureCalled: func(header data.HeaderHandler) error {
 			return expectedErr
 		},
@@ -283,7 +301,7 @@ func TestInterceptedMetaHeader_isMetaHeaderEpochOutOfRange(t *testing.T) {
 	})
 }
 
-//------- IsInterfaceNil
+// ------- IsInterfaceNil
 
 func TestInterceptedMetaHeader_IsInterfaceNil(t *testing.T) {
 	t.Parallel()

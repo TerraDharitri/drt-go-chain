@@ -12,13 +12,15 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/common/forking"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/facade"
+	"github.com/TerraDharitri/drt-go-chain/factory"
 	apiComp "github.com/TerraDharitri/drt-go-chain/factory/api"
 	nodePack "github.com/TerraDharitri/drt-go-chain/node"
+	simulatorHeartbeat "github.com/TerraDharitri/drt-go-chain/node/chainSimulator/components/heartbeat"
 	"github.com/TerraDharitri/drt-go-chain/node/metrics"
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
 )
 
-func (node *testOnlyProcessingNode) createFacade(configs config.Configs, apiInterface APIConfigurator, vmQueryDelayAfterStartInMs uint64) error {
+func (node *testOnlyProcessingNode) createFacade(configs config.Configs, apiInterface APIConfigurator, vmQueryDelayAfterStartInMs uint64, monitor factory.HeartbeatV2Monitor) error {
 	log.Debug("creating api resolver structure")
 
 	err := node.createMetrics(configs)
@@ -69,9 +71,16 @@ func (node *testOnlyProcessingNode) createFacade(configs config.Configs, apiInte
 		return err
 	}
 
-	log.Debug("creating dharitri node facade")
+	log.Debug("creating TerraDharitri node facade")
 
 	flagsConfig := configs.FlagsConfig
+
+	heartbeatComponents, err := simulatorHeartbeat.NewSyncedHeartbeatComponents(monitor)
+	if err != nil {
+		return err
+	}
+
+	node.closeHandler.AddComponent(heartbeatComponents)
 
 	nd, err := nodePack.NewNode(
 		nodePack.WithStatusCoreComponents(node.StatusCoreComponents),
@@ -85,7 +94,6 @@ func (node *testOnlyProcessingNode) createFacade(configs config.Configs, apiInte
 		nodePack.WithNetworkComponents(node.NetworkComponentsHolder),
 		nodePack.WithInitialNodesPubKeys(node.CoreComponentsHolder.GenesisNodesSetup().InitialNodesPubKeys()),
 		nodePack.WithRoundDuration(node.CoreComponentsHolder.GenesisNodesSetup().GetRoundDuration()),
-		nodePack.WithConsensusGroupSize(int(node.CoreComponentsHolder.GenesisNodesSetup().GetShardConsensusGroupSize())),
 		nodePack.WithGenesisTime(node.CoreComponentsHolder.GenesisTime()),
 		nodePack.WithConsensusType(configs.GeneralConfig.Consensus.Type),
 		nodePack.WithRequestedItemsHandler(node.ProcessComponentsHolder.RequestedItemsHandler()),
@@ -95,6 +103,7 @@ func (node *testOnlyProcessingNode) createFacade(configs config.Configs, apiInte
 		nodePack.WithNodeStopChannel(node.CoreComponentsHolder.ChanStopNodeProcess()),
 		nodePack.WithImportMode(configs.ImportDbConfig.IsImportDBMode),
 		nodePack.WithDCDTNFTStorageHandler(node.ProcessComponentsHolder.DCDTDataStorageHandlerForAPI()),
+		nodePack.WithHeartbeatV2Components(heartbeatComponents),
 	)
 	if err != nil {
 		return errors.New("error creating node: " + err.Error())

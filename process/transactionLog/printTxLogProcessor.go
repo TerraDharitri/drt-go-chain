@@ -44,6 +44,7 @@ func (tlp *printTxLogProcessor) SaveLog(txHash []byte, _ data.TransactionHandler
 	if len(logEntries) == 0 {
 		return nil
 	}
+
 	log.Debug("printTxLogProcessor.SaveLog", "transaction hash", hex.EncodeToString(txHash))
 	for _, entry := range logEntries {
 		log.Debug("printTxLogProcessor.entry",
@@ -54,12 +55,12 @@ func (tlp *printTxLogProcessor) SaveLog(txHash []byte, _ data.TransactionHandler
 	return nil
 }
 
-
 func prepareTopics(topics [][]byte) string {
 	all := ""
 	for _, topic := range topics {
 		all = strings.Join([]string{all, string(topic)}, " ")
 	}
+
 	return all
 }
 

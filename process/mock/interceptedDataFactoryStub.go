@@ -1,6 +1,9 @@
 package mock
 
-import "github.com/TerraDharitri/drt-go-chain/process"
+import (
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain/process"
+)
 
 // InterceptedDataFactoryStub -
 type InterceptedDataFactoryStub struct {
@@ -8,7 +11,7 @@ type InterceptedDataFactoryStub struct {
 }
 
 // Create -
-func (idfs *InterceptedDataFactoryStub) Create(buff []byte) (process.InterceptedData, error) {
+func (idfs *InterceptedDataFactoryStub) Create(buff []byte, _ core.PeerID) (process.InterceptedData, error) {
 	return idfs.CreateCalled(buff)
 }
 

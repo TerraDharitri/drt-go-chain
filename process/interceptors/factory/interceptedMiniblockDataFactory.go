@@ -1,12 +1,13 @@
 package factory
 
 import (
-	"github.com/TerraDharitri/drt-go-chain/process"
-	"github.com/TerraDharitri/drt-go-chain/process/block/interceptedBlocks"
-	"github.com/TerraDharitri/drt-go-chain/sharding"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
+	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain/process/block/interceptedBlocks"
+	"github.com/TerraDharitri/drt-go-chain/sharding"
 )
 
 var _ process.InterceptedDataFactory = (*interceptedMiniblockDataFactory)(nil)
@@ -43,7 +44,7 @@ func NewInterceptedMiniblockDataFactory(argument *ArgInterceptedDataFactory) (*i
 }
 
 // Create creates instances of InterceptedData by unmarshalling provided buffer
-func (imfd *interceptedMiniblockDataFactory) Create(buff []byte) (process.InterceptedData, error) {
+func (imfd *interceptedMiniblockDataFactory) Create(buff []byte, _ core.PeerID) (process.InterceptedData, error) {
 	arg := &interceptedBlocks.ArgInterceptedMiniblock{
 		MiniblockBuff:    buff,
 		Marshalizer:      imfd.marshalizer,

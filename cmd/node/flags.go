@@ -7,11 +7,12 @@ import (
 	"runtime"
 
 	logger "github.com/TerraDharitri/drt-go-chain-logger"
+	"github.com/urfave/cli"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/common/operationmodes"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/facade"
-	"github.com/urfave/cli"
 )
 
 var (
@@ -408,6 +409,13 @@ var (
 		Name:  "p2p-prometheus-metrics",
 		Usage: "Boolean option for enabling the /debug/metrics/prometheus route for p2p prometheus metrics",
 	}
+
+	// stateAccessesTypesToCollect defines a flag for collecting specified types of state accesses
+	// If enabled, it will override the configuration
+	stateAccessesTypesToCollect = cli.StringSliceFlag{
+		Name:  "state-accesses-types-to-collect",
+		Usage: "String slice option for enabling collecting specified state accesses types. Can be (READ, WRITE)",
+	}
 )
 
 func getFlags() []cli.Flag {
@@ -470,6 +478,7 @@ func getFlags() []cli.Flag {
 		operationMode,
 		repopulateTokensSupplies,
 		p2pPrometheusMetrics,
+		stateAccessesTypesToCollect,
 	}
 }
 

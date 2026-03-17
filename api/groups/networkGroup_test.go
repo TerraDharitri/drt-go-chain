@@ -12,6 +12,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain-core/data/api"
 	apiErrors "github.com/TerraDharitri/drt-go-chain/api/errors"
 	"github.com/TerraDharitri/drt-go-chain/api/groups"
 	"github.com/TerraDharitri/drt-go-chain/api/mock"
@@ -21,7 +22,6 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/node/external"
 	"github.com/TerraDharitri/drt-go-chain/statusHandler"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
-	"github.com/TerraDharitri/drt-go-chain-core/data/api"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

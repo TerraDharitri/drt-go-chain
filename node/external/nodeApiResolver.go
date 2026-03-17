@@ -9,6 +9,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data/alteredAccount"
 	"github.com/TerraDharitri/drt-go-chain-core/data/api"
+	"github.com/TerraDharitri/drt-go-chain-core/data/smartContractResult"
 	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	logger "github.com/TerraDharitri/drt-go-chain-logger"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
@@ -153,6 +154,11 @@ func (nar *nodeApiResolver) ComputeTransactionGasLimit(tx *transaction.Transacti
 // SimulateTransactionExecution will simulate the provided transaction and return the simulation results
 func (nar *nodeApiResolver) SimulateTransactionExecution(tx *transaction.Transaction) (*txSimData.SimulationResultsWithVMOutput, error) {
 	return nar.apiTransactionEvaluator.SimulateTransactionExecution(tx)
+}
+
+// SimulateSCRExecutionCost will simulate the provided smart contract results and return the simulation results
+func (nar *nodeApiResolver) SimulateSCRExecutionCost(scr *smartContractResult.SmartContractResult) (*transaction.CostResponse, error) {
+	return nar.apiTransactionEvaluator.SimulateSCRExecutionCost(scr)
 }
 
 // Close closes all underlying components

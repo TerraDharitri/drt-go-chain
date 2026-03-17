@@ -9,6 +9,7 @@ import (
 
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	logger "github.com/TerraDharitri/drt-go-chain-logger"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
@@ -69,6 +70,7 @@ type ArgsExporter struct {
 	TrieSyncerVersion                int
 	CheckNodesOnDisk                 bool
 	NodeOperationMode                common.NodeOperation
+	InterceptedDataVerifierFactory   process.InterceptedDataVerifierFactory
 }
 
 type exportHandlerFactory struct {
@@ -108,6 +110,7 @@ type exportHandlerFactory struct {
 	trieSyncerVersion                int
 	checkNodesOnDisk                 bool
 	nodeOperationMode                common.NodeOperation
+	interceptedDataVerifierFactory   process.InterceptedDataVerifierFactory
 }
 
 // NewExportHandlerFactory creates an exporter factory
@@ -266,6 +269,7 @@ func NewExportHandlerFactory(args ArgsExporter) (*exportHandlerFactory, error) {
 		checkNodesOnDisk:                 args.CheckNodesOnDisk,
 		statusCoreComponents:             args.StatusCoreComponents,
 		nodeOperationMode:                args.NodeOperationMode,
+		interceptedDataVerifierFactory:   args.InterceptedDataVerifierFactory,
 	}
 
 	return e, nil
@@ -588,6 +592,7 @@ func (e *exportHandlerFactory) createInterceptors() error {
 		FullArchiveInterceptorsContainer: e.fullArchiveInterceptorsContainer,
 		AntifloodHandler:                 e.networkComponents.InputAntiFloodHandler(),
 		NodeOperationMode:                e.nodeOperationMode,
+		InterceptedDataVerifierFactory:   e.interceptedDataVerifierFactory,
 	}
 	fullSyncInterceptors, err := NewFullSyncInterceptorsContainerFactory(argsInterceptors)
 	if err != nil {

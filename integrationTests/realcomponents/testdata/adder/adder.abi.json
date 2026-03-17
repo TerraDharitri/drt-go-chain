@@ -1,19 +1,19 @@
 {
     "buildInfo": {
         "rustc": {
-            "version": "1.60.0-nightly",
-            "commitHash": "c5c610aad0a012a9228ecb83cc19e77111a52140",
-            "commitDate": "2022-02-14",
-            "channel": "Nightly",
-            "short": "rustc 1.60.0-nightly (c5c610aad 2022-02-14)"
+            "version": "1.87.0",
+            "commitHash": "17067e9ac6d7ecb70e50f92c1944e545188d2359",
+            "commitDate": "2025-05-09",
+            "channel": "Stable",
+            "short": "rustc 1.87.0 (17067e9ac 2025-05-09)"
         },
         "contractCrate": {
             "name": "adder",
             "version": "0.0.0"
         },
         "framework": {
-            "name": "numbat-wasm",
-            "version": "0.29.3"
+            "name": "dharitri-sc",
+            "version": "1.20.0"
         }
     },
     "docs": [
@@ -22,6 +22,15 @@
     ],
     "name": "Adder",
     "constructor": {
+        "inputs": [
+            {
+                "name": "initial_value",
+                "type": "BigUint"
+            }
+        ],
+        "outputs": []
+    },
+    "upgradeConstructor": {
         "inputs": [
             {
                 "name": "initial_value",
@@ -56,6 +65,7 @@
             "outputs": []
         }
     ],
+    "dcdtAttributes": [],
     "hasCallback": false,
     "types": {}
 }

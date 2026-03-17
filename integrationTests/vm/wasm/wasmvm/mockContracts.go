@@ -8,11 +8,13 @@ import (
 
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/data/dcdt"
-	worldmock "github.com/TerraDharitri/drt-go-chain-scenario/worldmock"
+	"github.com/TerraDharitri/drt-go-chain-scenario/worldmock"
 	"github.com/TerraDharitri/drt-go-chain-vm/executor"
 	contextmock "github.com/TerraDharitri/drt-go-chain-vm/mock/context"
 	"github.com/TerraDharitri/drt-go-chain-vm/testcommon"
 	"github.com/TerraDharitri/drt-go-chain-vm/vmhost"
+	"github.com/stretchr/testify/require"
+
 	"github.com/TerraDharitri/drt-go-chain/integrationTests"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/factory"
@@ -21,8 +23,8 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
+	stateMock "github.com/TerraDharitri/drt-go-chain/testscommon/state"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/txDataBuilder"
-	"github.com/stretchr/testify/require"
 )
 
 // MockInitialBalance represents a mock balance
@@ -106,9 +108,10 @@ func GetAddressForNewAccountOnWalletAndNodeWithVM(
 
 	address := net.NewAddressWithVM(wallet, vmType)
 	argsAccCreation := stateFactory.ArgsAccountCreator{
-		Hasher:              &hashingMocks.HasherMock{},
-		Marshaller:          &marshallerMock.MarshalizerMock{},
-		EnableEpochsHandler: &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
+		Hasher:                 &hashingMocks.HasherMock{},
+		Marshaller:             &marshallerMock.MarshalizerMock{},
+		EnableEpochsHandler:    &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
+		StateAccessesCollector: &stateMock.StateAccessesCollectorStub{},
 	}
 	accountFactory, _ := stateFactory.NewAccountCreator(argsAccCreation)
 

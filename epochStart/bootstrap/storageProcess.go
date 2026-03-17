@@ -5,6 +5,14 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/core/partitioning"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
+	"github.com/TerraDharitri/drt-go-chain/process/interceptors/processor"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
@@ -19,12 +27,6 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/storage/cache"
 	storageFactory "github.com/TerraDharitri/drt-go-chain/storage/factory"
 	"github.com/TerraDharitri/drt-go-chain/trie/factory"
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/core/partitioning"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
 )
 
 // ArgsStorageEpochStartBootstrap holds the arguments needed for creating an epoch start data provider component
@@ -177,16 +179,19 @@ func (sesb *storageEpochStartBootstrap) prepareComponentsToSync() error {
 	}
 
 	argsEpochStartSyncer := ArgsNewEpochStartMetaSyncer{
-		CoreComponentsHolder:    sesb.coreComponentsHolder,
-		CryptoComponentsHolder:  sesb.cryptoComponentsHolder,
-		RequestHandler:          sesb.requestHandler,
-		Messenger:               sesb.mainMessenger,
-		ShardCoordinator:        sesb.shardCoordinator,
-		EconomicsData:           sesb.economicsData,
-		WhitelistHandler:        sesb.whiteListHandler,
-		StartInEpochConfig:      sesb.generalConfig.EpochStartConfig,
-		HeaderIntegrityVerifier: sesb.headerIntegrityVerifier,
-		MetaBlockProcessor:      metablockProcessor,
+		CoreComponentsHolder:           sesb.coreComponentsHolder,
+		CryptoComponentsHolder:         sesb.cryptoComponentsHolder,
+		RequestHandler:                 sesb.requestHandler,
+		Messenger:                      sesb.mainMessenger,
+		ShardCoordinator:               sesb.shardCoordinator,
+		EconomicsData:                  sesb.economicsData,
+		WhitelistHandler:               sesb.whiteListHandler,
+		StartInEpochConfig:             sesb.generalConfig.EpochStartConfig,
+		HeaderIntegrityVerifier:        sesb.headerIntegrityVerifier,
+		MetaBlockProcessor:             metablockProcessor,
+		InterceptedDataVerifierFactory: sesb.interceptedDataVerifierFactory,
+		ProofsPool:                     sesb.dataPool.Proofs(),
+		ProofsInterceptorProcessor:     processor.NewEquivalentProofsInterceptorProcessor(),
 	}
 
 	sesb.epochStartMetaBlockSyncer, err = NewEpochStartMetaSyncer(argsEpochStartSyncer)
@@ -409,6 +414,7 @@ func (sesb *storageEpochStartBootstrap) processNodesConfig(pubKey []byte) error 
 		RequestHandler:                  sesb.requestHandler,
 		ChanceComputer:                  sesb.rater,
 		GenesisNodesConfig:              sesb.genesisNodesConfig,
+		ChainParametersHandler:          sesb.coreComponentsHolder.ChainParametersHandler(),
 		NodeShuffler:                    sesb.nodeShuffler,
 		Hasher:                          sesb.coreComponentsHolder.Hasher(),
 		PubKey:                          pubKey,

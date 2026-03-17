@@ -3,10 +3,10 @@ package bootstrap
 import (
 	"fmt"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/common/statistics"
 	"github.com/TerraDharitri/drt-go-chain/epochStart"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 )
 
 const baseErrorMessage = "error with epoch start bootstrapper arguments"
@@ -122,6 +122,9 @@ func checkArguments(args ArgsEpochStartBootstrap) error {
 	}
 	if check.IfNil(args.NodesCoordinatorRegistryFactory) {
 		return fmt.Errorf("%s: %w", baseErrorMessage, nodesCoordinator.ErrNilNodesCoordinatorRegistryFactory)
+	}
+	if check.IfNil(args.EnableEpochsHandler) {
+		return fmt.Errorf("%s: %w", baseErrorMessage, epochStart.ErrNilEnableEpochsHandler)
 	}
 
 	return nil

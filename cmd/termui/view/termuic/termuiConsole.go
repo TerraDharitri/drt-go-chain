@@ -8,7 +8,7 @@ import (
 	"syscall"
 	"time"
 
-	logger "github.com/TerraDharitri/drt-go-chain-logger"
+	"github.com/TerraDharitri/drt-go-chain-logger"
 	"github.com/TerraDharitri/drt-go-chain/cmd/termui/view"
 	"github.com/TerraDharitri/drt-go-chain/cmd/termui/view/termuic/termuiRenders"
 	ui "github.com/gizak/termui/v3"

@@ -5,21 +5,25 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain/config"
-	"github.com/TerraDharitri/drt-go-chain/epochStart"
-	"github.com/TerraDharitri/drt-go-chain/epochStart/mock"
-	"github.com/TerraDharitri/drt-go-chain/p2p"
-	"github.com/TerraDharitri/drt-go-chain/testscommon"
-	"github.com/TerraDharitri/drt-go-chain/testscommon/cryptoMocks"
-	"github.com/TerraDharitri/drt-go-chain/testscommon/economicsmocks"
-	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
-	"github.com/TerraDharitri/drt-go-chain/testscommon/p2pmocks"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/TerraDharitri/drt-go-chain/common/graceperiod"
+	"github.com/TerraDharitri/drt-go-chain/config"
+	"github.com/TerraDharitri/drt-go-chain/epochStart"
+	"github.com/TerraDharitri/drt-go-chain/epochStart/mock"
+	"github.com/TerraDharitri/drt-go-chain/p2p"
+	processMock "github.com/TerraDharitri/drt-go-chain/process/mock"
+	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cryptoMocks"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/economicsmocks"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/p2pmocks"
 )
 
 func TestNewEpochStartMetaSyncer_NilsShouldError(t *testing.T) {
@@ -48,6 +52,12 @@ func TestNewEpochStartMetaSyncer_NilsShouldError(t *testing.T) {
 	ess, err = NewEpochStartMetaSyncer(args)
 	assert.True(t, check.IfNil(ess))
 	assert.Equal(t, epochStart.ErrNilMetablockProcessor, err)
+
+	args = getEpochStartSyncerArgs()
+	args.InterceptedDataVerifierFactory = nil
+	ess, err = NewEpochStartMetaSyncer(args)
+	assert.True(t, check.IfNil(ess))
+	assert.Equal(t, epochStart.ErrNilInterceptedDataVerifierFactory, err)
 }
 
 func TestNewEpochStartMetaSyncer_ShouldWork(t *testing.T) {
@@ -71,7 +81,8 @@ func TestEpochStartMetaSyncer_SyncEpochStartMetaRegisterMessengerProcessorFailsS
 		},
 	}
 	args.Messenger = messenger
-	ess, _ := NewEpochStartMetaSyncer(args)
+	ess, err := NewEpochStartMetaSyncer(args)
+	require.NoError(t, err)
 
 	mb, err := ess.SyncEpochStartMeta(time.Second)
 	require.Equal(t, expectedErr, err)
@@ -131,6 +142,7 @@ func TestEpochStartMetaSyncer_SyncEpochStartMetaShouldWork(t *testing.T) {
 }
 
 func getEpochStartSyncerArgs() ArgsNewEpochStartMetaSyncer {
+	gracePeriod, _ := graceperiod.NewEpochChangeGracePeriod([]config.EpochChangeGracePeriodByEpoch{{EnableEpoch: 0, GracePeriodInRounds: 1}})
 	return ArgsNewEpochStartMetaSyncer{
 		CoreComponentsHolder: &mock.CoreComponentsMock{
 			IntMarsh:            &mock.MarshalizerMock{},
@@ -142,6 +154,7 @@ func getEpochStartSyncerArgs() ArgsNewEpochStartMetaSyncer {
 			ChainIdCalled: func() string {
 				return "chain-ID"
 			},
+			EpochChangeGracePeriodHandlerField: gracePeriod,
 		},
 		CryptoComponentsHolder: &mock.CryptoComponentsMock{
 			PubKey:   &cryptoMocks.PublicKeyStub{},
@@ -159,7 +172,10 @@ func getEpochStartSyncerArgs() ArgsNewEpochStartMetaSyncer {
 			MinNumConnectedPeersToStart:       2,
 			MinNumOfPeersToConsiderBlockValid: 2,
 		},
-		HeaderIntegrityVerifier: &mock.HeaderIntegrityVerifierStub{},
-		MetaBlockProcessor:      &mock.EpochStartMetaBlockProcessorStub{},
+		HeaderIntegrityVerifier:        &mock.HeaderIntegrityVerifierStub{},
+		MetaBlockProcessor:             &mock.EpochStartMetaBlockProcessorStub{},
+		InterceptedDataVerifierFactory: &processMock.InterceptedDataVerifierFactoryMock{},
+		ProofsPool:                     &dataRetriever.ProofsPoolMock{},
+		ProofsInterceptorProcessor:     &processMock.InterceptorProcessorStub{},
 	}
 }

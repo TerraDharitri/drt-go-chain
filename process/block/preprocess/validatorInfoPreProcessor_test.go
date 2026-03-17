@@ -5,20 +5,22 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
-	"github.com/TerraDharitri/drt-go-chain/process"
-	"github.com/TerraDharitri/drt-go-chain/state"
-	"github.com/TerraDharitri/drt-go-chain/testscommon"
-	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
-	"github.com/TerraDharitri/drt-go-chain/testscommon/genericMocks"
-	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
-	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
-	"github.com/TerraDharitri/drt-go-chain/testscommon/storage"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain-core/data/rewardTx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
+	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain/state"
+	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/genericMocks"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/storage"
 )
 
 func TestNewValidatorInfoPreprocessor_NilHasherShouldErr(t *testing.T) {
@@ -289,7 +291,7 @@ func TestNewValidatorInfoPreprocessor_RestorePeerBlockIntoPools(t *testing.T) {
 
 	blockBody := &block.Body{}
 	blockBody.MiniBlocks = append(blockBody.MiniBlocks, &mb1)
-	miniBlockPool := testscommon.NewCacherMock()
+	miniBlockPool := cache.NewCacherMock()
 
 	marshalizedMb, _ := marshalizer.Marshal(mb1)
 	mbHash := hasher.Compute(string(marshalizedMb))
@@ -334,7 +336,7 @@ func TestNewValidatorInfoPreprocessor_RestoreOtherBlockTypeIntoPoolsShouldNotRes
 
 	blockBody := &block.Body{}
 	blockBody.MiniBlocks = append(blockBody.MiniBlocks, &mb1)
-	miniBlockPool := testscommon.NewCacherMock()
+	miniBlockPool := cache.NewCacherMock()
 
 	marshalizedMb, _ := marshalizer.Marshal(mb1)
 	mbHash := hasher.Compute(string(marshalizedMb))
@@ -382,7 +384,7 @@ func TestNewValidatorInfoPreprocessor_RemovePeerBlockFromPool(t *testing.T) {
 
 	blockBody := &block.Body{}
 	blockBody.MiniBlocks = append(blockBody.MiniBlocks, &mb1)
-	miniBlockPool := testscommon.NewCacherMock()
+	miniBlockPool := cache.NewCacherMock()
 	miniBlockPool.Put(mbHash, marshalizedMb, len(marshalizedMb))
 
 	foundMb, ok := miniBlockPool.Get(mbHash)
@@ -427,7 +429,7 @@ func TestNewValidatorInfoPreprocessor_RemoveOtherBlockTypeFromPoolShouldNotRemov
 
 	blockBody := &block.Body{}
 	blockBody.MiniBlocks = append(blockBody.MiniBlocks, &mb1)
-	miniBlockPool := testscommon.NewCacherMock()
+	miniBlockPool := cache.NewCacherMock()
 	miniBlockPool.Put(mbHash, marshalizedMb, len(marshalizedMb))
 
 	foundMb, ok := miniBlockPool.Get(mbHash)

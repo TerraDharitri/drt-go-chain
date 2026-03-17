@@ -7,6 +7,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain/factory/processing"
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
+	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/components"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -28,8 +29,8 @@ func TestManagedProcessComponents_createAPITransactionEvaluator(t *testing.T) {
 		pcf, err := processing.NewProcessComponentsFactory(processArgs)
 		require.Nil(t, err)
 
-		apiTransactionEvaluator, vmContainerFactory, err := pcf.CreateAPITransactionEvaluator()
-		require.NotNil(t, err)
+		apiTransactionEvaluator, vmContainerFactory, err := pcf.CreateAPITransactionEvaluator(&testscommon.EpochStartTriggerStub{})
+		assert.NotNil(t, err)
 		assert.True(t, check.IfNil(apiTransactionEvaluator))
 		assert.True(t, check.IfNil(vmContainerFactory))
 		assert.Contains(t, err.Error(), "not supported cache type")
@@ -39,8 +40,8 @@ func TestManagedProcessComponents_createAPITransactionEvaluator(t *testing.T) {
 		pcf, err := processing.NewProcessComponentsFactory(processArgs)
 		require.Nil(t, err)
 
-		apiTransactionEvaluator, vmContainerFactory, err := pcf.CreateAPITransactionEvaluator()
-		require.Nil(t, err)
+		apiTransactionEvaluator, vmContainerFactory, err := pcf.CreateAPITransactionEvaluator(&testscommon.EpochStartTriggerStub{})
+		assert.Nil(t, err)
 		assert.False(t, check.IfNil(apiTransactionEvaluator))
 		assert.False(t, check.IfNil(vmContainerFactory))
 		require.NoError(t, vmContainerFactory.Close())
@@ -50,8 +51,8 @@ func TestManagedProcessComponents_createAPITransactionEvaluator(t *testing.T) {
 		pcf, err := processing.NewProcessComponentsFactory(processArgs)
 		require.Nil(t, err)
 
-		apiTransactionEvaluator, vmContainerFactory, err := pcf.CreateAPITransactionEvaluator()
-		require.Nil(t, err)
+		apiTransactionEvaluator, vmContainerFactory, err := pcf.CreateAPITransactionEvaluator(&testscommon.EpochStartTriggerStub{})
+		assert.Nil(t, err)
 		assert.False(t, check.IfNil(apiTransactionEvaluator))
 		assert.False(t, check.IfNil(vmContainerFactory))
 		require.NoError(t, vmContainerFactory.Close())

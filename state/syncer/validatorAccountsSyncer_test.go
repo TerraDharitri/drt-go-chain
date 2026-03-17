@@ -4,15 +4,16 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/state"
 	"github.com/TerraDharitri/drt-go-chain/state/syncer"
-	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/storageManager"
 	"github.com/TerraDharitri/drt-go-chain/trie"
 	"github.com/TerraDharitri/drt-go-chain/trie/storageMarker"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestNewValidatorAccountsSyncer(t *testing.T) {
@@ -93,7 +94,7 @@ func TestValidatorAccountsSyncer_SyncAccounts(t *testing.T) {
 			},
 		}
 
-		cacher := testscommon.NewCacherMock()
+		cacher := cache.NewCacherMock()
 		cacher.Put(key, itn, 0)
 		args.Cacher = cacher
 

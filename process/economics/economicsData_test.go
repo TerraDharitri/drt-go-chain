@@ -48,6 +48,10 @@ func createDummyEconomicsConfig(feeSettings config.FeeSettings) *config.Economic
 					TopUpGradientPoint:               "300000000000000000000",
 					TopUpFactor:                      0.25,
 					EpochEnable:                      0,
+					EcosystemGrowthPercentage:        0.0,
+					EcosystemGrowthAddress:           "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l",
+					GrowthDividendPercentage:         0.0,
+					GrowthDividendAddress:            "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l",
 				},
 			},
 		},
@@ -66,6 +70,7 @@ func feeSettingsDummy(gasModifier float64) config.FeeSettings {
 				MaxGasLimitPerTx:            "100000",
 				MinGasLimit:                 "500",
 				ExtraGasLimitGuardedTx:      "50000",
+				MaxGasHigherFactorAccepted:  "10",
 			},
 		},
 		MinGasPrice:            "18446744073709551615",
@@ -86,6 +91,7 @@ func feeSettingsReal() config.FeeSettings {
 				MaxGasLimitPerTx:            "1500000000",
 				MinGasLimit:                 "50000",
 				ExtraGasLimitGuardedTx:      "50000",
+				MaxGasHigherFactorAccepted:  "10",
 			},
 		},
 		MinGasPrice:            "1000000000",
@@ -99,7 +105,10 @@ func createArgsForEconomicsData(gasModifier float64) economics.ArgsNewEconomicsD
 	feeSettings := feeSettingsDummy(gasModifier)
 	pkConv, _ := pubkeyConverter.NewBech32PubkeyConverter(32, "drt")
 	shardC, _ := sharding.NewMultiShardCoordinator(2, 0)
+	cfg := &config.Config{EpochStartConfig: config.EpochStartConfig{RoundsPerEpoch: 14400}}
+	cfg.GeneralSettings.ChainParametersByEpoch = []config.ChainParametersByEpochConfig{{RoundDuration: 6000}}
 	args := economics.ArgsNewEconomicsData{
+		GeneralConfig: cfg,
 		Economics:     createDummyEconomicsConfig(feeSettings),
 		EpochNotifier: &epochNotifier.EpochNotifierStub{},
 		EnableEpochsHandler: &enableEpochsHandlerMock.EnableEpochsHandlerStub{
@@ -118,7 +127,10 @@ func createArgsForEconomicsDataRealFees() economics.ArgsNewEconomicsData {
 	feeSettings := feeSettingsReal()
 	pkConv, _ := pubkeyConverter.NewBech32PubkeyConverter(32, "drt")
 	shardC, _ := sharding.NewMultiShardCoordinator(2, 0)
+	cfg := &config.Config{EpochStartConfig: config.EpochStartConfig{RoundsPerEpoch: 14400}}
+	cfg.GeneralSettings.ChainParametersByEpoch = []config.ChainParametersByEpochConfig{{RoundDuration: 6000}}
 	args := economics.ArgsNewEconomicsData{
+		GeneralConfig: cfg,
 		Economics:     createDummyEconomicsConfig(feeSettings),
 		EpochNotifier: &epochNotifier.EpochNotifierStub{},
 		EnableEpochsHandler: &enableEpochsHandlerMock.EnableEpochsHandlerStub{
@@ -397,6 +409,36 @@ func TestNewEconomicsData_InvalidExtraGasLimitGuardedTxShouldErr(t *testing.T) {
 		_, err := economics.NewEconomicsData(args)
 		assert.True(t, errors.Is(err, process.ErrInvalidExtraGasLimitGuardedTx))
 	}
+}
+
+func TestNewEconomicsData_InvalidMaxGasHigherFactorAccepted(t *testing.T) {
+	t.Parallel()
+
+	args := createArgsForEconomicsData(1)
+	badExtraMaxGasHigherFactorAccepted := []string{
+		"-1",
+		"-100000000000000000000",
+		"badValue",
+		"",
+		"#########",
+		"11112S",
+		"1111O0000",
+		"10DRT",
+	}
+
+	for _, gasLimitGuardedTx := range badExtraMaxGasHigherFactorAccepted {
+		args.Economics.FeeSettings.GasLimitSettings[0].MaxGasHigherFactorAccepted = gasLimitGuardedTx
+		_, err := economics.NewEconomicsData(args)
+		assert.True(t, errors.Is(err, process.ErrInvalidMaxGasHigherFactorAccepted))
+	}
+
+	args.Economics.FeeSettings.GasLimitSettings[0].MaxGasHigherFactorAccepted = "0"
+	_, err := economics.NewEconomicsData(args)
+	assert.True(t, errors.Is(err, process.ErrInvalidMaxGasHigherFactorAccepted))
+
+	args.Economics.FeeSettings.GasLimitSettings[0].MaxGasHigherFactorAccepted = "2"
+	_, err = economics.NewEconomicsData(args)
+	assert.Nil(t, err)
 }
 
 func TestNewEconomicsData_MaxGasLimitPerBlockLowerThanMinGasLimitShouldErr(t *testing.T) {
@@ -737,6 +779,10 @@ func TestEconomicsData_ConfirmedEpochRewardsSettingsChangeOrderedConfigs(t *test
 			TopUpGradientPoint:               "300000000000000000000",
 			TopUpFactor:                      0.25,
 			EpochEnable:                      0,
+			EcosystemGrowthPercentage:        0.0,
+			EcosystemGrowthAddress:           "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l",
+			GrowthDividendPercentage:         0.0,
+			GrowthDividendAddress:            "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l",
 		},
 		{
 			LeaderPercentage:                 0.2,
@@ -746,6 +792,10 @@ func TestEconomicsData_ConfirmedEpochRewardsSettingsChangeOrderedConfigs(t *test
 			TopUpGradientPoint:               "200000000000000000000",
 			TopUpFactor:                      0.5,
 			EpochEnable:                      2,
+			EcosystemGrowthPercentage:        0.0,
+			EcosystemGrowthAddress:           "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l",
+			GrowthDividendPercentage:         0.0,
+			GrowthDividendAddress:            "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l",
 		},
 	}
 
@@ -781,6 +831,7 @@ func TestEconomicsData_ConfirmedGasLimitSettingsChangeOrderedConfigs(t *testing.
 			MaxGasLimitPerTx:            "1500000000",
 			MinGasLimit:                 "50000",
 			ExtraGasLimitGuardedTx:      "50000",
+			MaxGasHigherFactorAccepted:  "10",
 		},
 		{
 			EnableEpoch:                 2,
@@ -791,6 +842,7 @@ func TestEconomicsData_ConfirmedGasLimitSettingsChangeOrderedConfigs(t *testing.
 			MaxGasLimitPerTx:            "500000000",
 			MinGasLimit:                 "50000",
 			ExtraGasLimitGuardedTx:      "50000",
+			MaxGasHigherFactorAccepted:  "10",
 		},
 	}
 
@@ -823,6 +875,10 @@ func TestEconomicsData_ConfirmedEpochRewardsSettingsChangeUnOrderedConfigs(t *te
 			TopUpGradientPoint:               "200000000000000000000",
 			TopUpFactor:                      0.5,
 			EpochEnable:                      2,
+			EcosystemGrowthPercentage:        0.0,
+			EcosystemGrowthAddress:           "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l",
+			GrowthDividendPercentage:         0.0,
+			GrowthDividendAddress:            "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l",
 		},
 		{
 			LeaderPercentage:                 0.1,
@@ -832,6 +888,10 @@ func TestEconomicsData_ConfirmedEpochRewardsSettingsChangeUnOrderedConfigs(t *te
 			TopUpGradientPoint:               "300000000000000000000",
 			TopUpFactor:                      0.25,
 			EpochEnable:                      0,
+			EcosystemGrowthPercentage:        0.0,
+			EcosystemGrowthAddress:           "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l",
+			GrowthDividendPercentage:         0.0,
+			GrowthDividendAddress:            "drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l",
 		},
 	}
 	expectedRS := getExpectedSettings(rs, args.PubkeyConverter)
@@ -865,6 +925,7 @@ func TestEconomicsData_ConfirmedGasLimitSettingsChangeUnOrderedConfigs(t *testin
 			MaxGasLimitPerTx:            "500000000",
 			MinGasLimit:                 "50000",
 			ExtraGasLimitGuardedTx:      "50000",
+			MaxGasHigherFactorAccepted:  "10",
 		},
 		{
 			EnableEpoch:                 0,
@@ -875,6 +936,7 @@ func TestEconomicsData_ConfirmedGasLimitSettingsChangeUnOrderedConfigs(t *testin
 			MaxGasLimitPerTx:            "1500000000",
 			MinGasLimit:                 "50000",
 			ExtraGasLimitGuardedTx:      "50000",
+			MaxGasHigherFactorAccepted:  "10",
 		},
 	}
 
@@ -1419,18 +1481,6 @@ func TestEconomicsData_SetStatusHandler(t *testing.T) {
 	})
 }
 
-func TestEconomicsData_MinInflationRate(t *testing.T) {
-	t.Parallel()
-
-	args := createArgsForEconomicsData(1)
-	minInflationRate := 0.40
-	args.Economics.GlobalSettings.MinimumInflation = minInflationRate
-	economicsData, _ := economics.NewEconomicsData(args)
-
-	value := economicsData.MinInflationRate()
-	assert.Equal(t, minInflationRate, value)
-}
-
 func TestEconomicsData_MaxInflationRate(t *testing.T) {
 	t.Parallel()
 
@@ -1439,12 +1489,13 @@ func TestEconomicsData_MaxInflationRate(t *testing.T) {
 	maxInflationRate := 0.99
 	args.Economics.GlobalSettings.MinimumInflation = minInflationRate
 	args.Economics.GlobalSettings.YearSettings[0].MaximumInflation = maxInflationRate
+	args.Economics.GlobalSettings.TailInflation.EnableEpoch = 100
 	economicsData, _ := economics.NewEconomicsData(args)
 
-	value := economicsData.MaxInflationRate(0)
+	value := economicsData.MaxInflationRate(0, 0)
 	assert.Equal(t, maxInflationRate, value)
 
-	value = economicsData.MaxInflationRate(1) // missing from GlobalSettings
+	value = economicsData.MaxInflationRate(1, 1) // missing from GlobalSettings
 	assert.Equal(t, minInflationRate, value)
 }
 
@@ -1686,6 +1737,22 @@ func TestEconomicsData_RewardsTopUpFactor(t *testing.T) {
 
 	value := economicsData.RewardsTopUpFactor()
 	assert.Equal(t, topUpFactor, value)
+}
+
+func TestEconomicsData_RewardsSettingsGetters(t *testing.T) {
+	t.Parallel()
+
+	args := createArgsForEconomicsData(1)
+	economicsData, _ := economics.NewEconomicsData(args)
+
+	pkConv, _ := pubkeyConverter.NewBech32PubkeyConverter(32, "drt")
+	expectedAddr, _ := pkConv.Decode("drt1932eft30w753xyvme8d49qejgkjc09n5e49w4mwdjtm0neld797spn6u9l")
+
+	// Test getters for epoch 0
+	assert.Equal(t, 0.0, economicsData.EcosystemGrowthPercentageInEpoch(0))
+	assert.Equal(t, string(expectedAddr), economicsData.EcosystemGrowthAddressInEpoch(0))
+	assert.Equal(t, 0.0, economicsData.GrowthDividendPercentageInEpoch(0))
+	assert.Equal(t, string(expectedAddr), economicsData.GrowthDividendAddressInEpoch(0))
 }
 
 func getExpectedSettings(rs []config.EpochRewardSettings, pkConv core.PubkeyConverter) []config.EpochRewardSettings {

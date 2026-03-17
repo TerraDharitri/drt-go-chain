@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/TerraDharitri/drt-go-chain-core/core"
+
 	"github.com/TerraDharitri/drt-go-chain/integrationTests"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests/vm/dcdt"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests/vm/dcdt/nft"
@@ -29,11 +30,11 @@ func TestDCDTNonFungibleTokenCreateAndBurn(t *testing.T) {
 		numMetachainNodes,
 	)
 
-	idxProposers := make([]int, numOfShards+1)
+	leaders := make([]*integrationTests.TestProcessorNode, numOfShards+1)
 	for i := 0; i < numOfShards; i++ {
-		idxProposers[i] = i * nodesPerShard
+		leaders[i] = nodes[i*nodesPerShard]
 	}
-	idxProposers[numOfShards] = numOfShards * nodesPerShard
+	leaders[numOfShards] = nodes[numOfShards*nodesPerShard]
 
 	integrationTests.DisplayAndStartNodes(nodes)
 
@@ -59,7 +60,7 @@ func TestDCDTNonFungibleTokenCreateAndBurn(t *testing.T) {
 	tokenIdentifier, nftMetaData := nft.PrepareNFTWithRoles(
 		t,
 		nodes,
-		idxProposers,
+		leaders,
 		nodes[1],
 		&round,
 		&nonce,
@@ -85,7 +86,7 @@ func TestDCDTNonFungibleTokenCreateAndBurn(t *testing.T) {
 
 	time.Sleep(time.Second)
 	nrRoundsToPropagateMultiShard := 5
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, nrRoundsToPropagateMultiShard, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, nrRoundsToPropagateMultiShard, nonce, round)
 	time.Sleep(time.Second)
 
 	// the token data is removed from trie if the quantity is 0, so we should not find it
@@ -116,11 +117,11 @@ func TestDCDTSemiFungibleTokenCreateAddAndBurn(t *testing.T) {
 		numMetachainNodes,
 	)
 
-	idxProposers := make([]int, numOfShards+1)
+	leaders := make([]*integrationTests.TestProcessorNode, numOfShards+1)
 	for i := 0; i < numOfShards; i++ {
-		idxProposers[i] = i * nodesPerShard
+		leaders[i] = nodes[i*nodesPerShard]
 	}
-	idxProposers[numOfShards] = numOfShards * nodesPerShard
+	leaders[numOfShards] = nodes[numOfShards*nodesPerShard]
 
 	integrationTests.DisplayAndStartNodes(nodes)
 
@@ -148,7 +149,7 @@ func TestDCDTSemiFungibleTokenCreateAddAndBurn(t *testing.T) {
 	tokenIdentifier, nftMetaData := nft.PrepareNFTWithRoles(
 		t,
 		nodes,
-		idxProposers,
+		leaders,
 		nodes[1],
 		&round,
 		&nonce,
@@ -174,7 +175,7 @@ func TestDCDTSemiFungibleTokenCreateAddAndBurn(t *testing.T) {
 
 	time.Sleep(time.Second)
 	nrRoundsToPropagateMultiShard := 5
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, nrRoundsToPropagateMultiShard, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, nrRoundsToPropagateMultiShard, nonce, round)
 	time.Sleep(time.Second)
 
 	nftMetaData.Quantity += quantityToAdd
@@ -190,7 +191,7 @@ func TestDCDTSemiFungibleTokenCreateAddAndBurn(t *testing.T) {
 
 	time.Sleep(time.Second)
 	nrRoundsToPropagateMultiShard = 5
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, nrRoundsToPropagateMultiShard, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, nrRoundsToPropagateMultiShard, nonce, round)
 	time.Sleep(time.Second)
 
 	nft.CheckNftData(
@@ -219,7 +220,7 @@ func TestDCDTSemiFungibleTokenCreateAddAndBurn(t *testing.T) {
 
 	time.Sleep(time.Second)
 	nrRoundsToPropagateMultiShard = 5
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, nrRoundsToPropagateMultiShard, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, nrRoundsToPropagateMultiShard, nonce, round)
 	time.Sleep(time.Second)
 
 	nftMetaData.Quantity -= quantityToBurn
@@ -249,11 +250,11 @@ func TestDCDTNonFungibleTokenTransferSelfShard(t *testing.T) {
 		numMetachainNodes,
 	)
 
-	idxProposers := make([]int, numOfShards+1)
+	leaders := make([]*integrationTests.TestProcessorNode, numOfShards+1)
 	for i := 0; i < numOfShards; i++ {
-		idxProposers[i] = i * nodesPerShard
+		leaders[i] = nodes[i*nodesPerShard]
 	}
-	idxProposers[numOfShards] = numOfShards * nodesPerShard
+	leaders[numOfShards] = nodes[numOfShards*nodesPerShard]
 
 	integrationTests.DisplayAndStartNodes(nodes)
 
@@ -278,7 +279,7 @@ func TestDCDTNonFungibleTokenTransferSelfShard(t *testing.T) {
 	tokenIdentifier, nftMetaData := nft.PrepareNFTWithRoles(
 		t,
 		nodes,
-		idxProposers,
+		leaders,
 		nodes[1],
 		&round,
 		&nonce,
@@ -315,7 +316,7 @@ func TestDCDTNonFungibleTokenTransferSelfShard(t *testing.T) {
 
 	time.Sleep(time.Second)
 	nrRoundsToPropagateMultiShard := 5
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, nrRoundsToPropagateMultiShard, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, nrRoundsToPropagateMultiShard, nonce, round)
 	time.Sleep(time.Second)
 
 	// check that the new address owns the NFT
@@ -357,11 +358,11 @@ func TestDCDTSemiFungibleTokenTransferCrossShard(t *testing.T) {
 		numMetachainNodes,
 	)
 
-	idxProposers := make([]int, numOfShards+1)
+	leaders := make([]*integrationTests.TestProcessorNode, numOfShards+1)
 	for i := 0; i < numOfShards; i++ {
-		idxProposers[i] = i * nodesPerShard
+		leaders[i] = nodes[i*nodesPerShard]
 	}
-	idxProposers[numOfShards] = numOfShards * nodesPerShard
+	leaders[numOfShards] = nodes[numOfShards*nodesPerShard]
 
 	integrationTests.DisplayAndStartNodes(nodes)
 
@@ -398,7 +399,7 @@ func TestDCDTSemiFungibleTokenTransferCrossShard(t *testing.T) {
 	tokenIdentifier, nftMetaData := nft.PrepareNFTWithRoles(
 		t,
 		nodes,
-		idxProposers,
+		leaders,
 		nodeInDifferentShard,
 		&round,
 		&nonce,
@@ -424,7 +425,7 @@ func TestDCDTSemiFungibleTokenTransferCrossShard(t *testing.T) {
 
 	time.Sleep(time.Second)
 	nrRoundsToPropagateMultiShard := 5
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, nrRoundsToPropagateMultiShard, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, nrRoundsToPropagateMultiShard, nonce, round)
 	time.Sleep(time.Second)
 
 	nftMetaData.Quantity += quantityToAdd
@@ -440,7 +441,7 @@ func TestDCDTSemiFungibleTokenTransferCrossShard(t *testing.T) {
 
 	time.Sleep(time.Second)
 	nrRoundsToPropagateMultiShard = 5
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, nrRoundsToPropagateMultiShard, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, nrRoundsToPropagateMultiShard, nonce, round)
 	time.Sleep(time.Second)
 
 	nft.CheckNftData(
@@ -469,7 +470,7 @@ func TestDCDTSemiFungibleTokenTransferCrossShard(t *testing.T) {
 
 	time.Sleep(time.Second)
 	nrRoundsToPropagateMultiShard = 11
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, nrRoundsToPropagateMultiShard, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, nrRoundsToPropagateMultiShard, nonce, round)
 	time.Sleep(time.Second)
 
 	nftMetaData.Quantity = initialQuantity + quantityToAdd - quantityToTransfer
@@ -510,11 +511,11 @@ func TestDCDTSemiFungibleTokenTransferToSystemScAddressShouldReceiveBack(t *test
 		numMetachainNodes,
 	)
 
-	idxProposers := make([]int, numOfShards+1)
+	leaders := make([]*integrationTests.TestProcessorNode, numOfShards+1)
 	for i := 0; i < numOfShards; i++ {
-		idxProposers[i] = i * nodesPerShard
+		leaders[i] = nodes[i*nodesPerShard]
 	}
-	idxProposers[numOfShards] = numOfShards * nodesPerShard
+	leaders[numOfShards] = nodes[numOfShards*nodesPerShard]
 
 	integrationTests.DisplayAndStartNodes(nodes)
 
@@ -542,7 +543,7 @@ func TestDCDTSemiFungibleTokenTransferToSystemScAddressShouldReceiveBack(t *test
 	tokenIdentifier, nftMetaData := nft.PrepareNFTWithRoles(
 		t,
 		nodes,
-		idxProposers,
+		leaders,
 		nodes[0],
 		&round,
 		&nonce,
@@ -568,7 +569,7 @@ func TestDCDTSemiFungibleTokenTransferToSystemScAddressShouldReceiveBack(t *test
 
 	time.Sleep(time.Second)
 	nrRoundsToPropagateMultiShard := 5
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, nrRoundsToPropagateMultiShard, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, nrRoundsToPropagateMultiShard, nonce, round)
 	time.Sleep(time.Second)
 
 	nftMetaData.Quantity += quantityToAdd
@@ -584,7 +585,7 @@ func TestDCDTSemiFungibleTokenTransferToSystemScAddressShouldReceiveBack(t *test
 
 	time.Sleep(time.Second)
 	nrRoundsToPropagateMultiShard = 5
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, nrRoundsToPropagateMultiShard, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, nrRoundsToPropagateMultiShard, nonce, round)
 	time.Sleep(time.Second)
 
 	nft.CheckNftData(
@@ -613,7 +614,7 @@ func TestDCDTSemiFungibleTokenTransferToSystemScAddressShouldReceiveBack(t *test
 
 	time.Sleep(time.Second)
 	nrRoundsToPropagateMultiShard = 15
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, nrRoundsToPropagateMultiShard, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, nrRoundsToPropagateMultiShard, nonce, round)
 	time.Sleep(time.Second)
 
 	nftMetaData.Quantity = 0 // make sure that the DCDT SC address didn't receive the token
@@ -640,7 +641,7 @@ func TestDCDTSemiFungibleTokenTransferToSystemScAddressShouldReceiveBack(t *test
 }
 
 func testNFTSendCreateRole(t *testing.T, numOfShards int) {
-	nodes, idxProposers := dcdt.CreateNodesAndPrepareBalances(numOfShards)
+	nodes, leaders := dcdt.CreateNodesAndPrepareBalances(numOfShards)
 
 	defer func() {
 		for _, n := range nodes {
@@ -665,7 +666,7 @@ func testNFTSendCreateRole(t *testing.T, numOfShards int) {
 	tokenIdentifier, nftMetaData := nft.PrepareNFTWithRoles(
 		t,
 		nodes,
-		idxProposers,
+		leaders,
 		nftCreator,
 		&round,
 		&nonce,
@@ -698,7 +699,7 @@ func testNFTSendCreateRole(t *testing.T, numOfShards int) {
 
 	time.Sleep(time.Second)
 	nrRoundsToPropagateMultiShard := 20
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, nrRoundsToPropagateMultiShard, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, nrRoundsToPropagateMultiShard, nonce, round)
 	time.Sleep(time.Second)
 
 	nft.CreateNFT(
@@ -710,7 +711,7 @@ func testNFTSendCreateRole(t *testing.T, numOfShards int) {
 
 	time.Sleep(time.Second)
 	nrRoundsToPropagateMultiShard = 2
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, nrRoundsToPropagateMultiShard, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, nrRoundsToPropagateMultiShard, nonce, round)
 	time.Sleep(time.Second)
 
 	nft.CheckNftData(
@@ -766,11 +767,11 @@ func testDCDTSemiFungibleTokenTransferRole(t *testing.T, numOfShards int) {
 		numMetachainNodes,
 	)
 
-	idxProposers := make([]int, numOfShards+1)
+	leaders := make([]*integrationTests.TestProcessorNode, numOfShards+1)
 	for i := 0; i < numOfShards; i++ {
-		idxProposers[i] = i * nodesPerShard
+		leaders[i] = nodes[i*nodesPerShard]
 	}
-	idxProposers[numOfShards] = numOfShards * nodesPerShard
+	leaders[numOfShards] = nodes[numOfShards*nodesPerShard]
 
 	integrationTests.DisplayAndStartNodes(nodes)
 
@@ -808,7 +809,7 @@ func testDCDTSemiFungibleTokenTransferRole(t *testing.T, numOfShards int) {
 	tokenIdentifier, nftMetaData := nft.PrepareNFTWithRoles(
 		t,
 		nodes,
-		idxProposers,
+		leaders,
 		nodeInDifferentShard,
 		&round,
 		&nonce,
@@ -834,7 +835,7 @@ func testDCDTSemiFungibleTokenTransferRole(t *testing.T, numOfShards int) {
 
 	time.Sleep(time.Second)
 	nrRoundsToPropagateMultiShard := 5
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, nrRoundsToPropagateMultiShard, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, nrRoundsToPropagateMultiShard, nonce, round)
 	time.Sleep(time.Second)
 
 	nftMetaData.Quantity += quantityToAdd
@@ -850,7 +851,7 @@ func testDCDTSemiFungibleTokenTransferRole(t *testing.T, numOfShards int) {
 
 	time.Sleep(time.Second)
 	nrRoundsToPropagateMultiShard = 5
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, nrRoundsToPropagateMultiShard, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, nrRoundsToPropagateMultiShard, nonce, round)
 	time.Sleep(time.Second)
 
 	nft.CheckNftData(
@@ -879,7 +880,7 @@ func testDCDTSemiFungibleTokenTransferRole(t *testing.T, numOfShards int) {
 
 	time.Sleep(time.Second)
 	nrRoundsToPropagateMultiShard = 11
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, nrRoundsToPropagateMultiShard, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, nrRoundsToPropagateMultiShard, nonce, round)
 	time.Sleep(time.Second)
 
 	nftMetaData.Quantity = initialQuantity + quantityToAdd - quantityToTransfer
@@ -920,11 +921,11 @@ func TestDCDTSFTWithEnhancedTransferRole(t *testing.T) {
 		numMetachainNodes,
 	)
 
-	idxProposers := make([]int, numOfShards+1)
+	leaders := make([]*integrationTests.TestProcessorNode, numOfShards+1)
 	for i := 0; i < numOfShards; i++ {
-		idxProposers[i] = i * nodesPerShard
+		leaders[i] = nodes[i*nodesPerShard]
 	}
-	idxProposers[numOfShards] = numOfShards * nodesPerShard
+	leaders[numOfShards] = nodes[numOfShards*nodesPerShard]
 
 	integrationTests.DisplayAndStartNodes(nodes)
 
@@ -954,7 +955,7 @@ func TestDCDTSFTWithEnhancedTransferRole(t *testing.T) {
 	tokenIdentifier, nftMetaData := nft.PrepareNFTWithRoles(
 		t,
 		nodes,
-		idxProposers,
+		leaders,
 		tokenIssuer,
 		&round,
 		&nonce,
@@ -980,7 +981,7 @@ func TestDCDTSFTWithEnhancedTransferRole(t *testing.T) {
 
 	time.Sleep(time.Second)
 	nrRoundsToPropagateMultiShard := 2
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, nrRoundsToPropagateMultiShard, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, nrRoundsToPropagateMultiShard, nonce, round)
 	time.Sleep(time.Second)
 
 	nftMetaData.Quantity += quantityToAdd
@@ -1013,7 +1014,7 @@ func TestDCDTSFTWithEnhancedTransferRole(t *testing.T) {
 
 	time.Sleep(time.Second)
 	nrRoundsToPropagateMultiShard = 12
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, nrRoundsToPropagateMultiShard, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, nrRoundsToPropagateMultiShard, nonce, round)
 	time.Sleep(time.Second)
 
 	nftMetaData.Quantity = initialQuantity + quantityToAdd - int64(len(nodes)-1)*quantityToTransfer
@@ -1056,7 +1057,7 @@ func TestDCDTSFTWithEnhancedTransferRole(t *testing.T) {
 
 	time.Sleep(time.Second)
 	nrRoundsToPropagateMultiShard = 12
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, nrRoundsToPropagateMultiShard, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, nrRoundsToPropagateMultiShard, nonce, round)
 	time.Sleep(time.Second)
 
 	nftMetaData.Quantity = initialQuantity + quantityToAdd
@@ -1101,7 +1102,7 @@ func TestNFTTransferCreateAndSetRolesCrossShard(t *testing.T) {
 }
 
 func testNFTTransferCreateRoleAndStop(t *testing.T, numOfShards int) {
-	nodes, idxProposers := dcdt.CreateNodesAndPrepareBalances(numOfShards)
+	nodes, leaders := dcdt.CreateNodesAndPrepareBalances(numOfShards)
 
 	defer func() {
 		for _, n := range nodes {
@@ -1126,7 +1127,7 @@ func testNFTTransferCreateRoleAndStop(t *testing.T, numOfShards int) {
 	tokenIdentifier, nftMetaData := nft.PrepareNFTWithRoles(
 		t,
 		nodes,
-		idxProposers,
+		leaders,
 		nftCreator,
 		&round,
 		&nonce,
@@ -1158,7 +1159,7 @@ func testNFTTransferCreateRoleAndStop(t *testing.T, numOfShards int) {
 	)
 
 	time.Sleep(time.Second)
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, 15, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, 15, nonce, round)
 	time.Sleep(time.Second)
 
 	// stopNFTCreate
@@ -1173,7 +1174,7 @@ func testNFTTransferCreateRoleAndStop(t *testing.T, numOfShards int) {
 	)
 
 	time.Sleep(time.Second)
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, 2, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, 2, nonce, round)
 	time.Sleep(time.Second)
 
 	// setCreateRole
@@ -1190,7 +1191,7 @@ func testNFTTransferCreateRoleAndStop(t *testing.T, numOfShards int) {
 	)
 
 	time.Sleep(time.Second)
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, 20, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, 20, nonce, round)
 	time.Sleep(time.Second)
 
 	newNFTMetaData := nft.NftArguments{
@@ -1210,7 +1211,7 @@ func testNFTTransferCreateRoleAndStop(t *testing.T, numOfShards int) {
 	)
 
 	time.Sleep(time.Second)
-	nonce, round = integrationTests.WaitOperationToBeDone(t, nodes, 2, nonce, round, idxProposers)
+	nonce, round = integrationTests.WaitOperationToBeDone(t, leaders, nodes, 2, nonce, round)
 	time.Sleep(time.Second)
 
 	// we check that old data remains on NONCE 1 - as creation must return failure

@@ -5,7 +5,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
+	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/outport"
 	"github.com/TerraDharitri/drt-go-chain/outport/process"
 	"github.com/TerraDharitri/drt-go-chain/outport/process/alteredaccounts"
@@ -37,6 +39,8 @@ type ArgOutportDataProviderFactory struct {
 	MbsStorer              storage.Storer
 	EnableEpochsHandler    common.EnableEpochsHandler
 	ExecutionOrderGetter   common.ExecutionOrderGetter
+	ProofsPool             dataRetriever.ProofsPool
+	StateAccessesCollector state.StateAccessesCollector
 }
 
 // CreateOutportDataProvider will create a new instance of outport.DataProviderOutport
@@ -85,5 +89,8 @@ func CreateOutportDataProvider(arg ArgOutportDataProviderFactory) (outport.DataP
 		ExecutionOrderHandler:    arg.ExecutionOrderGetter,
 		Hasher:                   arg.Hasher,
 		Marshaller:               arg.Marshaller,
+		ProofsPool:               arg.ProofsPool,
+		EnableEpochsHandler:      arg.EnableEpochsHandler,
+		StateAccessesCollector:   arg.StateAccessesCollector,
 	})
 }

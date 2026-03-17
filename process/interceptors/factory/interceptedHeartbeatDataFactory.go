@@ -1,11 +1,11 @@
 package factory
 
 import (
-	"github.com/TerraDharitri/drt-go-chain/process"
-	"github.com/TerraDharitri/drt-go-chain/process/heartbeat"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
+	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain/process/heartbeat"
 )
 
 type interceptedHeartbeatDataFactory struct {
@@ -29,7 +29,7 @@ func NewInterceptedHeartbeatDataFactory(arg ArgInterceptedDataFactory) (*interce
 }
 
 // Create creates instances of InterceptedData by unmarshalling provided buffer
-func (ihdf *interceptedHeartbeatDataFactory) Create(buff []byte) (process.InterceptedData, error) {
+func (ihdf *interceptedHeartbeatDataFactory) Create(buff []byte, _ core.PeerID) (process.InterceptedData, error) {
 	arg := heartbeat.ArgBaseInterceptedHeartbeat{
 		DataBuff:   buff,
 		Marshaller: ihdf.marshalizer,

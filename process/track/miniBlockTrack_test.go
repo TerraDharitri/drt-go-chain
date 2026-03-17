@@ -3,15 +3,17 @@ package track_test
 import (
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
 	"github.com/TerraDharitri/drt-go-chain/process/track"
 	"github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	dataRetrieverMock "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestNewMiniBlockTrack_NilDataPoolHolderErr(t *testing.T) {
@@ -256,7 +258,7 @@ func TestGetTransactionPool_ShouldWork(t *testing.T) {
 			return unsignedTransactionsPool
 		},
 		MiniBlocksCalled: func() storage.Cacher {
-			return testscommon.NewCacherStub()
+			return cache.NewCacherStub()
 		},
 	}
 	mbt, _ := track.NewMiniBlockTrack(dataPool, mock.NewMultipleShardsCoordinatorMock(), &testscommon.WhiteListHandlerStub{})
@@ -286,7 +288,7 @@ func createDataPool() dataRetriever.PoolsHolder {
 			return testscommon.NewShardedDataStub()
 		},
 		MiniBlocksCalled: func() storage.Cacher {
-			return testscommon.NewCacherStub()
+			return cache.NewCacherStub()
 		},
 	}
 }

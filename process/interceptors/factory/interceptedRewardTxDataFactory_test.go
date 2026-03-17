@@ -3,10 +3,10 @@ package factory
 import (
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain-core/data/rewardTx"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
 	"github.com/TerraDharitri/drt-go-chain/process/rewardTransaction"
-	"github.com/TerraDharitri/drt-go-chain-core/data/rewardTx"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -93,7 +93,7 @@ func TestInterceptedRewardTxDataFactory_ShouldWorkAndCreate(t *testing.T) {
 	marshalizer := &mock.MarshalizerMock{}
 	emptyRewardTx := &rewardTx.RewardTx{}
 	emptyRewardTxBuff, _ := marshalizer.Marshal(emptyRewardTx)
-	interceptedData, err := imh.Create(emptyRewardTxBuff)
+	interceptedData, err := imh.Create(emptyRewardTxBuff, "")
 	assert.Nil(t, err)
 
 	_, ok := interceptedData.(*rewardTransaction.InterceptedRewardTransaction)

@@ -9,6 +9,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/data/alteredAccount"
 	"github.com/TerraDharitri/drt-go-chain-core/data/api"
 	"github.com/TerraDharitri/drt-go-chain-core/data/dcdt"
+	"github.com/TerraDharitri/drt-go-chain-core/data/smartContractResult"
 	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	"github.com/TerraDharitri/drt-go-chain-core/data/validator"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
@@ -40,6 +41,9 @@ type NodeHandler interface {
 
 	// GetKeyValuePairs returns the key-value pairs under a given address
 	GetKeyValuePairs(address string, options api.AccountQueryOptions, ctx context.Context) (map[string]string, api.BlockInfo, error)
+
+	// IterateKeys returns the key-value pairs under a given address starting from a given state
+	IterateKeys(address string, numKeys uint, iteratorState [][]byte, options api.AccountQueryOptions, ctx context.Context) (map[string]string, [][]byte, api.BlockInfo, error)
 
 	// GetAllIssuedDCDTs returns all the issued dcdt tokens from dcdt system smart contract
 	GetAllIssuedDCDTs(tokenType string, ctx context.Context) ([]string, error)
@@ -113,6 +117,7 @@ type NodeHandler interface {
 
 // TransactionSimulatorProcessor defines the actions which a transaction simulator processor has to implement
 type TransactionSimulatorProcessor interface {
+	ProcessSCR(scr *smartContractResult.SmartContractResult, currentHeader coreData.HeaderHandler) (*txSimData.SimulationResultsWithVMOutput, error)
 	ProcessTx(tx *transaction.Transaction, currentHeader coreData.HeaderHandler) (*txSimData.SimulationResultsWithVMOutput, error)
 	IsInterfaceNil() bool
 }
@@ -122,6 +127,7 @@ type ApiResolver interface {
 	ExecuteSCQuery(query *process.SCQuery) (*vmcommon.VMOutput, common.BlockInfo, error)
 	ComputeTransactionGasLimit(tx *transaction.Transaction) (*transaction.CostResponse, error)
 	SimulateTransactionExecution(tx *transaction.Transaction) (*txSimData.SimulationResultsWithVMOutput, error)
+	SimulateSCRExecutionCost(scr *smartContractResult.SmartContractResult) (*transaction.CostResponse, error)
 	StatusMetrics() external.StatusMetricsHandler
 	GetTotalStakedValue(ctx context.Context) (*api.StakeValues, error)
 	GetDirectStakedList(ctx context.Context) ([]*api.DirectStakedValue, error)

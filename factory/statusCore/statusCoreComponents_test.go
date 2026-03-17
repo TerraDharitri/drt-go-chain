@@ -8,10 +8,11 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	"github.com/TerraDharitri/drt-go-chain/common/statistics"
 	"github.com/TerraDharitri/drt-go-chain/config"
-	errorsDrt "github.com/TerraDharitri/drt-go-chain/errors"
+	errorsMx "github.com/TerraDharitri/drt-go-chain/errors"
 	"github.com/TerraDharitri/drt-go-chain/factory/statusCore"
 	"github.com/TerraDharitri/drt-go-chain/integrationTests/mock"
 	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	componentsMock "github.com/TerraDharitri/drt-go-chain/testscommon/components"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/economicsmocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/factory"
@@ -27,7 +28,7 @@ func TestNewStatusCoreComponentsFactory(t *testing.T) {
 
 		args := componentsMock.GetStatusCoreArgs(nil)
 		sccf, err := statusCore.NewStatusCoreComponentsFactory(args)
-		assert.Equal(t, errorsDrt.ErrNilCoreComponents, err)
+		assert.Equal(t, errorsMx.ErrNilCoreComponents, err)
 		require.Nil(t, sccf)
 	})
 	t.Run("nil economics data should error", func(t *testing.T) {
@@ -39,7 +40,7 @@ func TestNewStatusCoreComponentsFactory(t *testing.T) {
 
 		args := componentsMock.GetStatusCoreArgs(coreComp)
 		sccf, err := statusCore.NewStatusCoreComponentsFactory(args)
-		assert.Equal(t, errorsDrt.ErrNilEconomicsData, err)
+		assert.Equal(t, errorsMx.ErrNilEconomicsData, err)
 		require.Nil(t, sccf)
 	})
 	t.Run("should work", func(t *testing.T) {
@@ -86,13 +87,33 @@ func TestStatusCoreComponentsFactory_Create(t *testing.T) {
 		require.Error(t, err)
 		require.Nil(t, cc)
 	})
-	t.Run("SetStatusHandler fails should error", func(t *testing.T) {
+	t.Run("SetStatusHandler on economics data fails should error", func(t *testing.T) {
 		t.Parallel()
 
 		expectedErr := errors.New("expected error")
 		coreCompStub := factory.NewCoreComponentsHolderStubFromRealComponent(componentsMock.GetCoreComponents())
 		coreCompStub.EconomicsDataCalled = func() process.EconomicsDataHandler {
 			return &economicsmocks.EconomicsHandlerMock{
+				SetStatusHandlerCalled: func(statusHandler core.AppStatusHandler) error {
+					return expectedErr
+				},
+			}
+		}
+		args := componentsMock.GetStatusCoreArgs(coreCompStub)
+		sccf, err := statusCore.NewStatusCoreComponentsFactory(args)
+		require.Nil(t, err)
+
+		cc, err := sccf.Create()
+		require.Equal(t, expectedErr, err)
+		require.Nil(t, cc)
+	})
+	t.Run("SetStatusHandler on ratings data fails should error", func(t *testing.T) {
+		t.Parallel()
+
+		expectedErr := errors.New("expected error")
+		coreCompStub := factory.NewCoreComponentsHolderStubFromRealComponent(componentsMock.GetCoreComponents())
+		coreCompStub.RatingsDataCalled = func() process.RatingsInfoHandler {
+			return &testscommon.RatingsInfoMock{
 				SetStatusHandlerCalled: func(statusHandler core.AppStatusHandler) error {
 					return expectedErr
 				},

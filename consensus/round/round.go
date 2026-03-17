@@ -5,9 +5,10 @@ import (
 	"sync"
 	"time"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+
 	"github.com/TerraDharitri/drt-go-chain/consensus"
 	"github.com/TerraDharitri/drt-go-chain/ntp"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 )
 
 var _ consensus.RoundHandler = (*round)(nil)
@@ -98,6 +99,14 @@ func (rnd *round) RemainingTime(startTime time.Time, maxTime time.Duration) time
 	remainingTime := maxTime - elapsedTime
 
 	return remainingTime
+}
+
+// RevertOneRound reverts the round index and time stamp by one round, used in case of a transition to new consensus
+func (rnd *round) RevertOneRound() {
+	rnd.Lock()
+	rnd.index--
+	rnd.timeStamp = rnd.timeStamp.Add(-rnd.timeDuration)
+	rnd.Unlock()
 }
 
 // IsInterfaceNil returns true if there is no value under the interface

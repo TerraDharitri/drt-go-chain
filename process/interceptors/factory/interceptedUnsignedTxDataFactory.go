@@ -1,13 +1,13 @@
 package factory
 
 import (
-	"github.com/TerraDharitri/drt-go-chain/process"
-	"github.com/TerraDharitri/drt-go-chain/process/unsigned"
-	"github.com/TerraDharitri/drt-go-chain/sharding"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
+	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain/process/unsigned"
+	"github.com/TerraDharitri/drt-go-chain/sharding"
 )
 
 var _ process.InterceptedDataFactory = (*interceptedUnsignedTxDataFactory)(nil)
@@ -52,7 +52,7 @@ func NewInterceptedUnsignedTxDataFactory(argument *ArgInterceptedDataFactory) (*
 }
 
 // Create creates instances of InterceptedData by unmarshalling provided buffer
-func (iutdf *interceptedUnsignedTxDataFactory) Create(buff []byte) (process.InterceptedData, error) {
+func (iutdf *interceptedUnsignedTxDataFactory) Create(buff []byte, _ core.PeerID) (process.InterceptedData, error) {
 	return unsigned.NewInterceptedUnsignedTransaction(
 		buff,
 		iutdf.protoMarshalizer,

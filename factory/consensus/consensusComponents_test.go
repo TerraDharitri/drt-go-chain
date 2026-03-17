@@ -6,14 +6,15 @@ import (
 	"testing"
 	"time"
 
-	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
-
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
+	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
+	"github.com/stretchr/testify/require"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/consensus"
 	retriever "github.com/TerraDharitri/drt-go-chain/dataRetriever"
-	errorsDrt "github.com/TerraDharitri/drt-go-chain/errors"
+	errorsMx "github.com/TerraDharitri/drt-go-chain/errors"
 	consensusComp "github.com/TerraDharitri/drt-go-chain/factory/consensus"
 	"github.com/TerraDharitri/drt-go-chain/factory/mock"
 	testsMocks "github.com/TerraDharitri/drt-go-chain/integrationTests/mock"
@@ -22,9 +23,11 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
 	"github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	consensusMocks "github.com/TerraDharitri/drt-go-chain/testscommon/consensus"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/cryptoMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
+	dataRetrieverMocks "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/dblookupext"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/epochNotifier"
@@ -39,7 +42,6 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/testscommon/statusHandler"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/storageManager"
 	"github.com/TerraDharitri/drt-go-chain/update"
-	"github.com/stretchr/testify/require"
 )
 
 func createMockConsensusComponentsFactoryArgs() consensusComp.ConsensusComponentsFactoryArgs {
@@ -92,13 +94,16 @@ func createMockConsensusComponentsFactoryArgs() consensusComp.ConsensusComponent
 		DataComponents: &testsMocks.DataComponentsStub{
 			DataPool: &dataRetriever.PoolsHolderStub{
 				MiniBlocksCalled: func() storage.Cacher {
-					return &testscommon.CacherStub{}
+					return &cache.CacherStub{}
 				},
 				TrieNodesCalled: func() storage.Cacher {
-					return &testscommon.CacherStub{}
+					return &cache.CacherStub{}
 				},
 				HeadersCalled: func() retriever.HeadersPool {
 					return &testsMocks.HeadersCacherStub{}
+				},
+				ProofsCalled: func() retriever.ProofsPool {
+					return &dataRetrieverMocks.ProofsPoolMock{}
 				},
 			},
 			BlockChain: &testscommon.ChainHandlerStub{
@@ -115,7 +120,7 @@ func createMockConsensusComponentsFactoryArgs() consensusComp.ConsensusComponent
 		ProcessComponents: &testsMocks.ProcessComponentsStub{
 			EpochTrigger:                  &testsMocks.EpochStartTriggerStub{},
 			EpochNotifier:                 &testsMocks.EpochStartNotifierStub{},
-			NodesCoord:                    &shardingMocks.NodesCoordinatorStub{},
+			NodesCoord:                    &shardingMocks.NodesCoordinatorMock{},
 			NodeRedundancyHandlerInternal: &testsMocks.RedundancyHandlerStub{},
 			HardforkTriggerField:          &testscommon.HardforkTriggerStub{},
 			ReqHandler:                    &testscommon.RequestHandlerStub{},
@@ -138,10 +143,11 @@ func createMockConsensusComponentsFactoryArgs() consensusComp.ConsensusComponent
 			CurrentEpochProviderInternal:         &testsMocks.CurrentNetworkEpochProviderStub{},
 			HistoryRepositoryInternal:            &dblookupext.HistoryRepositoryStub{},
 			IntContainer:                         &testscommon.InterceptorsContainerStub{},
-			HeaderSigVerif:                       &testsMocks.HeaderSigVerifierStub{},
+			HeaderSigVerif:                       &consensusMocks.HeaderSigVerifierMock{},
 			HeaderIntegrVerif:                    &mock.HeaderIntegrityVerifierStub{},
 			FallbackHdrValidator:                 &testscommon.FallBackHeaderValidatorStub{},
 			SentSignaturesTrackerInternal:        &testscommon.SentSignatureTrackerStub{},
+			BlockchainHookField:                  &testscommon.BlockChainHookStub{},
 		},
 		StateComponents: &factoryMocks.StateComponentsMock{
 			StorageManagers: map[string]common.StorageManager{
@@ -183,7 +189,7 @@ func TestNewConsensusComponentsFactory(t *testing.T) {
 		ccf, err := consensusComp.NewConsensusComponentsFactory(args)
 
 		require.Nil(t, ccf)
-		require.Equal(t, errorsDrt.ErrNilCoreComponentsHolder, err)
+		require.Equal(t, errorsMx.ErrNilCoreComponentsHolder, err)
 	})
 	t.Run("nil GenesisNodesSetup should error", func(t *testing.T) {
 		t.Parallel()
@@ -195,7 +201,7 @@ func TestNewConsensusComponentsFactory(t *testing.T) {
 		ccf, err := consensusComp.NewConsensusComponentsFactory(args)
 
 		require.Nil(t, ccf)
-		require.Equal(t, errorsDrt.ErrNilGenesisNodesSetupHandler, err)
+		require.Equal(t, errorsMx.ErrNilGenesisNodesSetupHandler, err)
 	})
 	t.Run("nil DataComponents should error", func(t *testing.T) {
 		t.Parallel()
@@ -205,7 +211,7 @@ func TestNewConsensusComponentsFactory(t *testing.T) {
 		ccf, err := consensusComp.NewConsensusComponentsFactory(args)
 
 		require.Nil(t, ccf)
-		require.Equal(t, errorsDrt.ErrNilDataComponentsHolder, err)
+		require.Equal(t, errorsMx.ErrNilDataComponentsHolder, err)
 	})
 	t.Run("nil Datapool should error", func(t *testing.T) {
 		t.Parallel()
@@ -217,7 +223,7 @@ func TestNewConsensusComponentsFactory(t *testing.T) {
 		ccf, err := consensusComp.NewConsensusComponentsFactory(args)
 
 		require.Nil(t, ccf)
-		require.Equal(t, errorsDrt.ErrNilDataPoolsHolder, err)
+		require.Equal(t, errorsMx.ErrNilDataPoolsHolder, err)
 	})
 	t.Run("nil BlockChain should error", func(t *testing.T) {
 		t.Parallel()
@@ -230,7 +236,7 @@ func TestNewConsensusComponentsFactory(t *testing.T) {
 		ccf, err := consensusComp.NewConsensusComponentsFactory(args)
 
 		require.Nil(t, ccf)
-		require.Equal(t, errorsDrt.ErrNilBlockChainHandler, err)
+		require.Equal(t, errorsMx.ErrNilBlockChainHandler, err)
 	})
 	t.Run("nil CryptoComponents should error", func(t *testing.T) {
 		t.Parallel()
@@ -240,7 +246,7 @@ func TestNewConsensusComponentsFactory(t *testing.T) {
 		ccf, err := consensusComp.NewConsensusComponentsFactory(args)
 
 		require.Nil(t, ccf)
-		require.Equal(t, errorsDrt.ErrNilCryptoComponentsHolder, err)
+		require.Equal(t, errorsMx.ErrNilCryptoComponentsHolder, err)
 	})
 	t.Run("nil PublicKey should error", func(t *testing.T) {
 		t.Parallel()
@@ -252,7 +258,7 @@ func TestNewConsensusComponentsFactory(t *testing.T) {
 		ccf, err := consensusComp.NewConsensusComponentsFactory(args)
 
 		require.Nil(t, ccf)
-		require.Equal(t, errorsDrt.ErrNilPublicKey, err)
+		require.Equal(t, errorsMx.ErrNilPublicKey, err)
 	})
 	t.Run("nil PrivateKey should error", func(t *testing.T) {
 		t.Parallel()
@@ -265,7 +271,7 @@ func TestNewConsensusComponentsFactory(t *testing.T) {
 		ccf, err := consensusComp.NewConsensusComponentsFactory(args)
 
 		require.Nil(t, ccf)
-		require.Equal(t, errorsDrt.ErrNilPrivateKey, err)
+		require.Equal(t, errorsMx.ErrNilPrivateKey, err)
 	})
 	t.Run("nil NetworkComponents should error", func(t *testing.T) {
 		t.Parallel()
@@ -275,7 +281,7 @@ func TestNewConsensusComponentsFactory(t *testing.T) {
 		ccf, err := consensusComp.NewConsensusComponentsFactory(args)
 
 		require.Nil(t, ccf)
-		require.Equal(t, errorsDrt.ErrNilNetworkComponentsHolder, err)
+		require.Equal(t, errorsMx.ErrNilNetworkComponentsHolder, err)
 	})
 	t.Run("nil Messenger should error", func(t *testing.T) {
 		t.Parallel()
@@ -287,7 +293,7 @@ func TestNewConsensusComponentsFactory(t *testing.T) {
 		ccf, err := consensusComp.NewConsensusComponentsFactory(args)
 
 		require.Nil(t, ccf)
-		require.Equal(t, errorsDrt.ErrNilMessenger, err)
+		require.Equal(t, errorsMx.ErrNilMessenger, err)
 	})
 	t.Run("nil ProcessComponents should error", func(t *testing.T) {
 		t.Parallel()
@@ -297,7 +303,7 @@ func TestNewConsensusComponentsFactory(t *testing.T) {
 		ccf, err := consensusComp.NewConsensusComponentsFactory(args)
 
 		require.Nil(t, ccf)
-		require.Equal(t, errorsDrt.ErrNilProcessComponentsHolder, err)
+		require.Equal(t, errorsMx.ErrNilProcessComponentsHolder, err)
 	})
 	t.Run("nil NodesCoordinator should error", func(t *testing.T) {
 		t.Parallel()
@@ -309,41 +315,41 @@ func TestNewConsensusComponentsFactory(t *testing.T) {
 		ccf, err := consensusComp.NewConsensusComponentsFactory(args)
 
 		require.Nil(t, ccf)
-		require.Equal(t, errorsDrt.ErrNilNodesCoordinator, err)
+		require.Equal(t, errorsMx.ErrNilNodesCoordinator, err)
 	})
 	t.Run("nil ShardCoordinator should error", func(t *testing.T) {
 		t.Parallel()
 
 		args := createMockConsensusComponentsFactoryArgs()
 		args.ProcessComponents = &testsMocks.ProcessComponentsStub{
-			NodesCoord: &shardingMocks.NodesCoordinatorStub{},
+			NodesCoord: &shardingMocks.NodesCoordinatorMock{},
 			ShardCoord: nil,
 		}
 		ccf, err := consensusComp.NewConsensusComponentsFactory(args)
 
 		require.Nil(t, ccf)
-		require.Equal(t, errorsDrt.ErrNilShardCoordinator, err)
+		require.Equal(t, errorsMx.ErrNilShardCoordinator, err)
 	})
 	t.Run("nil RoundHandler should error", func(t *testing.T) {
 		t.Parallel()
 
 		args := createMockConsensusComponentsFactoryArgs()
 		args.ProcessComponents = &testsMocks.ProcessComponentsStub{
-			NodesCoord:        &shardingMocks.NodesCoordinatorStub{},
+			NodesCoord:        &shardingMocks.NodesCoordinatorMock{},
 			ShardCoord:        &testscommon.ShardsCoordinatorMock{},
 			RoundHandlerField: nil,
 		}
 		ccf, err := consensusComp.NewConsensusComponentsFactory(args)
 
 		require.Nil(t, ccf)
-		require.Equal(t, errorsDrt.ErrNilRoundHandler, err)
+		require.Equal(t, errorsMx.ErrNilRoundHandler, err)
 	})
 	t.Run("nil HardforkTrigger should error", func(t *testing.T) {
 		t.Parallel()
 
 		args := createMockConsensusComponentsFactoryArgs()
 		args.ProcessComponents = &testsMocks.ProcessComponentsStub{
-			NodesCoord:           &shardingMocks.NodesCoordinatorStub{},
+			NodesCoord:           &shardingMocks.NodesCoordinatorMock{},
 			ShardCoord:           &testscommon.ShardsCoordinatorMock{},
 			RoundHandlerField:    &testscommon.RoundHandlerMock{},
 			HardforkTriggerField: nil,
@@ -351,7 +357,7 @@ func TestNewConsensusComponentsFactory(t *testing.T) {
 		ccf, err := consensusComp.NewConsensusComponentsFactory(args)
 
 		require.Nil(t, ccf)
-		require.Equal(t, errorsDrt.ErrNilHardforkTrigger, err)
+		require.Equal(t, errorsMx.ErrNilHardforkTrigger, err)
 	})
 	t.Run("nil StateComponents should error", func(t *testing.T) {
 		t.Parallel()
@@ -361,7 +367,7 @@ func TestNewConsensusComponentsFactory(t *testing.T) {
 		ccf, err := consensusComp.NewConsensusComponentsFactory(args)
 
 		require.Nil(t, ccf)
-		require.Equal(t, errorsDrt.ErrNilStateComponentsHolder, err)
+		require.Equal(t, errorsMx.ErrNilStateComponentsHolder, err)
 	})
 	t.Run("nil StatusComponents should error", func(t *testing.T) {
 		t.Parallel()
@@ -371,7 +377,7 @@ func TestNewConsensusComponentsFactory(t *testing.T) {
 		ccf, err := consensusComp.NewConsensusComponentsFactory(args)
 
 		require.Nil(t, ccf)
-		require.Equal(t, errorsDrt.ErrNilStatusComponentsHolder, err)
+		require.Equal(t, errorsMx.ErrNilStatusComponentsHolder, err)
 	})
 	t.Run("nil OutportHandler should error", func(t *testing.T) {
 		t.Parallel()
@@ -383,7 +389,7 @@ func TestNewConsensusComponentsFactory(t *testing.T) {
 		ccf, err := consensusComp.NewConsensusComponentsFactory(args)
 
 		require.Nil(t, ccf)
-		require.Equal(t, errorsDrt.ErrNilOutportHandler, err)
+		require.Equal(t, errorsMx.ErrNilOutportHandler, err)
 	})
 	t.Run("nil ScheduledProcessor should error", func(t *testing.T) {
 		t.Parallel()
@@ -393,7 +399,7 @@ func TestNewConsensusComponentsFactory(t *testing.T) {
 		ccf, err := consensusComp.NewConsensusComponentsFactory(args)
 
 		require.Nil(t, ccf)
-		require.Equal(t, errorsDrt.ErrNilScheduledProcessor, err)
+		require.Equal(t, errorsMx.ErrNilScheduledProcessor, err)
 	})
 	t.Run("nil StatusCoreComponents should error", func(t *testing.T) {
 		t.Parallel()
@@ -403,7 +409,7 @@ func TestNewConsensusComponentsFactory(t *testing.T) {
 		ccf, err := consensusComp.NewConsensusComponentsFactory(args)
 
 		require.Nil(t, ccf)
-		require.Equal(t, errorsDrt.ErrNilStatusCoreComponents, err)
+		require.Equal(t, errorsMx.ErrNilStatusCoreComponents, err)
 	})
 }
 
@@ -454,7 +460,7 @@ func TestConsensusComponentsFactory_Create(t *testing.T) {
 		require.NotNil(t, ccf)
 
 		cc, err := ccf.Create()
-		require.Equal(t, errorsDrt.ErrGenesisBlockNotInitialized, err)
+		require.Equal(t, errorsMx.ErrGenesisBlockNotInitialized, err)
 		require.Nil(t, cc)
 	})
 	t.Run("createChronology fails should error", func(t *testing.T) {
@@ -498,7 +504,7 @@ func TestConsensusComponentsFactory_Create(t *testing.T) {
 		cnt := 0
 		processCompStub.ShardCoordinatorCalled = func() sharding.Coordinator {
 			cnt++
-			if cnt > 2 {
+			if cnt > 1 {
 				return nil // createBootstrapper fails
 			}
 			return testscommon.NewMultiShardsCoordinatorMock(2)
@@ -507,7 +513,7 @@ func TestConsensusComponentsFactory_Create(t *testing.T) {
 		require.NotNil(t, ccf)
 
 		cc, err := ccf.Create()
-		require.Equal(t, errorsDrt.ErrNilShardCoordinator, err)
+		require.Equal(t, errorsMx.ErrNilShardCoordinator, err)
 		require.Nil(t, cc)
 	})
 	t.Run("createBootstrapper fails due to invalid shard coordinator should error", func(t *testing.T) {
@@ -520,7 +526,7 @@ func TestConsensusComponentsFactory_Create(t *testing.T) {
 		shardC := testscommon.NewMultiShardsCoordinatorMock(2)
 		processCompStub.ShardCoordinatorCalled = func() sharding.Coordinator {
 			cnt++
-			if cnt > 2 {
+			if cnt > 1 {
 				shardC.SelfIDCalled = func() uint32 {
 					return shardC.NoShards + 1 // createBootstrapper returns ErrShardIdOutOfRange
 				}
@@ -535,28 +541,6 @@ func TestConsensusComponentsFactory_Create(t *testing.T) {
 		require.Equal(t, sharding.ErrShardIdOutOfRange, err)
 		require.Nil(t, cc)
 	})
-	t.Run("createShardBootstrapper fails due to NewShardStorageBootstrapper failure should error", func(t *testing.T) {
-		t.Parallel()
-
-		args := createMockConsensusComponentsFactoryArgs()
-		processCompStub, ok := args.ProcessComponents.(*testsMocks.ProcessComponentsStub)
-		require.True(t, ok)
-		cnt := 0
-		processCompStub.ShardCoordinatorCalled = func() sharding.Coordinator {
-			cnt++
-			if cnt > 3 {
-				return nil // NewShardStorageBootstrapper fails
-			}
-			return testscommon.NewMultiShardsCoordinatorMock(2)
-		}
-		ccf, _ := consensusComp.NewConsensusComponentsFactory(args)
-		require.NotNil(t, ccf)
-
-		cc, err := ccf.Create()
-		require.Error(t, err)
-		require.True(t, strings.Contains(err.Error(), "shard coordinator"))
-		require.Nil(t, cc)
-	})
 	t.Run("createUserAccountsSyncer fails due to missing UserAccountTrie should error", func(t *testing.T) {
 		t.Parallel()
 
@@ -568,7 +552,7 @@ func TestConsensusComponentsFactory_Create(t *testing.T) {
 		require.NotNil(t, ccf)
 
 		cc, err := ccf.Create()
-		require.Equal(t, errorsDrt.ErrNilTrieStorageManager, err)
+		require.Equal(t, errorsMx.ErrNilTrieStorageManager, err)
 		require.Nil(t, cc)
 	})
 	t.Run("createUserAccountsSyncer fails due to invalid NumConcurrentTrieSyncers should error", func(t *testing.T) {
@@ -584,30 +568,6 @@ func TestConsensusComponentsFactory_Create(t *testing.T) {
 		require.True(t, strings.Contains(err.Error(), "value is not positive"))
 		require.Nil(t, cc)
 	})
-	t.Run("createMetaChainBootstrapper fails due to NewMetaStorageBootstrapper failure should error", func(t *testing.T) {
-		t.Parallel()
-
-		args := createMockConsensusComponentsFactoryArgs()
-		processCompStub, ok := args.ProcessComponents.(*testsMocks.ProcessComponentsStub)
-		require.True(t, ok)
-		cnt := 0
-		processCompStub.ShardCoordinatorCalled = func() sharding.Coordinator {
-			cnt++
-			if cnt > 3 {
-				return nil // NewShardStorageBootstrapper fails
-			}
-			shardC := testscommon.NewMultiShardsCoordinatorMock(2)
-			shardC.CurrentShard = core.MetachainShardId
-			return shardC
-		}
-		ccf, _ := consensusComp.NewConsensusComponentsFactory(args)
-		require.NotNil(t, ccf)
-
-		cc, err := ccf.Create()
-		require.Error(t, err)
-		require.True(t, strings.Contains(err.Error(), "shard coordinator"))
-		require.Nil(t, cc)
-	})
 	t.Run("createUserAccountsSyncer fails due to missing UserAccountTrie should error", func(t *testing.T) {
 		t.Parallel()
 
@@ -626,7 +586,7 @@ func TestConsensusComponentsFactory_Create(t *testing.T) {
 		require.NotNil(t, ccf)
 
 		cc, err := ccf.Create()
-		require.Equal(t, errorsDrt.ErrNilTrieStorageManager, err)
+		require.Equal(t, errorsMx.ErrNilTrieStorageManager, err)
 		require.Nil(t, cc)
 	})
 	t.Run("createValidatorAccountsSyncer fails due to missing PeerAccountTrie should error", func(t *testing.T) {
@@ -649,7 +609,7 @@ func TestConsensusComponentsFactory_Create(t *testing.T) {
 		require.NotNil(t, ccf)
 
 		cc, err := ccf.Create()
-		require.Equal(t, errorsDrt.ErrNilTrieStorageManager, err)
+		require.Equal(t, errorsMx.ErrNilTrieStorageManager, err)
 		require.Nil(t, cc)
 	})
 	t.Run("createConsensusState fails due to nil public key should error", func(t *testing.T) {
@@ -677,7 +637,7 @@ func TestConsensusComponentsFactory_Create(t *testing.T) {
 		require.NotNil(t, ccf)
 
 		cc, err := ccf.Create()
-		require.Equal(t, errorsDrt.ErrNilPublicKey, err)
+		require.Equal(t, errorsMx.ErrNilPublicKey, err)
 		require.Nil(t, cc)
 	})
 	t.Run("createConsensusState fails due to ToByteArray failure should error", func(t *testing.T) {
@@ -698,27 +658,6 @@ func TestConsensusComponentsFactory_Create(t *testing.T) {
 		require.Equal(t, expectedErr, err)
 		require.Nil(t, cc)
 	})
-	t.Run("createConsensusState fails due to nil nodes coordinator should error", func(t *testing.T) {
-		t.Parallel()
-
-		args := createMockConsensusComponentsFactoryArgs()
-		processCompStub, ok := args.ProcessComponents.(*testsMocks.ProcessComponentsStub)
-		require.True(t, ok)
-		cnt := 0
-		processCompStub.NodesCoordinatorCalled = func() nodesCoordinator.NodesCoordinator {
-			cnt++
-			if cnt > 2 {
-				return nil
-			}
-			return &shardingMocks.NodesCoordinatorStub{}
-		}
-		ccf, _ := consensusComp.NewConsensusComponentsFactory(args)
-		require.NotNil(t, ccf)
-
-		cc, err := ccf.Create()
-		require.Equal(t, errorsDrt.ErrNilNodesCoordinator, err)
-		require.Nil(t, cc)
-	})
 	t.Run("createConsensusState fails due to GetConsensusWhitelistedNodes failure should error", func(t *testing.T) {
 		t.Parallel()
 
@@ -726,7 +665,7 @@ func TestConsensusComponentsFactory_Create(t *testing.T) {
 		processCompStub, ok := args.ProcessComponents.(*testsMocks.ProcessComponentsStub)
 		require.True(t, ok)
 		processCompStub.NodesCoordinatorCalled = func() nodesCoordinator.NodesCoordinator {
-			return &shardingMocks.NodesCoordinatorStub{
+			return &shardingMocks.NodesCoordinatorMock{
 				GetConsensusWhitelistedNodesCalled: func(epoch uint32) (map[string]struct{}, error) {
 					return nil, expectedErr
 				},
@@ -811,7 +750,7 @@ func TestConsensusComponentsFactory_Create(t *testing.T) {
 		cnt := 0
 		processCompStub.ShardCoordinatorCalled = func() sharding.Coordinator {
 			cnt++
-			if cnt > 9 {
+			if cnt >= 10 {
 				return nil // createConsensusTopic fails
 			}
 			return testscommon.NewMultiShardsCoordinatorMock(2)
@@ -820,7 +759,7 @@ func TestConsensusComponentsFactory_Create(t *testing.T) {
 		require.NotNil(t, ccf)
 
 		cc, err := ccf.Create()
-		require.Equal(t, errorsDrt.ErrNilShardCoordinator, err)
+		require.Equal(t, errorsMx.ErrNilShardCoordinator, err)
 		require.Nil(t, cc)
 	})
 	t.Run("createConsensusTopic fails due nil messenger should error", func(t *testing.T) {
@@ -832,7 +771,7 @@ func TestConsensusComponentsFactory_Create(t *testing.T) {
 		cnt := 0
 		netwCompStub.MessengerCalled = func() p2p.Messenger {
 			cnt++
-			if cnt > 3 {
+			if cnt > 4 {
 				return nil
 			}
 			return &p2pmocks.MessengerStub{}
@@ -841,7 +780,7 @@ func TestConsensusComponentsFactory_Create(t *testing.T) {
 		require.NotNil(t, ccf)
 
 		cc, err := ccf.Create()
-		require.Equal(t, errorsDrt.ErrNilMessenger, err)
+		require.Equal(t, errorsMx.ErrNilMessenger, err)
 		require.Nil(t, cc)
 	})
 	t.Run("createConsensusTopic fails due CreateTopic failure should error", func(t *testing.T) {
@@ -900,28 +839,6 @@ func TestConsensusComponentsFactory_Create(t *testing.T) {
 		cc, err := ccf.Create()
 		require.Error(t, err)
 		require.True(t, strings.Contains(err.Error(), "signing handler"))
-		require.Nil(t, cc)
-	})
-	t.Run("GetSubroundsFactory failure should error", func(t *testing.T) {
-		t.Parallel()
-
-		args := createMockConsensusComponentsFactoryArgs()
-		statusCoreCompStub, ok := args.StatusCoreComponents.(*factoryMocks.StatusCoreComponentsStub)
-		require.True(t, ok)
-		cnt := 0
-		statusCoreCompStub.AppStatusHandlerCalled = func() core.AppStatusHandler {
-			cnt++
-			if cnt > 4 {
-				return nil
-			}
-			return &statusHandler.AppStatusHandlerStub{}
-		}
-		ccf, _ := consensusComp.NewConsensusComponentsFactory(args)
-		require.NotNil(t, ccf)
-
-		cc, err := ccf.Create()
-		require.Error(t, err)
-		require.True(t, strings.Contains(err.Error(), "AppStatusHandler"))
 		require.Nil(t, cc)
 	})
 	t.Run("addCloserInstances failure should error", func(t *testing.T) {

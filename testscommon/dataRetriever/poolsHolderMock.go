@@ -10,6 +10,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/dataPool"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/dataPool/headersCache"
+	proofscache "github.com/TerraDharitri/drt-go-chain/dataRetriever/dataPool/proofsCache"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/shardedData"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/txpool"
 	"github.com/TerraDharitri/drt-go-chain/storage"
@@ -34,6 +35,7 @@ type PoolsHolderMock struct {
 	peerAuthentications    storage.Cacher
 	heartbeats             storage.Cacher
 	validatorsInfo         dataRetriever.ShardedDataCacherNotifier
+	proofs                 dataRetriever.ProofsPool
 }
 
 // NewPoolsHolderMock -
@@ -107,6 +109,8 @@ func NewPoolsHolderMock() *PoolsHolderMock {
 		Shards:      1,
 	})
 	panicIfError("NewPoolsHolderMock", err)
+
+	holder.proofs = proofscache.NewProofsPool(3, 100)
 
 	return holder
 }
@@ -194,6 +198,11 @@ func (holder *PoolsHolderMock) Heartbeats() storage.Cacher {
 // ValidatorsInfo -
 func (holder *PoolsHolderMock) ValidatorsInfo() dataRetriever.ShardedDataCacherNotifier {
 	return holder.validatorsInfo
+}
+
+// Proofs -
+func (holder *PoolsHolderMock) Proofs() dataRetriever.ProofsPool {
+	return holder.proofs
 }
 
 // Close -

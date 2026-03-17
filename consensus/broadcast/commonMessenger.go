@@ -11,29 +11,17 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
+	logger "github.com/TerraDharitri/drt-go-chain-logger"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/consensus"
 	"github.com/TerraDharitri/drt-go-chain/consensus/spos"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/factory"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
-	logger "github.com/TerraDharitri/drt-go-chain-logger"
 )
 
 var log = logger.GetOrCreate("consensus/broadcast")
-
-// delayedBroadcaster exposes functionality for handling the consensus members broadcasting of delay data
-type delayedBroadcaster interface {
-	SetLeaderData(data *delayedBroadcastData) error
-	SetValidatorData(data *delayedBroadcastData) error
-	SetHeaderForValidator(vData *validatorHeaderBroadcastData) error
-	SetBroadcastHandlers(
-		mbBroadcast func(mbData map[uint32][]byte, pkBytes []byte) error,
-		txBroadcast func(txData map[string][][]byte, pkBytes []byte) error,
-		headerBroadcast func(header data.HeaderHandler, pkBytes []byte) error,
-	) error
-	Close()
-}
 
 type commonMessenger struct {
 	marshalizer             marshal.Marshalizer
@@ -41,7 +29,7 @@ type commonMessenger struct {
 	messenger               consensus.P2PMessenger
 	shardCoordinator        sharding.Coordinator
 	peerSignatureHandler    crypto.PeerSignatureHandler
-	delayedBlockBroadcaster delayedBroadcaster
+	delayedBlockBroadcaster DelayedBroadcaster
 	keysHandler             consensus.KeysHandler
 }
 
@@ -58,6 +46,7 @@ type CommonMessengerArgs struct {
 	MaxValidatorDelayCacheSize uint32
 	AlarmScheduler             core.TimersScheduler
 	KeysHandler                consensus.KeysHandler
+	DelayedBroadcaster         DelayedBroadcaster
 }
 
 func checkCommonMessengerNilParameters(
@@ -92,6 +81,9 @@ func checkCommonMessengerNilParameters(
 	}
 	if check.IfNil(args.KeysHandler) {
 		return ErrNilKeysHandler
+	}
+	if check.IfNil(args.DelayedBroadcaster) {
+		return ErrNilDelayedBroadcaster
 	}
 
 	return nil
@@ -240,4 +232,19 @@ func (cm *commonMessenger) broadcast(topic string, data []byte, pkBytes []byte) 
 	}
 
 	cm.messenger.BroadcastUsingPrivateKey(topic, data, pid, skBytes)
+}
+
+func (cm *commonMessenger) broadcastEquivalentProof(proof data.HeaderProofHandler, pkBytes []byte, topic string) error {
+	if check.IfNil(proof) {
+		return spos.ErrNilHeaderProof
+	}
+
+	msgProof, err := cm.marshalizer.Marshal(proof)
+	if err != nil {
+		return err
+	}
+
+	cm.broadcast(topic, msgProof, pkBytes)
+
+	return nil
 }

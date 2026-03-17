@@ -10,7 +10,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/common/errChan"
-	storageDrt "github.com/TerraDharitri/drt-go-chain/storage"
+	storageMx "github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/storageManager"
@@ -427,7 +427,7 @@ func TestTrieStorageManager_ShouldTakeSnapshot(t *testing.T) {
 			GetFromCurrentEpochCalled: func(key []byte) ([]byte, error) {
 				return nil, expectedErr // isTrieSynced returns false
 			},
-			GetFromOldEpochsWithoutAddingToCacheCalled: func(key []byte) ([]byte, core.OptionalUint32, error) {
+			GetFromOldEpochsWithoutAddingToCacheCalled: func(key []byte, _ uint32) ([]byte, core.OptionalUint32, error) {
 				return []byte(common.ActiveDBVal), core.OptionalUint32{}, nil
 			},
 			MemDbMock: testscommon.NewMemDbMock(),
@@ -457,13 +457,13 @@ func TestTrieStorageManager_Get(t *testing.T) {
 		args := trie.GetDefaultTrieStorageManagerParameters()
 		args.MainStorer = &storage.StorerStub{
 			GetCalled: func(key []byte) ([]byte, error) {
-				return nil, storageDrt.ErrDBIsClosed
+				return nil, storageMx.ErrDBIsClosed
 			},
 		}
 		ts, _ := trie.NewTrieStorageManager(args)
 
 		val, err := ts.Get(providedKey)
-		assert.Equal(t, storageDrt.ErrDBIsClosed, err)
+		assert.Equal(t, storageMx.ErrDBIsClosed, err)
 		assert.Nil(t, val)
 	})
 	t.Run("should return from main storer", func(t *testing.T) {

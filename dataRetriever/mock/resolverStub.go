@@ -1,20 +1,21 @@
 package mock
 
 import (
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/p2p"
-	"github.com/TerraDharitri/drt-go-chain-core/core"
 )
 
 // ResolverStub -
 type ResolverStub struct {
-	ProcessReceivedMessageCalled func(message p2p.MessageP2P) error
+	ProcessReceivedMessageCalled func(message p2p.MessageP2P) ([]byte, error)
 	SetDebugHandlerCalled        func(handler dataRetriever.DebugHandler) error
 	CloseCalled                  func() error
 }
 
 // ProcessReceivedMessage -
-func (rs *ResolverStub) ProcessReceivedMessage(message p2p.MessageP2P, _ core.PeerID, _ p2p.MessageHandler) error {
+func (rs *ResolverStub) ProcessReceivedMessage(message p2p.MessageP2P, _ core.PeerID, _ p2p.MessageHandler) ([]byte, error) {
 	return rs.ProcessReceivedMessageCalled(message)
 }
 

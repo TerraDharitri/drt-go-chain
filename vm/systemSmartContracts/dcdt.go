@@ -42,7 +42,7 @@ const canTransferNFTCreateRole = "canTransferNFTCreateRole"
 const upgradable = "canUpgrade"
 const canCreateMultiShard = "canCreateMultiShard"
 const upgradeProperties = "upgradeProperties"
-const rEWA = "REWA"
+const REWA = "REWA"
 
 const conversionBase = 10
 
@@ -750,7 +750,7 @@ func isTokenNameHumanReadable(tokenName []byte) bool {
 
 func (e *dcdt) createNewTokenIdentifier(caller []byte, ticker []byte) ([]byte, error) {
 	if e.enableEpochsHandler.IsFlagEnabled(common.REWAInDCDTMultiTransferFlag) {
-		if bytes.Equal(ticker, []byte(rEWA)) {
+		if bytes.Equal(ticker, []byte(REWA)) {
 			return nil, vm.ErrCouldNotCreateNewTokenIdentifier
 		}
 	}

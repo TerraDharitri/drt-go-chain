@@ -1,14 +1,24 @@
 package mock
 
 import (
-	txSimData "github.com/TerraDharitri/drt-go-chain/process/transactionEvaluator/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/smartContractResult"
 	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
+	txSimData "github.com/TerraDharitri/drt-go-chain/process/transactionEvaluator/data"
 )
 
 // TransactionSimulatorStub -
 type TransactionSimulatorStub struct {
-	ProcessTxCalled func(tx *transaction.Transaction, currentHeader data.HeaderHandler) (*txSimData.SimulationResultsWithVMOutput, error)
+	ProcessTxCalled  func(tx *transaction.Transaction, currentHeader data.HeaderHandler) (*txSimData.SimulationResultsWithVMOutput, error)
+	ProcessSCRCalled func(scr *smartContractResult.SmartContractResult, currentHeader data.HeaderHandler) (*txSimData.SimulationResultsWithVMOutput, error)
+}
+
+// ProcessSCR -
+func (tss *TransactionSimulatorStub) ProcessSCR(scr *smartContractResult.SmartContractResult, currentHeader data.HeaderHandler) (*txSimData.SimulationResultsWithVMOutput, error) {
+	if tss.ProcessSCRCalled != nil {
+		return tss.ProcessSCRCalled(scr, currentHeader)
+	}
+	return nil, nil
 }
 
 // ProcessTx -

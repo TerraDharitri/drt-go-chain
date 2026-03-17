@@ -1,11 +1,12 @@
 package factory
 
 import (
-	"github.com/TerraDharitri/drt-go-chain/process"
-	"github.com/TerraDharitri/drt-go-chain/process/peer"
+	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
+	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain/process/peer"
 )
 
 type interceptedValidatorInfoDataFactory struct {
@@ -41,7 +42,7 @@ func checkInterceptedValidatorInfoDataFactoryArgs(args ArgInterceptedDataFactory
 }
 
 // Create creates instances of InterceptedData by unmarshalling provided buffer
-func (ividf *interceptedValidatorInfoDataFactory) Create(buff []byte) (process.InterceptedData, error) {
+func (ividf *interceptedValidatorInfoDataFactory) Create(buff []byte, _ core.PeerID) (process.InterceptedData, error) {
 	args := peer.ArgInterceptedValidatorInfo{
 		DataBuff:    buff,
 		Marshalizer: ividf.marshaller,

@@ -22,6 +22,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/hashing/sha256"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/process"
@@ -30,6 +33,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/storage/txcache"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	commonMocks "github.com/TerraDharitri/drt-go-chain/testscommon/common"
 	dataRetrieverMock "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/economicsmocks"
@@ -40,8 +44,6 @@ import (
 	stateMock "github.com/TerraDharitri/drt-go-chain/testscommon/state"
 	storageStubs "github.com/TerraDharitri/drt-go-chain/testscommon/storage"
 	"github.com/TerraDharitri/drt-go-chain/vm"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 const MaxGasLimitPerBlock = uint64(100000)
@@ -78,7 +80,7 @@ func feeHandlerMock() *economicsmocks.EconomicsHandlerMock {
 func shardedDataCacherNotifier() dataRetriever.ShardedDataCacherNotifier {
 	return &testscommon.ShardedDataStub{
 		ShardDataStoreCalled: func(id string) (c storage.Cacher) {
-			return &testscommon.CacherStub{
+			return &cache.CacherStub{
 				PeekCalled: func(key []byte) (value interface{}, ok bool) {
 					if reflect.DeepEqual(key, []byte("tx1_hash")) {
 						return &smartContractResult.SmartContractResult{Nonce: 10}, true
@@ -123,7 +125,7 @@ func initDataPool() *dataRetrieverMock.PoolsHolderStub {
 		RewardTransactionsCalled: func() dataRetriever.ShardedDataCacherNotifier {
 			return &testscommon.ShardedDataStub{
 				ShardDataStoreCalled: func(id string) (c storage.Cacher) {
-					return &testscommon.CacherStub{
+					return &cache.CacherStub{
 						PeekCalled: func(key []byte) (value interface{}, ok bool) {
 							if reflect.DeepEqual(key, []byte("tx1_hash")) {
 								return &rewardTx.RewardTx{Value: big.NewInt(100)}, true
@@ -155,7 +157,7 @@ func initDataPool() *dataRetrieverMock.PoolsHolderStub {
 			}
 		},
 		MetaBlocksCalled: func() storage.Cacher {
-			return &testscommon.CacherStub{
+			return &cache.CacherStub{
 				GetCalled: func(key []byte) (value interface{}, ok bool) {
 					if reflect.DeepEqual(key, []byte("tx1_hash")) {
 						return &transaction.Transaction{Nonce: 10}, true
@@ -178,7 +180,7 @@ func initDataPool() *dataRetrieverMock.PoolsHolderStub {
 			}
 		},
 		MiniBlocksCalled: func() storage.Cacher {
-			cs := testscommon.NewCacherStub()
+			cs := cache.NewCacherStub()
 			cs.RegisterHandlerCalled = func(i func(key []byte, value interface{})) {
 			}
 			cs.GetCalled = func(key []byte) (value interface{}, ok bool) {
@@ -522,7 +524,7 @@ func TestTransactionPreprocessor_ReceivedTransactionShouldEraseRequested(t *test
 
 	shardedDataStub := &testscommon.ShardedDataStub{
 		ShardDataStoreCalled: func(cacheId string) (c storage.Cacher) {
-			return &testscommon.CacherStub{
+			return &cache.CacherStub{
 				PeekCalled: func(key []byte) (value interface{}, ok bool) {
 					return &transaction.Transaction{}, true
 				},
@@ -1248,7 +1250,7 @@ func TestTransactionsPreprocessor_ProcessMiniBlockShouldWork(t *testing.T) {
 		TransactionsCalled: func() dataRetriever.ShardedDataCacherNotifier {
 			return &testscommon.ShardedDataStub{
 				ShardDataStoreCalled: func(id string) (c storage.Cacher) {
-					return &testscommon.CacherStub{
+					return &cache.CacherStub{
 						PeekCalled: func(key []byte) (value interface{}, ok bool) {
 							if reflect.DeepEqual(key, []byte("tx_hash1")) {
 								return &transaction.Transaction{Nonce: 10}, true
@@ -1334,7 +1336,7 @@ func TestTransactionsPreprocessor_ProcessMiniBlockShouldErrMaxGasLimitUsedForDes
 		TransactionsCalled: func() dataRetriever.ShardedDataCacherNotifier {
 			return &testscommon.ShardedDataStub{
 				ShardDataStoreCalled: func(id string) (c storage.Cacher) {
-					return &testscommon.CacherStub{
+					return &cache.CacherStub{
 						PeekCalled: func(key []byte) (value interface{}, ok bool) {
 							if reflect.DeepEqual(key, []byte("tx_hash1")) {
 								return &transaction.Transaction{}, true
@@ -2046,7 +2048,7 @@ func TestTransactions_RestoreBlockDataIntoPools(t *testing.T) {
 	args.Store = genericMocks.NewChainStorerMock(0)
 	txs, _ := NewTransactionPreprocessor(args)
 
-	mbPool := testscommon.NewCacherMock()
+	mbPool := cache.NewCacherMock()
 
 	body, allTxs := createMockBlockBody()
 	storer, _ := args.Store.GetStorer(dataRetriever.TransactionUnit)

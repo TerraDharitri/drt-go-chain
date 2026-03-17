@@ -12,16 +12,19 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/data/rewardTx"
 	"github.com/TerraDharitri/drt-go-chain-core/data/smartContractResult"
 	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
+	"github.com/stretchr/testify/require"
+
 	"github.com/TerraDharitri/drt-go-chain/outport/mock"
 	"github.com/TerraDharitri/drt-go-chain/outport/process/transactionsfee"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	commonMocks "github.com/TerraDharitri/drt-go-chain/testscommon/common"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/genericMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/shardingMocks"
-	"github.com/stretchr/testify/require"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/state"
 )
 
 func createArgOutportDataProvider() ArgOutportDataProvider {
@@ -45,6 +48,9 @@ func createArgOutportDataProvider() ArgOutportDataProvider {
 		ExecutionOrderHandler:    &commonMocks.TxExecutionOrderHandlerStub{},
 		Marshaller:               &marshallerMock.MarshalizerMock{},
 		Hasher:                   &hashingMocks.HasherMock{},
+		ProofsPool:               &dataRetriever.ProofsPoolMock{},
+		EnableEpochsHandler:      enableEpochsHandlerMock.NewEnableEpochsHandlerStubWithNoFlagsDefined(),
+		StateAccessesCollector:   &state.StateAccessesCollectorStub{},
 	}
 }
 
@@ -84,8 +90,8 @@ func TestPrepareOutportSaveBlockData(t *testing.T) {
 
 	arg := createArgOutportDataProvider()
 	arg.NodesCoordinator = &shardingMocks.NodesCoordinatorMock{
-		GetValidatorsPublicKeysCalled: func(randomness []byte, round uint64, shardId uint32, epoch uint32) ([]string, error) {
-			return nil, nil
+		GetValidatorsPublicKeysCalled: func(randomness []byte, round uint64, shardId uint32, epoch uint32) (string, []string, error) {
+			return "", nil, nil
 		},
 		GetValidatorsIndexesCalled: func(publicKeys []string, epoch uint32) ([]uint64, error) {
 			return []uint64{0, 1}, nil
@@ -128,8 +134,8 @@ func TestOutportDataProvider_GetIntraShardMiniBlocks(t *testing.T) {
 
 	arg := createArgOutportDataProvider()
 	arg.NodesCoordinator = &shardingMocks.NodesCoordinatorMock{
-		GetValidatorsPublicKeysCalled: func(randomness []byte, round uint64, shardId uint32, epoch uint32) ([]string, error) {
-			return nil, nil
+		GetValidatorsPublicKeysCalled: func(randomness []byte, round uint64, shardId uint32, epoch uint32) (string, []string, error) {
+			return "", nil, nil
 		},
 		GetValidatorsIndexesCalled: func(publicKeys []string, epoch uint32) ([]uint64, error) {
 			return []uint64{0, 1}, nil
@@ -565,6 +571,22 @@ func Test_collectExecutedTxHashes(t *testing.T) {
 		require.Nil(t, err)
 		require.Equal(t, 100, len(collectedTxs))
 	})
+}
+
+func TestFindLeaderIndex(t *testing.T) {
+	t.Parallel()
+
+	leaderKey := "a"
+	keys := []string{"a", "b", "c", "d", "e", "f", "g"}
+	require.Equal(t, uint64(0), findLeaderIndex(keys, leaderKey))
+
+	leaderKey = "g"
+	keys = []string{"a", "b", "c", "d", "e", "f", "g"}
+	require.Equal(t, uint64(6), findLeaderIndex(keys, leaderKey))
+
+	leaderKey = "notFound"
+	keys = []string{"a", "b", "c", "d", "e", "f", "g"}
+	require.Equal(t, uint64(0), findLeaderIndex(keys, leaderKey))
 }
 
 func createMbsAndMbHeaders(numPairs int, numTxsPerMb int) ([]*block.MiniBlock, []block.MiniBlockHeader) {

@@ -8,6 +8,9 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-vm-common/parsers"
 	datafield "github.com/TerraDharitri/drt-go-chain-vm-common/parsers/dataField"
 	wasmConfig "github.com/TerraDharitri/drt-go-chain-vm/config"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+
 	"github.com/TerraDharitri/drt-go-chain/api/groups"
 	"github.com/TerraDharitri/drt-go-chain/api/shared"
 	"github.com/TerraDharitri/drt-go-chain/config"
@@ -23,13 +26,12 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/process/transactionEvaluator"
 	"github.com/TerraDharitri/drt-go-chain/process/txstatus"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/genesisMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/state"
 	"github.com/TerraDharitri/drt-go-chain/vm/systemSmartContracts/defaults"
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
 )
 
 // TestProcessorNodeWithTestWebServer represents a TestProcessorNode with a test web server
@@ -178,9 +180,10 @@ func createFacadeComponents(tpn *TestProcessorNode) nodeFacade.ApiResolver {
 		ShardCoordinator:          tpn.ShardCoordinator,
 		Marshalizer:               TestMarshalizer,
 		Hasher:                    TestHasher,
-		VMOutputCacher:            &testscommon.CacherMock{},
+		VMOutputCacher:            &cache.CacherMock{},
 		DataFieldParser:           dataFieldParser,
 		BlockChainHook:            tpn.BlockchainHook,
+		SCRProcessor:              tpn.ScProcessor,
 	}
 
 	txSimulator, err := transactionEvaluator.NewTransactionSimulator(argSimulator)
@@ -261,6 +264,8 @@ func createFacadeComponents(tpn *TestProcessorNode) nodeFacade.ApiResolver {
 		AccountsRepository:           &state.AccountsRepositoryStub{},
 		ScheduledTxsExecutionHandler: &testscommon.ScheduledTxsExecutionStub{},
 		EnableEpochsHandler:          &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
+		ProofsPool:                   tpn.ProofsPool,
+		BlockChain:                   tpn.BlockChain,
 	}
 	blockAPIHandler, err := blockAPI.CreateAPIBlockProcessor(argsBlockAPI)
 	log.LogIfError(err)

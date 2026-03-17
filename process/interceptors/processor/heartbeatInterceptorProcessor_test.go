@@ -5,20 +5,22 @@ import (
 	"testing"
 	"time"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/stretchr/testify/assert"
+
 	heartbeatMessages "github.com/TerraDharitri/drt-go-chain/heartbeat"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/heartbeat"
 	"github.com/TerraDharitri/drt-go-chain/process/interceptors/processor"
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/p2pmocks"
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/stretchr/testify/assert"
 )
 
 func createHeartbeatInterceptorProcessArg() processor.ArgHeartbeatInterceptorProcessor {
 	return processor.ArgHeartbeatInterceptorProcessor{
-		HeartbeatCacher:  testscommon.NewCacherStub(),
+		HeartbeatCacher:  cache.NewCacherStub(),
 		ShardCoordinator: &testscommon.ShardsCoordinatorMock{},
 		PeerShardMapper:  &p2pmocks.NetworkShardingCollectorStub{},
 	}
@@ -133,7 +135,7 @@ func TestHeartbeatInterceptorProcessor_Save(t *testing.T) {
 		wasCalled := false
 		providedPid := core.PeerID("pid")
 		arg := createHeartbeatInterceptorProcessArg()
-		arg.HeartbeatCacher = &testscommon.CacherStub{
+		arg.HeartbeatCacher = &cache.CacherStub{
 			PutCalled: func(key []byte, value interface{}, sizeInBytes int) (evicted bool) {
 				assert.True(t, bytes.Equal(providedPid.Bytes(), key))
 				ihb := value.(*heartbeatMessages.HeartbeatV2)

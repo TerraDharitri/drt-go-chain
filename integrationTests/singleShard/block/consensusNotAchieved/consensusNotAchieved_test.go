@@ -7,7 +7,6 @@ import (
 	"time"
 
 	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
-
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"

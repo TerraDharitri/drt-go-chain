@@ -92,7 +92,7 @@ VERSION:
 			p2pType,
 			bothType,
 			minedWalletPrefixKeys),
-		Value:       "p2p",
+		Value:       "validator",
 		Destination: &argsConfig.keyType,
 	}
 	// consoleOut is the flag that, if active, will print everything on the console, not on a physical file
@@ -144,7 +144,7 @@ func main() {
 	app.Usage = "This binary will generate a validatorKey.pem and walletKey.pem, each containing private key(s)"
 	app.Authors = []cli.Author{
 		{
-			Name:  "The Dharitri Team",
+			Name:  "Team Dharitri",
 			Email: "contact@dharitri.org",
 		},
 	}

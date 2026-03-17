@@ -6,6 +6,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/sharding"
@@ -26,6 +27,8 @@ type interceptedDataCoreComponentsHolder interface {
 	IsInterfaceNil() bool
 	HardforkTriggerPubKey() []byte
 	EnableEpochsHandler() common.EnableEpochsHandler
+	EpochChangeGracePeriodHandler() common.EpochChangeGracePeriodHandler
+	FieldsSizeChecker() common.FieldsSizeChecker
 }
 
 // interceptedDataCryptoComponentsHolder holds the crypto components required by the intercepted data factory

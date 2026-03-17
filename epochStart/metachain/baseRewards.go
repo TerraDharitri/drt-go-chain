@@ -8,6 +8,15 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/atomic"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/TerraDharitri/drt-go-chain-core/data/rewardTx"
+	"github.com/TerraDharitri/drt-go-chain-core/hashing"
+	"github.com/TerraDharitri/drt-go-chain-core/marshal"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/dataPool"
@@ -17,14 +26,6 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/sharding"
 	"github.com/TerraDharitri/drt-go-chain/state"
 	"github.com/TerraDharitri/drt-go-chain/storage"
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/atomic"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
-	"github.com/TerraDharitri/drt-go-chain-core/data/rewardTx"
-	"github.com/TerraDharitri/drt-go-chain-core/hashing"
-	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 )
 
 // BaseRewardsCreatorArgs defines the arguments structure needed to create a base rewards creator
@@ -41,6 +42,7 @@ type BaseRewardsCreatorArgs struct {
 	EnableEpochsHandler   common.EnableEpochsHandler
 	ExecutionOrderHandler common.TxExecutionOrderHandler
 	RewardsHandler        process.RewardsHandler
+	EconomicsData         epochStart.EpochEconomicsDataProvider
 }
 
 type baseRewardsCreator struct {
@@ -55,8 +57,7 @@ type baseRewardsCreator struct {
 	dataPool                           dataRetriever.PoolsHolder
 	mapBaseRewardsPerBlockPerValidator map[uint32]*big.Int
 	accumulatedRewards                 *big.Int
-	protocolSustainabilityValue        *big.Int
-	flagDelegationSystemSCEnabled      atomic.Flag //nolint
+	flagDelegationSystemSCEnabled      atomic.Flag // nolint
 	userAccountsDB                     state.AccountsAdapter
 	enableEpochsHandler                common.EnableEpochsHandler
 	mutRewardsData                     sync.RWMutex
@@ -83,7 +84,6 @@ func NewBaseRewardsCreator(args BaseRewardsCreatorArgs) (*baseRewardsCreator, er
 		dataPool:                           args.DataPool,
 		nodesConfigProvider:                args.NodesConfigProvider,
 		accumulatedRewards:                 big.NewInt(0),
-		protocolSustainabilityValue:        big.NewInt(0),
 		userAccountsDB:                     args.UserAccountsDB,
 		mapBaseRewardsPerBlockPerValidator: make(map[uint32]*big.Int),
 		enableEpochsHandler:                args.EnableEpochsHandler,
@@ -92,14 +92,6 @@ func NewBaseRewardsCreator(args BaseRewardsCreatorArgs) (*baseRewardsCreator, er
 	}
 
 	return brc, nil
-}
-
-// GetProtocolSustainabilityRewards returns the sum of all rewards
-func (brc *baseRewardsCreator) GetProtocolSustainabilityRewards() *big.Int {
-	brc.mutRewardsData.RLock()
-	defer brc.mutRewardsData.RUnlock()
-
-	return brc.protocolSustainabilityValue
 }
 
 // GetLocalTxCache returns the local tx cache which holds all the rewards
@@ -320,7 +312,6 @@ func (brc *baseRewardsCreator) clean() {
 	brc.mapBaseRewardsPerBlockPerValidator = make(map[uint32]*big.Int)
 	brc.currTxs.Clean()
 	brc.accumulatedRewards = big.NewInt(0)
-	brc.protocolSustainabilityValue = big.NewInt(0)
 }
 
 func (brc *baseRewardsCreator) isSystemDelegationSC(address []byte) bool {
@@ -344,14 +335,14 @@ func (brc *baseRewardsCreator) isSystemDelegationSC(address []byte) bool {
 
 func (brc *baseRewardsCreator) createProtocolSustainabilityRewardTransaction(
 	metaBlock data.HeaderHandler,
-	computedEconomics *block.Economics,
+	protocolSustainability *big.Int,
 ) (*rewardTx.RewardTx, uint32, error) {
 
 	protocolSustainabilityAddressForEpoch := brc.rewardsHandler.ProtocolSustainabilityAddressInEpoch(metaBlock.GetEpoch())
 	protocolSustainabilityShardID := brc.shardCoordinator.ComputeId([]byte(protocolSustainabilityAddressForEpoch))
 	protocolSustainabilityRwdTx := &rewardTx.RewardTx{
 		Round:   metaBlock.GetRound(),
-		Value:   big.NewInt(0).Set(computedEconomics.RewardsForProtocolSustainability),
+		Value:   big.NewInt(0).Set(protocolSustainability),
 		RcvAddr: []byte(protocolSustainabilityAddressForEpoch),
 		Epoch:   metaBlock.GetEpoch(),
 	}
@@ -401,19 +392,25 @@ func (brc *baseRewardsCreator) initializeRewardsMiniBlocks() block.MiniBlockSlic
 	return miniBlocks
 }
 
-func (brc *baseRewardsCreator) addProtocolRewardToMiniBlocks(
-	protocolSustainabilityRwdTx *rewardTx.RewardTx,
+func (brc *baseRewardsCreator) addAcceleratorRewardToMiniBlocks(
+	acceleratorRewardTx *rewardTx.RewardTx,
 	miniBlocks block.MiniBlockSlice,
-	protocolSustainabilityShardId uint32,
+	shardID uint32,
 ) error {
-	protocolSustainabilityRwdHash, errHash := core.CalculateHash(brc.marshalizer, brc.hasher, protocolSustainabilityRwdTx)
+	protocolSustainabilityRwdHash, errHash := core.CalculateHash(brc.marshalizer, brc.hasher, acceleratorRewardTx)
 	if errHash != nil {
 		return errHash
 	}
+	if acceleratorRewardTx.Value.Cmp(zero) < 0 {
+		return errNegativeAcceleratorReward
+	}
+	if acceleratorRewardTx.Value.Cmp(zero) == 0 {
+		// do not add to the miniblock
+		return nil
+	}
 
-	brc.currTxs.AddTx(protocolSustainabilityRwdHash, protocolSustainabilityRwdTx)
-	miniBlocks[protocolSustainabilityShardId].TxHashes = append(miniBlocks[protocolSustainabilityShardId].TxHashes, protocolSustainabilityRwdHash)
-	brc.protocolSustainabilityValue.Set(protocolSustainabilityRwdTx.Value)
+	brc.currTxs.AddTx(protocolSustainabilityRwdHash, acceleratorRewardTx)
+	miniBlocks[shardID].TxHashes = append(miniBlocks[shardID].TxHashes, protocolSustainabilityRwdHash)
 
 	return nil
 }
@@ -441,17 +438,27 @@ func (brc *baseRewardsCreator) addExecutionOrdering(txHashes [][]byte) {
 	}
 }
 
-func (brc *baseRewardsCreator) fillBaseRewardsPerBlockPerNode(baseRewardsPerNode *big.Int) {
+func (brc *baseRewardsCreator) fillBaseRewardsPerBlockPerNode(baseRewardsPerNode *big.Int, epoch uint32) {
 	brc.mapBaseRewardsPerBlockPerValidator = make(map[uint32]*big.Int)
 	for i := uint32(0); i < brc.shardCoordinator.NumberOfShards(); i++ {
-		consensusSize := big.NewInt(int64(brc.nodesConfigProvider.ConsensusGroupSize(i)))
+		consensusSize := big.NewInt(int64(brc.getConsensusGroupSizeForShardAndEpoch(i, epoch)))
 		brc.mapBaseRewardsPerBlockPerValidator[i] = big.NewInt(0).Div(baseRewardsPerNode, consensusSize)
 		log.Debug("baseRewardsPerBlockPerValidator", "shardID", i, "value", brc.mapBaseRewardsPerBlockPerValidator[i].String())
 	}
 
-	consensusSize := big.NewInt(int64(brc.nodesConfigProvider.ConsensusGroupSize(core.MetachainShardId)))
+	consensusSize := big.NewInt(int64(brc.getConsensusGroupSizeForShardAndEpoch(core.MetachainShardId, epoch)))
 	brc.mapBaseRewardsPerBlockPerValidator[core.MetachainShardId] = big.NewInt(0).Div(baseRewardsPerNode, consensusSize)
 	log.Debug("baseRewardsPerBlockPerValidator", "shardID", core.MetachainShardId, "value", brc.mapBaseRewardsPerBlockPerValidator[core.MetachainShardId].String())
+}
+
+func (brc *baseRewardsCreator) getConsensusGroupSizeForShardAndEpoch(shardID uint32, epoch uint32) int {
+	if epoch == 0 {
+		return brc.nodesConfigProvider.ConsensusGroupSizeForShardAndEpoch(shardID, 0)
+	}
+
+	// use previous epoch for fetching the consensus group size, since the epoch start metablock already contains the new epoch
+	epochForConsensusSize := epoch - 1
+	return brc.nodesConfigProvider.ConsensusGroupSizeForShardAndEpoch(shardID, epochForConsensusSize)
 }
 
 func (brc *baseRewardsCreator) verifyCreatedRewardMiniBlocksWithMetaBlock(metaBlock data.HeaderHandler, createdMiniBlocks block.MiniBlockSlice) error {

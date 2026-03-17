@@ -9,8 +9,7 @@ import (
 
 // EconomicsHandlerMock -
 type EconomicsHandlerMock struct {
-	MaxInflationRateCalled                              func(year uint32) float64
-	MinInflationRateCalled                              func() float64
+	MaxInflationRateCalled                              func(year uint32, epoch uint32) float64
 	LeaderPercentageCalled                              func() float64
 	ProtocolSustainabilityPercentageCalled              func() float64
 	ProtocolSustainabilityAddressCalled                 func() string
@@ -32,6 +31,7 @@ type EconomicsHandlerMock struct {
 	MinGasPriceCalled                                   func() uint64
 	MinGasLimitCalled                                   func() uint64
 	GasPerDataByteCalled                                func() uint64
+	MaxGasHigherFactorAcceptedCalled                    func() uint64
 	RewardsTopUpGradientPointCalled                     func() *big.Int
 	RewardsTopUpFactorCalled                            func() float64
 	ComputeFeeForProcessingCalled                       func(tx data.TransactionWithFeeHandler, gasToUse uint64) *big.Int
@@ -56,6 +56,11 @@ type EconomicsHandlerMock struct {
 	ProtocolSustainabilityAddressInEpochCalled          func(epoch uint32) string
 	RewardsTopUpGradientPointInEpochCalled              func(epoch uint32) *big.Int
 	RewardsTopUpFactorInEpochCalled                     func(epoch uint32) float64
+	EcosystemGrowthPercentageInEpochCalled              func(epoch uint32) float64
+	EcosystemGrowthAddressInEpochCalled                 func(epoch uint32) string
+	GrowthDividendPercentageInEpochCalled               func(epoch uint32) float64
+	GrowthDividendAddressInEpochCalled                  func(epoch uint32) string
+	IsTailInflationEnabledCalled                        func(epoch uint32) bool
 }
 
 // ComputeGasUnitsFromRefundValue -
@@ -78,14 +83,14 @@ func (ehm *EconomicsHandlerMock) ProtocolSustainabilityAddress() string {
 	return ehm.ProtocolSustainabilityAddressCalled()
 }
 
-// MinInflationRate -
-func (ehm *EconomicsHandlerMock) MinInflationRate() float64 {
-	return ehm.MinInflationRateCalled()
+// MaxInflationRate -
+func (ehm *EconomicsHandlerMock) MaxInflationRate(year uint32, epoch uint32) float64 {
+	return ehm.MaxInflationRateCalled(year, epoch)
 }
 
-// MaxInflationRate -
-func (ehm *EconomicsHandlerMock) MaxInflationRate(year uint32) float64 {
-	return ehm.MaxInflationRateCalled(year)
+// IsTailInflationEnabled -
+func (ehm *EconomicsHandlerMock) IsTailInflationEnabled(epoch uint32) bool {
+	return ehm.IsTailInflationEnabledCalled(epoch)
 }
 
 // MinGasPrice -
@@ -413,6 +418,46 @@ func (ehm *EconomicsHandlerMock) RewardsTopUpGradientPointInEpoch(epoch uint32) 
 func (ehm *EconomicsHandlerMock) RewardsTopUpFactorInEpoch(epoch uint32) float64 {
 	if ehm.RewardsTopUpFactorInEpochCalled != nil {
 		return ehm.RewardsTopUpFactorInEpochCalled(epoch)
+	}
+	return 0
+}
+
+// MaxGasHigherFactorAccepted -
+func (ehm *EconomicsHandlerMock) MaxGasHigherFactorAccepted() uint64 {
+	if ehm.MaxGasHigherFactorAcceptedCalled != nil {
+		return ehm.MaxGasHigherFactorAcceptedCalled()
+	}
+	return 10
+}
+
+// EcosystemGrowthAddressInEpoch -
+func (ehm *EconomicsHandlerMock) EcosystemGrowthAddressInEpoch(epoch uint32) string {
+	if ehm.EcosystemGrowthAddressInEpochCalled != nil {
+		return ehm.EcosystemGrowthAddressInEpochCalled(epoch)
+	}
+	return ""
+}
+
+// GrowthDividendAddressInEpoch -
+func (ehm *EconomicsHandlerMock) GrowthDividendAddressInEpoch(epoch uint32) string {
+	if ehm.GrowthDividendAddressInEpochCalled != nil {
+		return ehm.GrowthDividendAddressInEpochCalled(epoch)
+	}
+	return ""
+}
+
+// EcosystemGrowthPercentageInEpoch -
+func (ehm *EconomicsHandlerMock) EcosystemGrowthPercentageInEpoch(epoch uint32) float64 {
+	if ehm.EcosystemGrowthPercentageInEpochCalled != nil {
+		return ehm.EcosystemGrowthPercentageInEpochCalled(epoch)
+	}
+	return 0
+}
+
+// GrowthDividendPercentageInEpoch -
+func (ehm *EconomicsHandlerMock) GrowthDividendPercentageInEpoch(epoch uint32) float64 {
+	if ehm.GrowthDividendPercentageInEpochCalled != nil {
+		return ehm.GrowthDividendPercentageInEpochCalled(epoch)
 	}
 	return 0
 }

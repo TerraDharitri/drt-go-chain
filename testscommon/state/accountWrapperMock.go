@@ -7,9 +7,12 @@ import (
 	"math/big"
 
 	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/data/stateChange"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/state"
+	"github.com/TerraDharitri/drt-go-chain/state/disabled"
 	"github.com/TerraDharitri/drt-go-chain/state/trackableDataTrie"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
@@ -47,6 +50,7 @@ func NewAccountWrapMock(adr []byte) *AccountWrapMock {
 		&hashingMocks.HasherMock{},
 		&marshallerMock.MarshalizerMock{},
 		&enableEpochsHandlerMock.EnableEpochsHandlerStub{},
+		disabled.NewDisabledStateAccessesCollector(),
 	)
 
 	return &AccountWrapMock{
@@ -196,7 +200,7 @@ func (awm *AccountWrapMock) DataTrie() common.DataTrieHandler {
 }
 
 // SaveDirtyData -
-func (awm *AccountWrapMock) SaveDirtyData(trie common.Trie) ([]core.TrieData, error) {
+func (awm *AccountWrapMock) SaveDirtyData(trie common.Trie) ([]*stateChange.DataTrieChange, []core.TrieData, error) {
 	return awm.trackableDataTrie.SaveDirtyData(trie)
 }
 

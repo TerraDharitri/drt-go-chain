@@ -2,6 +2,7 @@ package disabled
 
 import (
 	outportcore "github.com/TerraDharitri/drt-go-chain-core/data/outport"
+
 	"github.com/TerraDharitri/drt-go-chain/outport"
 )
 

@@ -6,14 +6,14 @@
 IP_HOST_BYTE=3
 
 cloneRepositories() {
-  cd $(dirname $DHARITRIDIR)
+  cd $(dirname $TerraDharitriDIR)
 
-  git clone git@github.com:dharitri/drt-go-chain-deploy.git || true
-  git clone git@github.com:dharitri/drt-go-chain-proxy.git || true
+  git clone git@github.com:TerraDharitri/drt-go-chain-deploy.git || true
+  git clone git@github.com:TerraDharitri/drt-go-chain-proxy.git || true
 }
 
 buildNodeImages() {
-  cd $DHARITRIDIR
+  cd $TerraDharitriDIR
 
   docker build -f docker/seednode/Dockerfile . -t seednode:dev
 

@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	errorsDrt "github.com/TerraDharitri/drt-go-chain/errors"
+	errorsMx "github.com/TerraDharitri/drt-go-chain/errors"
 	"github.com/TerraDharitri/drt-go-chain/factory"
 	processComp "github.com/TerraDharitri/drt-go-chain/factory/processing"
 	"github.com/stretchr/testify/require"
@@ -17,7 +17,7 @@ func TestNewManagedProcessComponents(t *testing.T) {
 		t.Parallel()
 
 		managedProcessComponents, err := processComp.NewManagedProcessComponents(nil)
-		require.Equal(t, errorsDrt.ErrNilProcessComponentsFactory, err)
+		require.Equal(t, errorsMx.ErrNilProcessComponentsFactory, err)
 		require.Nil(t, managedProcessComponents)
 	})
 	t.Run("should work", func(t *testing.T) {
@@ -59,6 +59,7 @@ func TestManagedProcessComponents_Create(t *testing.T) {
 		require.True(t, check.IfNil(managedProcessComponents.RoundHandler()))
 		require.True(t, check.IfNil(managedProcessComponents.ForkDetector()))
 		require.True(t, check.IfNil(managedProcessComponents.BlockProcessor()))
+		require.True(t, check.IfNil(managedProcessComponents.BlockchainHook()))
 		require.True(t, check.IfNil(managedProcessComponents.EpochStartTrigger()))
 		require.True(t, check.IfNil(managedProcessComponents.EpochStartNotifier()))
 		require.True(t, check.IfNil(managedProcessComponents.BlackListHandler()))
@@ -105,6 +106,7 @@ func TestManagedProcessComponents_Create(t *testing.T) {
 		require.False(t, check.IfNil(managedProcessComponents.ForkDetector()))
 		require.False(t, check.IfNil(managedProcessComponents.BlockProcessor()))
 		require.False(t, check.IfNil(managedProcessComponents.EpochStartTrigger()))
+		require.False(t, check.IfNil(managedProcessComponents.BlockchainHook()))
 		require.False(t, check.IfNil(managedProcessComponents.EpochStartNotifier()))
 		require.False(t, check.IfNil(managedProcessComponents.BlackListHandler()))
 		require.False(t, check.IfNil(managedProcessComponents.BootStorer()))
@@ -150,7 +152,7 @@ func TestManagedProcessComponents_CheckSubcomponents(t *testing.T) {
 	processComponentsFactory, _ := processComp.NewProcessComponentsFactory(createMockProcessComponentsFactoryArgs())
 	managedProcessComponents, _ := processComp.NewManagedProcessComponents(processComponentsFactory)
 	require.NotNil(t, managedProcessComponents)
-	require.Equal(t, errorsDrt.ErrNilProcessComponents, managedProcessComponents.CheckSubcomponents())
+	require.Equal(t, errorsMx.ErrNilProcessComponents, managedProcessComponents.CheckSubcomponents())
 
 	err := managedProcessComponents.Create()
 	require.NoError(t, err)

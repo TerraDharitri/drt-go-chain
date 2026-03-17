@@ -3,8 +3,9 @@ package realcomponents
 import (
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	"github.com/stretchr/testify/require"
+
+	"github.com/TerraDharitri/drt-go-chain/testscommon"
 )
 
 func TestNewProcessorRunnerAndClose(t *testing.T) {

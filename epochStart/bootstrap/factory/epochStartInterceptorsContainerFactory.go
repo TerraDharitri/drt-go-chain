@@ -3,6 +3,10 @@ package factory
 import (
 	"time"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data/typeConverters"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
@@ -15,9 +19,6 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/sharding"
 	"github.com/TerraDharitri/drt-go-chain/storage/cache"
 	"github.com/TerraDharitri/drt-go-chain/update"
-	"github.com/TerraDharitri/drt-go-chain-core/core"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data/typeConverters"
 )
 
 const timeSpanForBadHeaders = time.Minute
@@ -25,23 +26,24 @@ const timeSpanForBadHeaders = time.Minute
 // ArgsEpochStartInterceptorContainer holds the arguments needed for creating a new epoch start interceptors
 // container factory
 type ArgsEpochStartInterceptorContainer struct {
-	CoreComponents          process.CoreComponentsHolder
-	CryptoComponents        process.CryptoComponentsHolder
-	Config                  config.Config
-	ShardCoordinator        sharding.Coordinator
-	MainMessenger           process.TopicHandler
-	FullArchiveMessenger    process.TopicHandler
-	DataPool                dataRetriever.PoolsHolder
-	WhiteListHandler        update.WhiteListHandler
-	WhiteListerVerifiedTxs  update.WhiteListHandler
-	AddressPubkeyConv       core.PubkeyConverter
-	NonceConverter          typeConverters.Uint64ByteSliceConverter
-	ChainID                 []byte
-	ArgumentsParser         process.ArgumentsParser
-	HeaderIntegrityVerifier process.HeaderIntegrityVerifier
-	RequestHandler          process.RequestHandler
-	SignaturesHandler       process.SignaturesHandler
-	NodeOperationMode       common.NodeOperation
+	CoreComponents                 process.CoreComponentsHolder
+	CryptoComponents               process.CryptoComponentsHolder
+	Config                         config.Config
+	ShardCoordinator               sharding.Coordinator
+	MainMessenger                  process.TopicHandler
+	FullArchiveMessenger           process.TopicHandler
+	DataPool                       dataRetriever.PoolsHolder
+	WhiteListHandler               update.WhiteListHandler
+	WhiteListerVerifiedTxs         update.WhiteListHandler
+	AddressPubkeyConv              core.PubkeyConverter
+	NonceConverter                 typeConverters.Uint64ByteSliceConverter
+	ChainID                        []byte
+	ArgumentsParser                process.ArgumentsParser
+	HeaderIntegrityVerifier        process.HeaderIntegrityVerifier
+	RequestHandler                 process.RequestHandler
+	SignaturesHandler              process.SignaturesHandler
+	NodeOperationMode              common.NodeOperation
+	InterceptedDataVerifierFactory process.InterceptedDataVerifierFactory
 }
 
 // NewEpochStartInterceptorsContainer will return a real interceptors container factory, but with many disabled components
@@ -78,36 +80,37 @@ func NewEpochStartInterceptorsContainer(args ArgsEpochStartInterceptorContainer)
 	hardforkTrigger := disabledFactory.HardforkTrigger()
 
 	containerFactoryArgs := interceptorscontainer.CommonInterceptorsContainerFactoryArgs{
-		CoreComponents:               args.CoreComponents,
-		CryptoComponents:             cryptoComponents,
-		Accounts:                     accountsAdapter,
-		ShardCoordinator:             args.ShardCoordinator,
-		NodesCoordinator:             nodesCoordinator,
-		MainMessenger:                args.MainMessenger,
-		FullArchiveMessenger:         args.FullArchiveMessenger,
-		Store:                        storer,
-		DataPool:                     args.DataPool,
-		MaxTxNonceDeltaAllowed:       common.MaxTxNonceDeltaAllowed,
-		TxFeeHandler:                 feeHandler,
-		BlockBlackList:               blackListHandler,
-		HeaderSigVerifier:            headerSigVerifier,
-		HeaderIntegrityVerifier:      args.HeaderIntegrityVerifier,
-		ValidityAttester:             validityAttester,
-		EpochStartTrigger:            epochStartTrigger,
-		WhiteListHandler:             args.WhiteListHandler,
-		WhiteListerVerifiedTxs:       args.WhiteListerVerifiedTxs,
-		AntifloodHandler:             antiFloodHandler,
-		ArgumentsParser:              args.ArgumentsParser,
-		PreferredPeersHolder:         disabled.NewPreferredPeersHolder(),
-		SizeCheckDelta:               uint32(sizeCheckDelta),
-		RequestHandler:               args.RequestHandler,
-		PeerSignatureHandler:         cryptoComponents.PeerSignatureHandler(),
-		SignaturesHandler:            args.SignaturesHandler,
-		HeartbeatExpiryTimespanInSec: args.Config.HeartbeatV2.HeartbeatExpiryTimespanInSec,
-		MainPeerShardMapper:          peerShardMapper,
-		FullArchivePeerShardMapper:   fullArchivePeerShardMapper,
-		HardforkTrigger:              hardforkTrigger,
-		NodeOperationMode:            args.NodeOperationMode,
+		CoreComponents:                 args.CoreComponents,
+		CryptoComponents:               cryptoComponents,
+		Accounts:                       accountsAdapter,
+		ShardCoordinator:               args.ShardCoordinator,
+		NodesCoordinator:               nodesCoordinator,
+		MainMessenger:                  args.MainMessenger,
+		FullArchiveMessenger:           args.FullArchiveMessenger,
+		Store:                          storer,
+		DataPool:                       args.DataPool,
+		MaxTxNonceDeltaAllowed:         common.MaxTxNonceDeltaAllowed,
+		TxFeeHandler:                   feeHandler,
+		BlockBlackList:                 blackListHandler,
+		HeaderSigVerifier:              headerSigVerifier,
+		HeaderIntegrityVerifier:        args.HeaderIntegrityVerifier,
+		ValidityAttester:               validityAttester,
+		EpochStartTrigger:              epochStartTrigger,
+		WhiteListHandler:               args.WhiteListHandler,
+		WhiteListerVerifiedTxs:         args.WhiteListerVerifiedTxs,
+		AntifloodHandler:               antiFloodHandler,
+		ArgumentsParser:                args.ArgumentsParser,
+		PreferredPeersHolder:           disabled.NewPreferredPeersHolder(),
+		SizeCheckDelta:                 uint32(sizeCheckDelta),
+		RequestHandler:                 args.RequestHandler,
+		PeerSignatureHandler:           cryptoComponents.PeerSignatureHandler(),
+		SignaturesHandler:              args.SignaturesHandler,
+		HeartbeatExpiryTimespanInSec:   args.Config.HeartbeatV2.HeartbeatExpiryTimespanInSec,
+		MainPeerShardMapper:            peerShardMapper,
+		FullArchivePeerShardMapper:     fullArchivePeerShardMapper,
+		HardforkTrigger:                hardforkTrigger,
+		NodeOperationMode:              args.NodeOperationMode,
+		InterceptedDataVerifierFactory: args.InterceptedDataVerifierFactory,
 	}
 
 	interceptorsContainerFactory, err := interceptorscontainer.NewMetaInterceptorsContainerFactory(containerFactoryArgs)

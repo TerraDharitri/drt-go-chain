@@ -46,7 +46,7 @@ copySeednodeConfig() {
   cp $SEEDNODEDIR/config/* ./seednode/config
   popd
 
-  pushd $DHARITRIDIR/cmd/keygenerator
+  pushd $TerraDharitriDIR/cmd/keygenerator
 
   if [[ ! -f "p2pKey.pem" ]]; then
       go build
@@ -114,8 +114,8 @@ updateNodeConfig() {
   updateJSONValue nodesSetup_edit.json "minTransactionVersion" "1"
 
 	if [ $ALWAYS_NEW_CHAINID -eq 1 ]; then
-		updateTOMLValue config_validator.toml "ChainID" "\"D"\"
-		updateTOMLValue config_observer.toml "ChainID" "\"D"\"
+		updateTOMLValue config_validator.toml "ChainID" "\"local-testnet"\"
+		updateTOMLValue config_observer.toml "ChainID" "\"local-testnet"\"
 	fi
 
 	if [ $ROUNDS_PER_EPOCH -ne 0 ]; then
@@ -135,8 +135,23 @@ updateNodeConfig() {
 
   updateConfigsForStakingV4
 
+  # Update chain parameters
+  updateChainParameters config_observer.toml
+  updateChainParameters config_validator.toml
+
   echo "Updated configuration for Nodes."
   popd
+}
+
+updateChainParameters() {
+  tomlFile=$1
+
+  sed -i "s,ShardConsensusGroupSize\([^,]*\),ShardConsensusGroupSize = $SHARD_CONSENSUS_SIZE," $tomlFile
+  sed -i "s,ShardMinNumNodes\([^,]*\),ShardMinNumNodes = $SHARD_CONSENSUS_SIZE," $tomlFile
+  sed -i "s,MetachainConsensusGroupSize\([^,]*\),MetachainConsensusGroupSize = $META_CONSENSUS_SIZE," $tomlFile
+  sed -i "s,MetachainMinNumNodes\([^,]*\),MetachainMinNumNodes = $META_CONSENSUS_SIZE," $tomlFile
+  sed -i "s,RoundDuration\([^,]*\),RoundDuration = $ROUND_DURATION_IN_MS," $tomlFile
+  sed -i "s,Hysteresis\([^,]*\),Hysteresis = $HYSTERESIS," $tomlFile
 }
 
 updateConfigsForStakingV4() {

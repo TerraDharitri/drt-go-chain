@@ -1,7 +1,3 @@
 {
-    "language": "clang",
-    "source_files": [
-        "ecBenchmark.c",
-        "../cbuiltins.c"
-    ]
+    "language": "rust"
 }

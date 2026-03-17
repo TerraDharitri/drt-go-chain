@@ -1,13 +1,13 @@
 package factory
 
 import (
-	"github.com/TerraDharitri/drt-go-chain/process"
-	"github.com/TerraDharitri/drt-go-chain/process/rewardTransaction"
-	"github.com/TerraDharitri/drt-go-chain/sharding"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/hashing"
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
+	"github.com/TerraDharitri/drt-go-chain/process"
+	"github.com/TerraDharitri/drt-go-chain/process/rewardTransaction"
+	"github.com/TerraDharitri/drt-go-chain/sharding"
 )
 
 var _ process.InterceptedDataFactory = (*interceptedRewardTxDataFactory)(nil)
@@ -52,7 +52,7 @@ func NewInterceptedRewardTxDataFactory(argument *ArgInterceptedDataFactory) (*in
 }
 
 // Create creates instances of InterceptedData by unmarshalling provided buffer
-func (irtdf *interceptedRewardTxDataFactory) Create(buff []byte) (process.InterceptedData, error) {
+func (irtdf *interceptedRewardTxDataFactory) Create(buff []byte, _ core.PeerID) (process.InterceptedData, error) {
 	return rewardTransaction.NewInterceptedRewardTransaction(
 		buff,
 		irtdf.protoMarshalizer,

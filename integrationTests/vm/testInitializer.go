@@ -326,8 +326,11 @@ func createEconomicsData(enableEpochsConfig config.EnableEpochs, gasPriceModifie
 	realEpochNotifier := forking.NewGenericEpochNotifier()
 	enableEpochsHandler, _ := enablers.NewEnableEpochsHandler(enableEpochsConfig, realEpochNotifier)
 
+	cfg := &config.Config{EpochStartConfig: config.EpochStartConfig{RoundsPerEpoch: 14400}}
+	cfg.GeneralSettings.ChainParametersByEpoch = []config.ChainParametersByEpochConfig{{RoundDuration: 6000}}
 	argsNewEconomicsData := economics.ArgsNewEconomicsData{
 		TxVersionChecker: versioning.NewTxVersionChecker(minTransactionVersion),
+		GeneralConfig:    cfg,
 		Economics: &config.EconomicsConfig{
 			GlobalSettings: config.GlobalSettings{
 				GenesisTotalSupply: "2000000000000000000000",
@@ -347,6 +350,10 @@ func createEconomicsData(enableEpochsConfig config.EnableEpochs, gasPriceModifie
 						DeveloperPercentage:              0.1,
 						ProtocolSustainabilityAddress:    testProtocolSustainabilityAddress,
 						TopUpGradientPoint:               "100000",
+						EcosystemGrowthPercentage:        0.0,
+						EcosystemGrowthAddress:           testProtocolSustainabilityAddress,
+						GrowthDividendPercentage:         0.0,
+						GrowthDividendAddress:            testProtocolSustainabilityAddress,
 					},
 				},
 			},
@@ -360,6 +367,7 @@ func createEconomicsData(enableEpochsConfig config.EnableEpochs, gasPriceModifie
 						MaxGasLimitPerTx:            maxGasLimitPerBlock,
 						MinGasLimit:                 minGasLimit,
 						ExtraGasLimitGuardedTx:      "50000",
+						MaxGasHigherFactorAccepted:  "10",
 					},
 				},
 				MinGasPrice:            minGasPrice,
@@ -417,6 +425,8 @@ func CreateTxProcessorWithOneSCExecutorMockVM(
 		GasSchedule:              gasScheduleNotifier,
 		Counter:                  &testscommon.BlockChainHookCounterStub{},
 		MissingTrieNodesNotifier: &testscommon.MissingTrieNodesNotifierStub{},
+		EpochStartTrigger:        &testscommon.EpochStartTriggerStub{},
+		RoundHandler:             &testscommon.RoundHandlerMock{},
 	}
 
 	blockChainHook, _ := hooks.NewBlockChainHookImpl(args)
@@ -525,6 +535,8 @@ func CreateOneSCExecutorMockVM(accnts state.AccountsAdapter) vmcommon.VMExecutio
 		GasSchedule:              CreateMockGasScheduleNotifier(),
 		Counter:                  &testscommon.BlockChainHookCounterStub{},
 		MissingTrieNodesNotifier: &testscommon.MissingTrieNodesNotifierStub{},
+		EpochStartTrigger:        &testscommon.EpochStartTriggerStub{},
+		RoundHandler:             &testscommon.RoundHandlerMock{},
 	}
 	blockChainHook, _ := hooks.NewBlockChainHookImpl(args)
 	vm, _ := mock.NewOneSCExecutorMockVM(blockChainHook, integrationtests.TestHasher)
@@ -596,6 +608,8 @@ func CreateVMAndBlockchainHookAndDataPool(
 		GasSchedule:              gasSchedule,
 		Counter:                  counter,
 		MissingTrieNodesNotifier: &testscommon.MissingTrieNodesNotifierStub{},
+		EpochStartTrigger:        &testscommon.EpochStartTriggerStub{},
+		RoundHandler:             &testscommon.RoundHandlerMock{},
 	}
 
 	maxGasLimitPerBlock := uint64(0xFFFFFFFFFFFFFFFF)
@@ -687,6 +701,8 @@ func CreateVMAndBlockchainHookMeta(
 		GasSchedule:              gasSchedule,
 		Counter:                  &testscommon.BlockChainHookCounterStub{},
 		MissingTrieNodesNotifier: &testscommon.MissingTrieNodesNotifierStub{},
+		EpochStartTrigger:        &testscommon.EpochStartTriggerStub{},
+		RoundHandler:             &testscommon.RoundHandlerMock{},
 	}
 
 	economicsData, err := createEconomicsData(config.EnableEpochs{}, 1)
@@ -750,7 +766,8 @@ func createSystemSCConfig() *config.SystemSmartContractsConfig {
 				MinVetoThreshold: 0.5,
 				LostProposalFee:  "1",
 			},
-			OwnerAddress: "3132333435363738393031323334353637383930313233343536373839303234",
+			OwnerAddress:                 "3132333435363738393031323334353637383930313233343536373839303234",
+			MaxVotingDelayPeriodInEpochs: 30,
 		},
 		StakingSystemSCConfig: config.StakingSystemSCConfig{
 			GenesisNodePrice:                     "2500000000000000000000",
@@ -1004,6 +1021,8 @@ func CreateTxProcessorWithOneSCExecutorWithVMs(
 	if err != nil {
 		return nil, err
 	}
+
+	txSimulatorProcessorArgs.SCRProcessor = proxyProcessor
 
 	txSimulatorProcessorArgs.IntermediateProcContainer = interimProcContainer
 

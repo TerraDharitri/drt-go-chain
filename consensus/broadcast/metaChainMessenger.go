@@ -1,14 +1,16 @@
 package broadcast
 
 import (
-	"github.com/TerraDharitri/drt-go-chain/common"
-	"github.com/TerraDharitri/drt-go-chain/consensus"
-	"github.com/TerraDharitri/drt-go-chain/consensus/spos"
-	"github.com/TerraDharitri/drt-go-chain/process/factory"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+
+	"github.com/TerraDharitri/drt-go-chain/common"
+	"github.com/TerraDharitri/drt-go-chain/consensus"
+	"github.com/TerraDharitri/drt-go-chain/consensus/broadcast/shared"
+	"github.com/TerraDharitri/drt-go-chain/consensus/spos"
+	"github.com/TerraDharitri/drt-go-chain/process/factory"
 )
 
 var _ consensus.BroadcastMessenger = (*metaChainMessenger)(nil)
@@ -32,27 +34,13 @@ func NewMetaChainMessenger(
 		return nil, err
 	}
 
-	dbbArgs := &ArgsDelayedBlockBroadcaster{
-		InterceptorsContainer: args.InterceptorsContainer,
-		HeadersSubscriber:     args.HeadersSubscriber,
-		LeaderCacheSize:       args.MaxDelayCacheSize,
-		ValidatorCacheSize:    args.MaxValidatorDelayCacheSize,
-		ShardCoordinator:      args.ShardCoordinator,
-		AlarmScheduler:        args.AlarmScheduler,
-	}
-
-	dbb, err := NewDelayedBlockBroadcaster(dbbArgs)
-	if err != nil {
-		return nil, err
-	}
-
 	cm := &commonMessenger{
 		marshalizer:             args.Marshalizer,
 		hasher:                  args.Hasher,
 		messenger:               args.Messenger,
 		shardCoordinator:        args.ShardCoordinator,
 		peerSignatureHandler:    args.PeerSignatureHandler,
-		delayedBlockBroadcaster: dbb,
+		delayedBlockBroadcaster: args.DelayedBroadcaster,
 		keysHandler:             args.KeysHandler,
 	}
 
@@ -60,7 +48,11 @@ func NewMetaChainMessenger(
 		commonMessenger: cm,
 	}
 
-	err = dbb.SetBroadcastHandlers(mcm.BroadcastMiniBlocks, mcm.BroadcastTransactions, mcm.BroadcastHeader)
+	err = mcm.delayedBlockBroadcaster.SetBroadcastHandlers(
+		mcm.BroadcastMiniBlocks,
+		mcm.BroadcastTransactions,
+		mcm.BroadcastHeader,
+		mcm.BroadcastConsensusMessage)
 	if err != nil {
 		return nil, err
 	}
@@ -124,6 +116,14 @@ func (mcm *metaChainMessenger) BroadcastHeader(header data.HeaderHandler, pkByte
 	return nil
 }
 
+// BroadcastEquivalentProof will broadcast the proof for a header on the metachain common topic
+func (mcm *metaChainMessenger) BroadcastEquivalentProof(proof data.HeaderProofHandler, pkBytes []byte) error {
+	identifierMetaAll := mcm.shardCoordinator.CommunicationIdentifier(core.AllShardId)
+	topic := common.EquivalentProofsTopic + identifierMetaAll
+
+	return mcm.broadcastEquivalentProof(proof, pkBytes, topic)
+}
+
 // BroadcastBlockDataLeader broadcasts the block data as consensus group leader
 func (mcm *metaChainMessenger) BroadcastBlockDataLeader(
 	_ data.HeaderHandler,
@@ -154,13 +154,13 @@ func (mcm *metaChainMessenger) PrepareBroadcastHeaderValidator(
 		return
 	}
 
-	vData := &validatorHeaderBroadcastData{
-		headerHash:           headerHash,
-		header:               header,
-		metaMiniBlocksData:   miniBlocks,
-		metaTransactionsData: transactions,
-		order:                uint32(idx),
-		pkBytes:              pkBytes,
+	vData := &shared.ValidatorHeaderBroadcastData{
+		HeaderHash:           headerHash,
+		Header:               header,
+		MetaMiniBlocksData:   miniBlocks,
+		MetaTransactionsData: transactions,
+		Order:                uint32(idx),
+		PkBytes:              pkBytes,
 	}
 
 	err = mcm.delayedBlockBroadcaster.SetHeaderForValidator(vData)
@@ -178,6 +178,16 @@ func (mcm *metaChainMessenger) PrepareBroadcastBlockDataValidator(
 	_ int,
 	_ []byte,
 ) {
+}
+
+// PrepareBroadcastBlockDataWithEquivalentProofs prepares the broadcast of block data with equivalent proofs
+func (mcm *metaChainMessenger) PrepareBroadcastBlockDataWithEquivalentProofs(
+	_ data.HeaderHandler,
+	miniBlocks map[uint32][]byte,
+	transactions map[string][][]byte,
+	pkBytes []byte,
+) {
+	go mcm.BroadcastBlockData(miniBlocks, transactions, pkBytes, common.ExtraDelayForBroadcastBlockInfo)
 }
 
 // Close closes all the started infinite looping goroutines and subcomponents

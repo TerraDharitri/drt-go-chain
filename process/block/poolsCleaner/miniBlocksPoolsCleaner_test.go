@@ -5,10 +5,12 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
-	"github.com/TerraDharitri/drt-go-chain/testscommon"
-	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,7 +21,7 @@ func createMockArgMiniBlocksPoolsCleaner() ArgMiniBlocksPoolsCleaner {
 			ShardCoordinator:               &mock.CoordinatorStub{},
 			MaxRoundsToKeepUnprocessedData: 1,
 		},
-		MiniblocksPool: testscommon.NewCacherStub(),
+		MiniblocksPool: cache.NewCacherStub(),
 	}
 }
 
@@ -103,7 +105,7 @@ func TestCleanMiniblocksPoolsIfNeeded_MiniblockNotInPoolShouldBeRemovedFromMap(t
 	t.Parallel()
 
 	args := createMockArgMiniBlocksPoolsCleaner()
-	args.MiniblocksPool = &testscommon.CacherStub{
+	args.MiniblocksPool = &cache.CacherStub{
 		GetCalled: func(key []byte) (value interface{}, ok bool) {
 			return nil, false
 		},
@@ -122,7 +124,7 @@ func TestCleanMiniblocksPoolsIfNeeded_RoundDiffTooSmallMiniblockShouldRemainInMa
 	t.Parallel()
 
 	args := createMockArgMiniBlocksPoolsCleaner()
-	args.MiniblocksPool = &testscommon.CacherStub{
+	args.MiniblocksPool = &cache.CacherStub{
 		GetCalled: func(key []byte) (value interface{}, ok bool) {
 			return nil, true
 		},
@@ -142,7 +144,7 @@ func TestCleanMiniblocksPoolsIfNeeded_MbShouldBeRemovedFromPoolAndMap(t *testing
 
 	args := createMockArgMiniBlocksPoolsCleaner()
 	called := false
-	args.MiniblocksPool = &testscommon.CacherStub{
+	args.MiniblocksPool = &cache.CacherStub{
 		GetCalled: func(key []byte) (value interface{}, ok bool) {
 			return nil, true
 		},

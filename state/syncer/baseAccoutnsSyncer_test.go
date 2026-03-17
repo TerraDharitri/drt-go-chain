@@ -4,15 +4,17 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/TerraDharitri/drt-go-chain/state"
 	"github.com/TerraDharitri/drt-go-chain/state/syncer"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/statusHandler"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/storageManager"
-	"github.com/stretchr/testify/require"
 )
 
 func getDefaultBaseAccSyncerArgs() syncer.ArgsNewBaseAccountsSyncer {
@@ -22,7 +24,7 @@ func getDefaultBaseAccSyncerArgs() syncer.ArgsNewBaseAccountsSyncer {
 		TrieStorageManager:                &storageManager.StorageManagerStub{},
 		RequestHandler:                    &testscommon.RequestHandlerStub{},
 		Timeout:                           time.Second,
-		Cacher:                            testscommon.NewCacherMock(),
+		Cacher:                            cache.NewCacherMock(),
 		UserAccountsSyncStatisticsHandler: &testscommon.SizeSyncStatisticsHandlerStub{},
 		AppStatusHandler:                  &statusHandler.AppStatusHandlerStub{},
 		EnableEpochsHandler:               &enableEpochsHandlerMock.EnableEpochsHandlerStub{},

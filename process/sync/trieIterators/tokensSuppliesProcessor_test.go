@@ -10,6 +10,8 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/core/keyValStorage"
 	"github.com/TerraDharitri/drt-go-chain-core/data/dcdt"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
+	"github.com/stretchr/testify/require"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	coreDcdt "github.com/TerraDharitri/drt-go-chain/dblookupext/dcdtSupply"
@@ -24,7 +26,6 @@ import (
 	stateMock "github.com/TerraDharitri/drt-go-chain/testscommon/state"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/trie"
-	"github.com/stretchr/testify/require"
 )
 
 func getTokensSuppliesProcessorArgs() ArgsTokensSuppliesProcessor {
@@ -196,7 +197,13 @@ func TestTokensSuppliesProcessor_HandleTrieAccountIteration(t *testing.T) {
 		args := getTokensSuppliesProcessorArgs()
 		tsp, _ := NewTokensSuppliesProcessor(args)
 
-		dtt, _ := trackableDataTrie.NewTrackableDataTrie([]byte("addr"), &hashingMocks.HasherMock{}, &marshallerMock.MarshalizerMock{}, &enableEpochsHandlerMock.EnableEpochsHandlerStub{})
+		dtt, _ := trackableDataTrie.NewTrackableDataTrie(
+			[]byte("addr"),
+			&hashingMocks.HasherMock{},
+			&marshallerMock.MarshalizerMock{},
+			&enableEpochsHandlerMock.EnableEpochsHandlerStub{},
+			&stateMock.StateAccessesCollectorStub{},
+		)
 		dtlp, _ := parsers.NewDataTrieLeafParser([]byte("addr"), &marshallerMock.MarshalizerMock{}, &enableEpochsHandlerMock.EnableEpochsHandlerStub{})
 		userAcc, _ := accounts.NewUserAccount([]byte("addr"), dtt, dtlp)
 		userAcc.SetRootHash([]byte("rootHash"))

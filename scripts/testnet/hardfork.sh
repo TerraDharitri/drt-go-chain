@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-export DHARITRITESTNETSCRIPTSDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-source "$DHARITRITESTNETSCRIPTSDIR/variables.sh"
-source "$DHARITRITESTNETSCRIPTSDIR/include/config.sh"
+export TerraDharitriTESTNETSCRIPTSDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+source "$TerraDharitriTESTNETSCRIPTSDIR/variables.sh"
+source "$TerraDharitriTESTNETSCRIPTSDIR/include/config.sh"
 
 VALIDATOR_RES_PORT="$PORT_ORIGIN_VALIDATOR_REST"
 

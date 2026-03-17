@@ -6,6 +6,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
+
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/epochStart"
 	"github.com/TerraDharitri/drt-go-chain/epochStart/metachain"
@@ -22,6 +23,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/sharding"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
 	"github.com/TerraDharitri/drt-go-chain/state"
+	"github.com/TerraDharitri/drt-go-chain/state/disabled"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/dblookupext"
 	factory2 "github.com/TerraDharitri/drt-go-chain/testscommon/factory"
@@ -104,6 +106,7 @@ func createMetaBlockProcessor(
 			ManagedPeersHolder:             &testscommon.ManagedPeersHolderStub{},
 			BlockProcessingCutoffHandler:   &testscommon.BlockProcessingCutoffStub{},
 			SentSignaturesTracker:          &testscommon.SentSignatureTrackerStub{},
+			StateAccessesCollector:         disabled.NewDisabledStateAccessesCollector(),
 		},
 		SCToProtocol:             stakingToPeer,
 		PendingMiniBlocksHandler: &mock.PendingMiniBlocksHandlerStub{},
@@ -217,8 +220,9 @@ func createGenesisMetaBlock() *block.MetaBlock {
 
 func createHeaderValidator(coreComponents factory.CoreComponentsHolder) epochStart.HeaderValidator {
 	argsHeaderValidator := blproc.ArgsHeaderValidator{
-		Hasher:      coreComponents.Hasher(),
-		Marshalizer: coreComponents.InternalMarshalizer(),
+		Hasher:              coreComponents.Hasher(),
+		Marshalizer:         coreComponents.InternalMarshalizer(),
+		EnableEpochsHandler: coreComponents.EnableEpochsHandler(),
 	}
 	headerValidator, _ := blproc.NewHeaderValidator(argsHeaderValidator)
 	return headerValidator

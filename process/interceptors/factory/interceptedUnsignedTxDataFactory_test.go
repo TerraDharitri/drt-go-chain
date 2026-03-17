@@ -3,10 +3,10 @@ package factory
 import (
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain-core/data/smartContractResult"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/process/mock"
 	"github.com/TerraDharitri/drt-go-chain/process/unsigned"
-	"github.com/TerraDharitri/drt-go-chain-core/data/smartContractResult"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -93,7 +93,7 @@ func TestInterceptedUnsignedTxDataFactory_ShouldWorkAndCreate(t *testing.T) {
 	marshalizer := &mock.MarshalizerMock{}
 	emptyTx := &smartContractResult.SmartContractResult{}
 	emptyTxBuff, _ := marshalizer.Marshal(emptyTx)
-	interceptedData, err := imh.Create(emptyTxBuff)
+	interceptedData, err := imh.Create(emptyTxBuff, "")
 	assert.Nil(t, err)
 
 	_, ok := interceptedData.(*unsigned.InterceptedUnsignedTransaction)

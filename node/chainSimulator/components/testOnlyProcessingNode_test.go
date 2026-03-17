@@ -7,6 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/TerraDharitri/drt-go-chain/node/chainSimulator/components/heartbeat"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/node/chainSimulator/components/api"
 	"github.com/TerraDharitri/drt-go-chain/node/chainSimulator/configs"
@@ -44,6 +46,7 @@ func createMockArgsTestOnlyProcessingNode(t *testing.T) ArgsTestOnlyProcessingNo
 		SyncedBroadcastNetwork:      NewSyncedBroadcastNetwork(),
 		ChanStopNodeProcess:         make(chan endProcess.ArgEndProcess),
 		APIInterface:                api.NewNoApiInterface(),
+		Monitor:                     heartbeat.NewHeartbeatMonitor(),
 		ShardIDStr:                  "0",
 		RoundDurationInMillis:       6000,
 		MinNodesMeta:                1,

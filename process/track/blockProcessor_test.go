@@ -6,26 +6,32 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TerraDharitri/drt-go-chain/testscommon"
-	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 
-	"github.com/TerraDharitri/drt-go-chain/process"
-	processBlock "github.com/TerraDharitri/drt-go-chain/process/block"
-	"github.com/TerraDharitri/drt-go-chain/process/mock"
-	"github.com/TerraDharitri/drt-go-chain/process/track"
+	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/pool"
+
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	dataBlock "github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/TerraDharitri/drt-go-chain/process"
+	processBlock "github.com/TerraDharitri/drt-go-chain/process/block"
+	"github.com/TerraDharitri/drt-go-chain/process/mock"
+	"github.com/TerraDharitri/drt-go-chain/process/track"
 )
 
 func CreateBlockProcessorMockArguments() track.ArgBlockProcessor {
 	shardCoordinatorMock := mock.NewMultipleShardsCoordinatorMock()
 	argsHeaderValidator := processBlock.ArgsHeaderValidator{
-		Hasher:      &hashingMocks.HasherMock{},
-		Marshalizer: &mock.MarshalizerMock{},
+		Hasher:              &hashingMocks.HasherMock{},
+		Marshalizer:         &mock.MarshalizerMock{},
+		EnableEpochsHandler: &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
 	}
 	headerValidator, _ := processBlock.NewHeaderValidator(argsHeaderValidator)
 
@@ -56,7 +62,12 @@ func CreateBlockProcessorMockArguments() track.ArgBlockProcessor {
 				return 1
 			},
 		},
-		RoundHandler: &mock.RoundHandlerMock{},
+		RoundHandler:        &mock.RoundHandlerMock{},
+		EnableEpochsHandler: &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
+		ProofsPool:          &dataRetriever.ProofsPoolMock{},
+		Marshaller:          &testscommon.MarshallerStub{},
+		Hasher:              &hashingMocks.HasherMock{},
+		HeadersPool:         &pool.HeadersPoolStub{},
 	}
 
 	return arguments
@@ -169,6 +180,50 @@ func TestNewBlockProcessor_ShouldErrFinalMetachainHeadersNotifier(t *testing.T) 
 	bp, err := track.NewBlockProcessor(blockProcessorArguments)
 
 	assert.Equal(t, track.ErrNilFinalMetachainHeadersNotifier, err)
+	assert.Nil(t, bp)
+}
+
+func TestNewBlockProcessor_ShouldErrNilEnableEpochsHandler(t *testing.T) {
+	t.Parallel()
+
+	blockProcessorArguments := CreateBlockProcessorMockArguments()
+	blockProcessorArguments.EnableEpochsHandler = nil
+	bp, err := track.NewBlockProcessor(blockProcessorArguments)
+
+	assert.Equal(t, process.ErrNilEnableEpochsHandler, err)
+	assert.Nil(t, bp)
+}
+
+func TestNewBlockProcessor_ShouldErrNilProofsPool(t *testing.T) {
+	t.Parallel()
+
+	blockProcessorArguments := CreateBlockProcessorMockArguments()
+	blockProcessorArguments.ProofsPool = nil
+	bp, err := track.NewBlockProcessor(blockProcessorArguments)
+
+	assert.Equal(t, track.ErrNilProofsPool, err)
+	assert.Nil(t, bp)
+}
+
+func TestNewBlockProcessor_ShouldErrNilMarshaller(t *testing.T) {
+	t.Parallel()
+
+	blockProcessorArguments := CreateBlockProcessorMockArguments()
+	blockProcessorArguments.Marshaller = nil
+	bp, err := track.NewBlockProcessor(blockProcessorArguments)
+
+	assert.Equal(t, process.ErrNilMarshalizer, err)
+	assert.Nil(t, bp)
+}
+
+func TestNewBlockProcessor_ShouldErrNilHasher(t *testing.T) {
+	t.Parallel()
+
+	blockProcessorArguments := CreateBlockProcessorMockArguments()
+	blockProcessorArguments.Hasher = nil
+	bp, err := track.NewBlockProcessor(blockProcessorArguments)
+
+	assert.Equal(t, process.ErrNilHasher, err)
 	assert.Nil(t, bp)
 }
 
@@ -553,7 +608,7 @@ func TestGetNextHeader_ShouldReturnEmptySliceWhenPrevHeaderIsNil(t *testing.T) {
 	longestChainHeadersIndexes := make([]int, 0)
 	headersIndexes := make([]int, 0)
 	sortedHeaders := []data.HeaderHandler{&dataBlock.Header{Nonce: 1}}
-	bp.GetNextHeader(&longestChainHeadersIndexes, headersIndexes, nil, sortedHeaders, 0)
+	bp.GetNextHeader(&longestChainHeadersIndexes, headersIndexes, nil, sortedHeaders, [][]byte{}, 0)
 
 	assert.Equal(t, 0, len(longestChainHeadersIndexes))
 }
@@ -568,7 +623,7 @@ func TestGetNextHeader_ShouldReturnEmptySliceWhenSortedHeadersHaveHigherNonces(t
 	headersIndexes := make([]int, 0)
 	prevHeader := &dataBlock.Header{}
 	sortedHeaders := []data.HeaderHandler{&dataBlock.Header{Nonce: 2}}
-	bp.GetNextHeader(&longestChainHeadersIndexes, headersIndexes, prevHeader, sortedHeaders, 0)
+	bp.GetNextHeader(&longestChainHeadersIndexes, headersIndexes, prevHeader, sortedHeaders, [][]byte{}, 0)
 
 	assert.Equal(t, 0, len(longestChainHeadersIndexes))
 }
@@ -583,7 +638,7 @@ func TestGetNextHeader_ShouldReturnEmptySliceWhenHeaderConstructionIsNotValid(t 
 	headersIndexes := make([]int, 0)
 	prevHeader := &dataBlock.Header{}
 	sortedHeaders := []data.HeaderHandler{&dataBlock.Header{Nonce: 1}}
-	bp.GetNextHeader(&longestChainHeadersIndexes, headersIndexes, prevHeader, sortedHeaders, 0)
+	bp.GetNextHeader(&longestChainHeadersIndexes, headersIndexes, prevHeader, sortedHeaders, [][]byte{}, 0)
 
 	assert.Equal(t, 0, len(longestChainHeadersIndexes))
 }
@@ -614,7 +669,7 @@ func TestGetNextHeader_ShouldReturnEmptySliceWhenHeaderFinalityIsNotChecked(t *t
 	}
 
 	sortedHeaders := []data.HeaderHandler{header2}
-	bp.GetNextHeader(&longestChainHeadersIndexes, headersIndexes, header1, sortedHeaders, 0)
+	bp.GetNextHeader(&longestChainHeadersIndexes, headersIndexes, header1, sortedHeaders, [][]byte{}, 0)
 
 	assert.Equal(t, 0, len(longestChainHeadersIndexes))
 }
@@ -653,7 +708,7 @@ func TestGetNextHeader_ShouldWork(t *testing.T) {
 	}
 
 	sortedHeaders := []data.HeaderHandler{header2, header3}
-	bp.GetNextHeader(&longestChainHeadersIndexes, headersIndexes, header1, sortedHeaders, 0)
+	bp.GetNextHeader(&longestChainHeadersIndexes, headersIndexes, header1, sortedHeaders, [][]byte{}, 0)
 
 	require.Equal(t, 1, len(longestChainHeadersIndexes))
 	assert.Equal(t, 0, longestChainHeadersIndexes[0])
@@ -666,7 +721,7 @@ func TestCheckHeaderFinality_ShouldErrNilBlockHeader(t *testing.T) {
 	bp, _ := track.NewBlockProcessor(blockProcessorArguments)
 
 	sortedHeaders := []data.HeaderHandler{&dataBlock.Header{Nonce: 1}}
-	err := bp.CheckHeaderFinality(nil, sortedHeaders, 0)
+	err := bp.CheckHeaderFinality(nil, sortedHeaders, [][]byte{}, 0)
 
 	assert.Equal(t, process.ErrNilBlockHeader, err)
 }
@@ -679,7 +734,7 @@ func TestCheckHeaderFinality_ShouldErrHeaderNotFinal(t *testing.T) {
 
 	header := &dataBlock.Header{}
 	sortedHeaders := []data.HeaderHandler{&dataBlock.Header{Nonce: 1}}
-	err := bp.CheckHeaderFinality(header, sortedHeaders, 0)
+	err := bp.CheckHeaderFinality(header, sortedHeaders, [][]byte{}, 0)
 
 	assert.Equal(t, process.ErrHeaderNotFinal, err)
 }
@@ -707,7 +762,7 @@ func TestCheckHeaderFinality_ShouldWork(t *testing.T) {
 	}
 
 	sortedHeaders := []data.HeaderHandler{header2}
-	err := bp.CheckHeaderFinality(header1, sortedHeaders, 0)
+	err := bp.CheckHeaderFinality(header1, sortedHeaders, [][]byte{}, 0)
 
 	assert.Nil(t, err)
 }

@@ -4,19 +4,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
-	"github.com/TerraDharitri/drt-go-chain/epochStart/mock"
-	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
-	"github.com/TerraDharitri/drt-go-chain/storage"
-	"github.com/TerraDharitri/drt-go-chain/testscommon"
-	epochStartMocks "github.com/TerraDharitri/drt-go-chain/testscommon/bootstrapMocks/epochStart"
-	dataRetrieverMock "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
-	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
-	"github.com/TerraDharitri/drt-go-chain/testscommon/genesisMocks"
-	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
-	"github.com/TerraDharitri/drt-go-chain/testscommon/nodeTypeProviderMock"
-	"github.com/TerraDharitri/drt-go-chain/testscommon/shardingMocks"
-	vic "github.com/TerraDharitri/drt-go-chain/testscommon/validatorInfoCacher"
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data"
@@ -24,6 +11,22 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/data/endProcess"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
+	"github.com/TerraDharitri/drt-go-chain/epochStart/mock"
+	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
+	"github.com/TerraDharitri/drt-go-chain/storage"
+	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	epochStartMocks "github.com/TerraDharitri/drt-go-chain/testscommon/bootstrapMocks/epochStart"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/chainParameters"
+	dataRetrieverMock "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/genesisMocks"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/hashingMocks"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/nodeTypeProviderMock"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/shardingMocks"
+	vic "github.com/TerraDharitri/drt-go-chain/testscommon/validatorInfoCacher"
 )
 
 const initRating = uint32(50)
@@ -255,16 +258,17 @@ func getSyncValidatorStatusArgs() ArgsNewSyncValidatorStatus {
 	return ArgsNewSyncValidatorStatus{
 		DataPool: &dataRetrieverMock.PoolsHolderStub{
 			MiniBlocksCalled: func() storage.Cacher {
-				return testscommon.NewCacherStub()
+				return cache.NewCacherStub()
 			},
 			CurrEpochValidatorInfoCalled: func() dataRetriever.ValidatorInfoCacher {
 				return &vic.ValidatorInfoCacherStub{}
 			},
 		},
-		Marshalizer:    &mock.MarshalizerMock{},
-		Hasher:         &hashingMocks.HasherMock{},
-		RequestHandler: &testscommon.RequestHandlerStub{},
-		ChanceComputer: &shardingMocks.NodesCoordinatorStub{},
+		Marshalizer:            &mock.MarshalizerMock{},
+		Hasher:                 &hashingMocks.HasherMock{},
+		RequestHandler:         &testscommon.RequestHandlerStub{},
+		ChanceComputer:         &shardingMocks.NodesCoordinatorStub{},
+		ChainParametersHandler: &chainParameters.ChainParametersHandlerStub{},
 		GenesisNodesConfig: &genesisMocks.NodesSetupStub{
 			NumberOfShardsCalled: func() uint32 {
 				return 1

@@ -7,8 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	crypto "github.com/TerraDharitri/drt-go-chain-crypto"
-
+	"github.com/TerraDharitri/drt-go-chain-crypto"
 	"github.com/TerraDharitri/drt-go-chain-crypto/signing"
 	"github.com/TerraDharitri/drt-go-chain-crypto/signing/mcl"
 	mclsig "github.com/TerraDharitri/drt-go-chain-crypto/signing/mcl/singlesig"

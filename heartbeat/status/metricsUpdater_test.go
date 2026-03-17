@@ -8,18 +8,19 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/core"
 	"github.com/TerraDharitri/drt-go-chain-core/core/atomic"
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/TerraDharitri/drt-go-chain/common"
 	"github.com/TerraDharitri/drt-go-chain/heartbeat"
 	"github.com/TerraDharitri/drt-go-chain/heartbeat/data"
 	"github.com/TerraDharitri/drt-go-chain/heartbeat/mock"
-	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/statusHandler"
-	"github.com/stretchr/testify/assert"
 )
 
 func createMockArgsMetricsUpdater() ArgsMetricsUpdater {
 	return ArgsMetricsUpdater{
-		PeerAuthenticationCacher:            testscommon.NewCacherMock(),
+		PeerAuthenticationCacher:            cache.NewCacherMock(),
 		HeartbeatMonitor:                    &mock.HeartbeatMonitorStub{},
 		HeartbeatSenderInfoProvider:         &mock.HeartbeatSenderInfoProviderStub{},
 		AppStatusHandler:                    &statusHandler.AppStatusHandlerStub{},

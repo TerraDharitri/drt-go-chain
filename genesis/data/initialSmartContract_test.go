@@ -62,9 +62,9 @@ func TestInitialSmartContract_AddressBytes(t *testing.T) {
 	ia := &InitialSmartContract{}
 	addrBytes := []byte("address bytes")
 	ia.AddAddressBytes(addrBytes)
-	recovdrtAddrBytes := ia.AddressesBytes()[0]
+	recoverdAddrBytes := ia.AddressesBytes()[0]
 
-	assert.Equal(t, addrBytes, recovdrtAddrBytes)
+	assert.Equal(t, addrBytes, recoverdAddrBytes)
 }
 
 func TestInitialSmartContract_Address(t *testing.T) {
@@ -73,7 +73,7 @@ func TestInitialSmartContract_Address(t *testing.T) {
 	ia := &InitialSmartContract{}
 	address := "address"
 	ia.AddAddress(address)
-	recovdrtAddress := ia.Addresses()[0]
+	recoverdAddress := ia.Addresses()[0]
 
-	assert.Equal(t, address, recovdrtAddress)
+	assert.Equal(t, address, recoverdAddress)
 }

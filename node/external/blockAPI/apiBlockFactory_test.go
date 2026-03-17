@@ -15,6 +15,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain/process/txstatus"
 	"github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	dataRetrieverTestCommon "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/dblookupext"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/genericMocks"
@@ -25,6 +26,10 @@ import (
 
 func createMockArgsAPIBlockProc() *ArgAPIBlockProcessor {
 	statusComputer, _ := txstatus.NewStatusComputer(0, mock.NewNonceHashConverterMock(), &storageMocks.ChainStorerStub{})
+	chainHandler := &testscommon.ChainHandlerMock{}
+	_ = chainHandler.SetCurrentBlockHeaderAndRootHash(&block.Header{
+		Nonce: 123456,
+	}, []byte("root"))
 
 	return &ArgAPIBlockProcessor{
 		Store:                        &storageMocks.ChainStorerStub{},
@@ -41,6 +46,8 @@ func createMockArgsAPIBlockProc() *ArgAPIBlockProcessor {
 		AccountsRepository:           &state.AccountsRepositoryStub{},
 		ScheduledTxsExecutionHandler: &testscommon.ScheduledTxsExecutionStub{},
 		EnableEpochsHandler:          &enableEpochsHandlerMock.EnableEpochsHandlerStub{},
+		ProofsPool:                   &dataRetrieverTestCommon.ProofsPoolMock{},
+		BlockChain:                   chainHandler,
 	}
 }
 
@@ -182,6 +189,25 @@ func TestCreateAPIBlockProcessorNilArgs(t *testing.T) {
 
 		_, err := CreateAPIBlockProcessor(arguments)
 		assert.Equal(t, errNilEnableEpochsHandler, err)
+	})
+	t.Run("NilProofsPool", func(t *testing.T) {
+		t.Parallel()
+
+		arguments := createMockArgsAPIBlockProc()
+		arguments.ProofsPool = nil
+
+		_, err := CreateAPIBlockProcessor(arguments)
+		assert.Equal(t, process.ErrNilProofsPool, err)
+	})
+
+	t.Run("NilBlockChain", func(t *testing.T) {
+		t.Parallel()
+
+		arguments := createMockArgsAPIBlockProc()
+		arguments.BlockChain = nil
+
+		_, err := CreateAPIBlockProcessor(arguments)
+		assert.Equal(t, process.ErrNilBlockChain, err)
 	})
 }
 

@@ -1,7 +1,3 @@
 {
-    "language": "clang",
-    "source_files": [
-        "cryptoTest.c",
-        "../cbuiltins.c"
-    ]
+    "language": "rust"
 }

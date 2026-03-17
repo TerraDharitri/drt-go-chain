@@ -112,7 +112,7 @@ type dcdtTokensCompleteResponseData struct {
 type dcdtTokensCompleteResponse struct {
 	Data  dcdtTokensCompleteResponseData `json:"data"`
 	Error string                         `json:"error"`
-	Code  string
+	Code  string                         `json:"code"`
 }
 
 type keyValuePairsResponseData struct {
@@ -122,7 +122,17 @@ type keyValuePairsResponseData struct {
 type keyValuePairsResponse struct {
 	Data  keyValuePairsResponseData `json:"data"`
 	Error string                    `json:"error"`
-	Code  string
+	Code  string                    `json:"code"`
+}
+
+type iterateKeysResponseData struct {
+	Pairs            map[string]string `json:"pairs"`
+	NewIteratorState [][]byte          `json:"newIteratorState"`
+}
+type iterateKeysResponse struct {
+	Data  iterateKeysResponseData `json:"data"`
+	Error string                  `json:"error"`
+	Code  string                  `json:"code"`
 }
 
 type dcdtRolesResponseData struct {
@@ -132,7 +142,7 @@ type dcdtRolesResponseData struct {
 type dcdtRolesResponse struct {
 	Data  dcdtRolesResponseData `json:"data"`
 	Error string                `json:"error"`
-	Code  string
+	Code  string                `json:"code"`
 }
 
 type usernameResponseData struct {
@@ -662,6 +672,106 @@ func TestAddressGroup_getKeyValuePairs(t *testing.T) {
 	})
 }
 
+func TestAddressGroup_iterateKeys(t *testing.T) {
+	t.Parallel()
+
+	t.Run("invalid body should error",
+		testErrorScenario("/address/iterate-keys", "POST", bytes.NewBuffer([]byte("invalid body")),
+			formatExpectedErr(apiErrors.ErrValidation, errors.New("invalid character 'i' looking for beginning of value"))))
+	t.Run("empty address should error", func(t *testing.T) {
+		t.Parallel()
+
+		body := &groups.IterateKeysRequest{
+			Address: "",
+		}
+		bodyBytes, _ := json.Marshal(body)
+		testAddressGroup(
+			t,
+			&mock.FacadeStub{},
+			"/address/iterate-keys",
+			"POST",
+			bytes.NewBuffer(bodyBytes),
+			http.StatusBadRequest,
+			formatExpectedErr(apiErrors.ErrValidation, apiErrors.ErrEmptyAddress),
+		)
+	})
+	t.Run("invalid query options should error", func(t *testing.T) {
+		t.Parallel()
+
+		body := &groups.IterateKeysRequest{
+			Address: "drt1",
+		}
+		bodyBytes, _ := json.Marshal(body)
+		testAddressGroup(
+			t,
+			&mock.FacadeStub{},
+			"/address/iterate-keys?blockNonce=not-uint64",
+			"POST",
+			bytes.NewBuffer(bodyBytes),
+			http.StatusBadRequest,
+			formatExpectedErr(apiErrors.ErrIterateKeys, apiErrors.ErrBadUrlParams),
+		)
+	})
+	t.Run("with node fail should err", func(t *testing.T) {
+		t.Parallel()
+
+		body := &groups.IterateKeysRequest{
+			Address: "drt1",
+		}
+		bodyBytes, _ := json.Marshal(body)
+		facade := &mock.FacadeStub{
+			IterateKeysCalled: func(address string, numKeys uint, iteratorState [][]byte, options api.AccountQueryOptions) (map[string]string, [][]byte, api.BlockInfo, error) {
+				return nil, nil, api.BlockInfo{}, expectedErr
+			},
+		}
+		testAddressGroup(
+			t,
+			facade,
+			"/address/iterate-keys",
+			"POST",
+			bytes.NewBuffer(bodyBytes),
+			http.StatusInternalServerError,
+			formatExpectedErr(apiErrors.ErrIterateKeys, expectedErr),
+		)
+	})
+	t.Run("should work", func(t *testing.T) {
+		t.Parallel()
+
+		pairs := map[string]string{
+			"k1": "v1",
+			"k2": "v2",
+		}
+
+		body := &groups.IterateKeysRequest{
+			Address:       "drt1",
+			NumKeys:       10,
+			IteratorState: [][]byte{[]byte("starting"), []byte("state")},
+		}
+		newIteratorState := [][]byte{[]byte("new"), []byte("state")}
+		bodyBytes, _ := json.Marshal(body)
+		facade := &mock.FacadeStub{
+			IterateKeysCalled: func(address string, numKeys uint, iteratorState [][]byte, options api.AccountQueryOptions) (map[string]string, [][]byte, api.BlockInfo, error) {
+				assert.Equal(t, body.Address, address)
+				assert.Equal(t, body.NumKeys, numKeys)
+				assert.Equal(t, body.IteratorState, iteratorState)
+				return pairs, newIteratorState, api.BlockInfo{}, nil
+			},
+		}
+
+		response := &iterateKeysResponse{}
+		loadAddressGroupResponse(
+			t,
+			facade,
+			"/address/iterate-keys",
+			"POST",
+			bytes.NewBuffer(bodyBytes),
+			response,
+		)
+		assert.Equal(t, pairs, response.Data.Pairs)
+		assert.Equal(t, newIteratorState, response.Data.NewIteratorState)
+	})
+}
+
 func TestAddressGroup_getDCDTBalance(t *testing.T) {
 	t.Parallel()
 
@@ -881,6 +991,9 @@ func TestAddressGroup_getDCDTNFTData(t *testing.T) {
 			formatExpectedErr(apiErrors.ErrGetDCDTNFTData, apiErrors.ErrBadUrlParams)))
 	t.Run("invalid nonce should error",
 		testErrorScenario("/address/drt1alice/nft/newToken/nonce/not-int", "GET", nil,
+			formatExpectedErr(apiErrors.ErrGetDCDTNFTData, apiErrors.ErrNonceInvalid)))
+	t.Run("nonce too long should error",
+		testErrorScenario("/address/drt1alice/nft/newToken/nonce/1234567489123456789123", "GET", nil,
 			formatExpectedErr(apiErrors.ErrGetDCDTNFTData, apiErrors.ErrNonceInvalid)))
 	t.Run("with node fail should err", func(t *testing.T) {
 		t.Parallel()
@@ -1143,6 +1256,7 @@ func getAddressRoutesConfig() config.ApiRoutesConfig {
 					{Name: "/:address/username", Open: true},
 					{Name: "/:address/code-hash", Open: true},
 					{Name: "/:address/keys", Open: true},
+					{Name: "/iterate-keys", Open: true},
 					{Name: "/:address/key/:key", Open: true},
 					{Name: "/:address/dcdt", Open: true},
 					{Name: "/:address/dcdts/roles", Open: true},

@@ -2,6 +2,7 @@ package blockAPI
 
 import (
 	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/transaction"
 	"github.com/TerraDharitri/drt-go-chain-core/data/typeConverters"
 	"github.com/TerraDharitri/drt-go-chain-core/hashing"
@@ -31,4 +32,6 @@ type ArgAPIBlockProcessor struct {
 	AccountsRepository           state.AccountsRepository
 	ScheduledTxsExecutionHandler process.ScheduledTxsExecutionHandler
 	EnableEpochsHandler          common.EnableEpochsHandler
+	ProofsPool                   dataRetriever.ProofsPool
+	BlockChain                   data.ChainHandler
 }

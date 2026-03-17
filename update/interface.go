@@ -8,6 +8,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/data"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	"github.com/TerraDharitri/drt-go-chain/common"
+	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/sharding/nodesCoordinator"
 	"github.com/TerraDharitri/drt-go-chain/state"
@@ -140,6 +141,14 @@ type EpochStartPendingMiniBlocksSyncHandler interface {
 	IsInterfaceNil() bool
 }
 
+// PendingEpochStartShardHeaderSyncHandler defines the methods to sync pending epoch start shard headers
+type PendingEpochStartShardHeaderSyncHandler interface {
+	SyncEpochStartShardHeader(shardId uint32, epoch uint32, startNonce uint64, ctx context.Context) error
+	GetEpochStartHeader() (data.HeaderHandler, []byte, error)
+	ClearFields()
+	IsInterfaceNil() bool
+}
+
 // TransactionsSyncHandler defines the methods to sync all transactions from a set of miniblocks
 type TransactionsSyncHandler interface {
 	SyncTransactionsFor(miniBlocks map[string]*block.MiniBlock, epoch uint32, ctx context.Context) error
@@ -254,6 +263,7 @@ type GenesisNodesSetupHandler interface {
 	GetAdaptivity() bool
 	NumberOfShards() uint32
 	MinNumberOfNodes() uint32
+	ExportNodesConfig() config.NodesConfig
 	IsInterfaceNil() bool
 }
 

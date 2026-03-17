@@ -6,20 +6,21 @@ import (
 
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-storage/common"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/TerraDharitri/drt-go-chain/config"
 	"github.com/TerraDharitri/drt-go-chain/storage/factory"
 	"github.com/TerraDharitri/drt-go-chain/storage/mock"
 	"github.com/TerraDharitri/drt-go-chain/storage/storageunit"
-	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/marshallerMock"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/storage"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestNewStorageUnit(t *testing.T) {
 	t.Parallel()
 
-	cacher := &testscommon.CacherStub{}
+	cacher := &cache.CacherStub{}
 	persister := &mock.PersisterStub{}
 
 	t.Run("nil cacher should error", func(t *testing.T) {

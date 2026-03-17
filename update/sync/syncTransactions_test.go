@@ -16,17 +16,19 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/core/check"
 	"github.com/TerraDharitri/drt-go-chain-core/data/block"
 	dataTransaction "github.com/TerraDharitri/drt-go-chain-core/data/transaction"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/process"
 	"github.com/TerraDharitri/drt-go-chain/state"
 	"github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	dataRetrieverMock "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
 	storageStubs "github.com/TerraDharitri/drt-go-chain/testscommon/storage"
 	"github.com/TerraDharitri/drt-go-chain/update"
 	"github.com/TerraDharitri/drt-go-chain/update/mock"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func createMockArgs() ArgsNewTransactionsSyncer {
@@ -529,7 +531,7 @@ func TestTransactionsSync_GetValidatorInfoFromPoolShouldWork(t *testing.T) {
 			ValidatorsInfoCalled: func() dataRetriever.ShardedDataCacherNotifier {
 				return &testscommon.ShardedDataStub{
 					ShardDataStoreCalled: func(cacheID string) storage.Cacher {
-						return &testscommon.CacherStub{
+						return &cache.CacherStub{
 							PeekCalled: func(key []byte) (value interface{}, ok bool) {
 								if bytes.Equal(key, txHash) {
 									return nil, true
@@ -690,7 +692,7 @@ func TestTransactionsSync_GetValidatorInfoFromPoolOrStorage(t *testing.T) {
 			ValidatorsInfoCalled: func() dataRetriever.ShardedDataCacherNotifier {
 				return &testscommon.ShardedDataStub{
 					ShardDataStoreCalled: func(cacheID string) storage.Cacher {
-						return &testscommon.CacherStub{
+						return &cache.CacherStub{
 							PeekCalled: func(key []byte) (value interface{}, ok bool) {
 								return nil, false
 							},
@@ -852,7 +854,7 @@ func getDataPoolsWithShardValidatorInfoAndTxHash(svi *state.ShardValidatorInfo, 
 		ValidatorsInfoCalled: func() dataRetriever.ShardedDataCacherNotifier {
 			return &testscommon.ShardedDataStub{
 				ShardDataStoreCalled: func(cacheID string) storage.Cacher {
-					return &testscommon.CacherStub{
+					return &cache.CacherStub{
 						PeekCalled: func(key []byte) (value interface{}, ok bool) {
 							if bytes.Equal(key, txHash) {
 								return svi, true

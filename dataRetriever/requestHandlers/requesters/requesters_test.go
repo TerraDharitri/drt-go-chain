@@ -4,12 +4,15 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/TerraDharitri/drt-go-chain-core/core"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/enableEpochsHandlerMock"
+
+	"github.com/TerraDharitri/drt-go-chain-core/core/check"
+	"github.com/TerraDharitri/drt-go-chain-core/data/batch"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/mock"
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever/requestHandlers"
 	dataRetrieverStub "github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
-	"github.com/TerraDharitri/drt-go-chain-core/core/check"
-	"github.com/TerraDharitri/drt-go-chain-core/data/batch"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -21,23 +24,27 @@ const (
 	txRequester       requestHandlerType = "transactionRequester"
 	trieRequester     requestHandlerType = "trieNodeRequester"
 	vInfoRequester    requestHandlerType = "validatorInfoNodeRequester"
+	eqProofsRequester requestHandlerType = "equivalentProofsRequester"
 )
 
 var expectedErr = errors.New("expected error")
 
 func Test_Requesters(t *testing.T) {
 	t.Parallel()
+
 	testNewRequester(t, peerAuthRequester)
 	testNewRequester(t, mbRequester)
 	testNewRequester(t, txRequester)
 	testNewRequester(t, trieRequester)
 	testNewRequester(t, vInfoRequester)
+	testNewRequester(t, eqProofsRequester)
 
 	testRequestDataFromHashArray(t, peerAuthRequester)
 	testRequestDataFromHashArray(t, mbRequester)
 	testRequestDataFromHashArray(t, txRequester)
 	testRequestDataFromHashArray(t, trieRequester)
 	testRequestDataFromHashArray(t, vInfoRequester)
+	testRequestDataFromHashArray(t, eqProofsRequester)
 
 	testRequestDataFromReferenceAndChunk(t, trieRequester)
 }
@@ -147,6 +154,15 @@ func getHandler(requesterType requestHandlerType, argsBase ArgBaseRequester) (ch
 		return NewTrieNodeRequester(ArgTrieNodeRequester{argsBase})
 	case vInfoRequester:
 		return NewValidatorInfoRequester(ArgValidatorInfoRequester{argsBase})
+	case eqProofsRequester:
+		return NewEquivalentProofsRequester(ArgEquivalentProofsRequester{
+			ArgBaseRequester: argsBase,
+			EnableEpochsHandler: &enableEpochsHandlerMock.EnableEpochsHandlerStub{
+				IsFlagEnabledInEpochCalled: func(flag core.EnableEpochFlag, epoch uint32) bool {
+					return true
+				},
+			},
+		})
 	}
 	return nil, errors.New("invalid requester type")
 }

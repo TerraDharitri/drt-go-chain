@@ -3,12 +3,14 @@ package components
 import (
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	retriever "github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	chainStorage "github.com/TerraDharitri/drt-go-chain/storage"
 	"github.com/TerraDharitri/drt-go-chain/testscommon"
+	"github.com/TerraDharitri/drt-go-chain/testscommon/cache"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/testscommon/storage"
-	"github.com/stretchr/testify/require"
 )
 
 func createArgsDataComponentsHolder() ArgsDataComponentsHolder {
@@ -21,7 +23,7 @@ func createArgsDataComponentsHolder() ArgsDataComponentsHolder {
 		},
 		DataPool: &dataRetriever.PoolsHolderStub{
 			MiniBlocksCalled: func() chainStorage.Cacher {
-				return &testscommon.CacherStub{}
+				return &cache.CacherStub{}
 			},
 		},
 		InternalMarshaller: &testscommon.MarshallerStub{},

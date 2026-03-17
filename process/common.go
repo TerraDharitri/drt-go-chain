@@ -20,6 +20,7 @@ import (
 	"github.com/TerraDharitri/drt-go-chain-core/marshal"
 	logger "github.com/TerraDharitri/drt-go-chain-logger"
 	vmcommon "github.com/TerraDharitri/drt-go-chain-vm-common"
+
 	"github.com/TerraDharitri/drt-go-chain/dataRetriever"
 	"github.com/TerraDharitri/drt-go-chain/state"
 )
@@ -345,7 +346,7 @@ func GetShardHeaderFromStorageWithNonce(
 		storageService,
 		uint64Converter,
 		marshalizer,
-		dataRetriever.ShardHdrNonceHashDataUnit+dataRetriever.UnitType(shardId))
+		dataRetriever.GetHdrNonceHashDataUnit(shardId))
 	if err != nil {
 		return nil, nil, err
 	}
@@ -772,6 +773,21 @@ func GetSortedStorageUpdates(account *vmcommon.OutputAccount) []*vmcommon.Storag
 	})
 
 	return storageUpdates
+}
+
+// GetHeader tries to get the header from pool first and if not found, searches for it through storer
+func GetHeader(
+	headerHash []byte,
+	headersPool dataRetriever.HeadersPool,
+	headersStorer dataRetriever.StorageService,
+	marshaller marshal.Marshalizer,
+	shardID uint32,
+) (data.HeaderHandler, error) {
+	if shardID == core.MetachainShardId {
+		return GetMetaHeader(headerHash, headersPool, marshaller, headersStorer)
+	}
+
+	return GetShardHeader(headerHash, headersPool, marshaller, headersStorer)
 }
 
 // UnmarshalHeader unmarshalls a block header

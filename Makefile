@@ -1,3 +1,4 @@
+#Makefile
 CURRENT_DIRECTORY := $(shell pwd)
 TESTS_TO_RUN := $(shell go list ./... | grep -v /integrationTests/ | grep -v /testscommon/ | grep -v mock | grep -v disabled | grep -v defaults)
 
@@ -8,11 +9,11 @@ build-cmd:
 	(cd cmd/node && go build)
 
 clean-test:
-	go clean -testcache ./...
+	go clean -testcache
 
 clean: clean-test
-	go clean -cache ./...
-	go clean ./...
+	go clean -cache
+	go clean
 
 test: clean-test
 	go test ./...
@@ -80,7 +81,7 @@ cli-docs:
 lint-install:
 ifeq (,$(wildcard test -f bin/golangci-lint))
 	@echo "Installing golint"
-	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/main/install.sh | sh -s
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s
 endif
 
 run-lint:
