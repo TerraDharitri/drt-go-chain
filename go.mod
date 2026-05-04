@@ -10,7 +10,7 @@ require (
 	github.com/TerraDharitri/drt-go-chain-crypto v1.0.1
 	github.com/TerraDharitri/drt-go-chain-es-indexer v1.0.1
 	github.com/TerraDharitri/drt-go-chain-logger v1.0.0
-	github.com/TerraDharitri/drt-go-chain-scenario v1.0.0
+	github.com/TerraDharitri/drt-go-chain-scenario v1.0.1
 	github.com/TerraDharitri/drt-go-chain-storage v1.0.0
 	github.com/TerraDharitri/drt-go-chain-vm v1.0.2
 	github.com/TerraDharitri/drt-go-chain-vm-common v1.0.0
